@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>副本-精英房</title>
+  <!--
+    室内游戏场景 (Indoor Scene)
+
+    用途：副本精英战斗房间
+    特点：较大空间，精英怪物，更多掩体
+    尺寸：1536×1536px
+  -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 100vw; height: 100vh; overflow: hidden; }
+    body > div { position: relative; width: 100%; height: 100%; }
+    body > div > div { position: absolute; }
+  </style>
+</head>
+<body>
+  <div id="dungeon_elite_001"
+       description="副本精英房：精英怪物房间，更大的战斗空间，油画风格，俯视角，暗红色调危险感，戏剧性光照，紧张氛围">
+
+    <div description="地面：大型房间的石板地面，战斗痕迹，骸骨散布"
+         style="left:8%;top:8%;width:84%;height:84%;z-index:1"></div>
+
+    <div description="墙壁-上：高大的破损墙壁，精英怪物装饰"
+         style="left:0;top:0;width:100%;height:8%;z-index:3"></div>
+
+    <div description="墙壁-下：高大的破损墙壁，入口门"
+         style="left:0;top:92%;width:100%;height:8%;z-index:3"></div>
+
+    <div description="墙壁-左：高大的墙壁，战利品展示"
+         style="left:0;top:0;width:8%;height:100%;z-index:3"></div>
+
+    <div description="墙壁-右：高大的墙壁，旗帜装饰"
+         style="left:92%;top:0;width:8%;height:100%;z-index:3"></div>
+
+    <div description="大型柱子-左上：可躲避的大型柱子"
+         style="left:20%;top:25%;width:8%;height:12%;z-index:2"></div>
+
+    <div description="大型柱子-右上：可躲避的大型柱子"
+         style="left:72%;top:25%;width:8%;height:12%;z-index:2"></div>
+
+    <div description="大型柱子-左下：可躲避的大型柱子"
+         style="left:20%;top:63%;width:8%;height:12%;z-index:2"></div>
+
+    <div description="大型柱子-右下：可躲避的大型柱子"
+         style="left:72%;top:63%;width:8%;height:12%;z-index:2"></div>
+
+    <div description="掩体-瓦砾堆：大型瓦砾堆"
+         style="left:45%;top:75%;width:10%;height:8%;z-index:2"></div>
+
+    <div description="入口门：从普通房进入，进入后锁定"
+         style="left:45%;top:92%;width:10%;height:6%;z-index:4"></div>
+
+    <div description="出口门-锁定：通往Boss房，击杀精英后开启，金色指示灯"
+         style="left:45%;top:0;width:10%;height:6%;z-index:4"></div>
+
+    <div description="精英刷怪点：精英怪物刷新位置，中央区域"
+         style="left:40%;top:42%;width:20%;height:18%;z-index:1"></div>
+
+    <div description="精英掉落区域：击杀后必掉稀有物品"
+         style="left:45%;top:48%;width:10%;height:8%;z-index:1"></div>
+
+    <div description="戏剧性光源：从顶部射入的光柱"
+         style="left:35%;top:30%;width:30%;height:40%;z-index:2"></div>
+
+    <div description="骸骨装饰：战斗痕迹，暗示危险"
+         style="left:30%;top:55%;width:5%;height:5%;z-index:2"></div>
+
+  </div>
+</body>
+</html>

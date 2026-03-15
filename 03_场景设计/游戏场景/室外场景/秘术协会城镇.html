@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>秘术协会城镇</title>
+  <!--
+    室外游戏场景 (Outdoor Scene)
+
+    用途：玩家实际探索的室外场景
+    特点：完整的远中近景分层，包含可交互区域，俯视角
+    尺寸：4096×4096px
+  -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 100vw; height: 100vh; overflow: hidden; }
+    body > div { position: relative; width: 100%; height: 100%; }
+    body > div > div { position: absolute; }
+  </style>
+</head>
+<body>
+  <div id="scene_magic_town_001"
+       description="秘术协会城镇：神秘优雅的魔法据点，油画风格，俯视角，紫色金色调，魔法光源照明，神秘氛围">
+
+    <div description="远景：紫色调天空，魔法塔楼轮廓，悬浮光点"
+         style="left:0;top:0;width:100%;height:40%;z-index:1"></div>
+
+    <div description="中景：紫色建筑群，魔法塔，符文柱，水晶簇"
+         style="left:0;top:25%;width:100%;height:50%;z-index:2"></div>
+
+    <div description="近景：魔法石板路面，发光符文，紫色花瓣散落"
+         style="left:0;top:60%;width:100%;height:40%;z-index:3"></div>
+
+    <div description="中央魔法塔：高耸的紫色主塔，符文环绕发光"
+         style="left:40%;top:15%;width:20%;height:35%;z-index:4"></div>
+
+    <div description="魔法商店建筑：东区商店入口，悬浮灯笼照明"
+         style="left:70%;top:40%;width:12%;height:18%;z-index:5"></div>
+
+    <div description="炼金工坊：西区建筑入口，炼金烟雾"
+         style="left:15%;top:45%;width:12%;height:18%;z-index:5"></div>
+
+    <div description="中央传送阵：快速旅行点，魔法阵发光"
+         style="left:45%;top:55%;width:10%;height:12%;z-index:5"></div>
+
+    <div description="NPC渊宇位置：主线NPC站立位置"
+         style="left:48%;top:62%;width:5%;height:8%;z-index:6"></div>
+
+    <div description="任务板：接取任务的魔法公告板"
+         style="left:58%;top:50%;width:4%;height:8%;z-index:5"></div>
+
+    <div description="南门出口：通往废土的大门，符文守卫"
+         style="left:45%;top:90%;width:10%;height:8%;z-index:5"></div>
+
+    <div description="东门出口：通往变异森林的大门"
+         style="left:92%;top:50%;width:6%;height:10%;z-index:5"></div>
+
+    <div description="北区副本入口：通往地下副本的隐藏入口"
+         style="left:48%;top:5%;width:8%;height:8%;z-index:5"></div>
+
+    <div description="符文柱装饰：发光的符文石柱"
+         style="left:30%;top:45%;width:4%;height:12%;z-index:4"></div>
+
+    <div description="水晶簇：发光的紫色水晶簇"
+         style="left:65%;top:55%;width:6%;height:10%;z-index:4"></div>
+
+    <div description="悬浮灯笼：紫色蓝色光点装饰"
+         style="left:55%;top:35%;width:3%;height:5%;z-index:4"></div>
+
+    <div description="魔法能量粒子：飘浮的魔法能量效果"
+         style="left:0;top:0;width:100%;height:100%;z-index:2"></div>
+
+  </div>
+</body>
+</html>

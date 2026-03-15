@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>副本-普通房</title>
+  <!--
+    室内游戏场景 (Indoor Scene)
+
+    用途：副本普通战斗房间
+    特点：封闭空间感，随机地形障碍，刷怪区域
+    尺寸：1024×1024px
+  -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 100vw; height: 100vh; overflow: hidden; }
+    body > div { position: relative; width: 100%; height: 100%; }
+    body > div > div { position: absolute; }
+  </style>
+</head>
+<body>
+  <div id="dungeon_normal_001"
+       description="副本普通房：战斗房间，根据副本主题变化，油画风格，俯视角，橙灰色调破败感，微弱光源，紧张氛围">
+
+    <div description="地面：碎裂的石板地面，散落的瓦砾，灰尘覆盖"
+         style="left:10%;top:10%;width:80%;height:80%;z-index:1"></div>
+
+    <div description="墙壁-上：破损的砖墙，露出钢筋结构"
+         style="left:0;top:0;width:100%;height:10%;z-index:3"></div>
+
+    <div description="墙壁-下：破损的砖墙，倒塌的家具堆"
+         style="left:0;top:90%;width:100%;height:10%;z-index:3"></div>
+
+    <div description="墙壁-左：裂缝的混凝土墙，涂鸦痕迹"
+         style="left:0;top:0;width:10%;height:100%;z-index:3"></div>
+
+    <div description="墙壁-右：半倒塌的墙，露出内部管道"
+         style="left:90%;top:0;width:10%;height:100%;z-index:3"></div>
+
+    <div description="掩体-柱子：断裂的混凝土柱，可躲避"
+         style="left:30%;top:40%;width:8%;height:12%;z-index:2"></div>
+
+    <div description="掩体-瓦砾堆：碎石和木板的堆积，可躲避"
+         style="left:65%;top:60%;width:12%;height:10%;z-index:2"></div>
+
+    <div description="可破坏物-木箱：可破坏的木箱，可能掉落物品"
+         style="left:45%;top:70%;width:6%;height:6%;z-index:2"></div>
+
+    <div description="入口门：从上一房间进入的门，进入后锁定"
+         style="left:45%;top:90%;width:10%;height:8%;z-index:4"></div>
+
+    <div description="出口门-锁定：通往下一房间，清空怪物后开启，红色指示灯"
+         style="left:45%;top:0;width:10%;height:8%;z-index:4"></div>
+
+    <div description="刷怪区域：怪物刷新的中央区域"
+         style="left:35%;top:35%;width:30%;height:30%;z-index:1"></div>
+
+    <div description="隐藏入口触发区：满足条件时显示隐藏房入口"
+         style="left:85%;top:45%;width:5%;height:8%;z-index:2"></div>
+
+    <div description="微弱光源：破窗透入的光线"
+         style="left:15%;top:20%;width:8%;height:12%;z-index:2"></div>
+
+  </div>
+</body>
+</html>

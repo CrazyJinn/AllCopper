@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>副本-Boss房</title>
+  <!--
+    室内游戏场景 (Indoor Scene)
+
+    用途：副本Boss战斗房间
+    特点：宏大空间，Boss战场地，可能有机关
+    尺寸：2048×2048px
+  -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 100vw; height: 100vh; overflow: hidden; }
+    body > div { position: relative; width: 100%; height: 100%; }
+    body > div > div { position: absolute; }
+  </style>
+</head>
+<body>
+  <div id="dungeon_boss_001"
+       description="副本Boss房：宏大的Boss战场，史诗氛围，油画风格，俯视角，深红色调史诗感，戏剧性光照，紧张激烈">
+
+    <div description="地面：宏大的Boss房地面，特殊符文图案，战斗痕迹"
+         style="left:6%;top:6%;width:88%;height:88%;z-index:1"></div>
+
+    <div description="符文图案：地面上的大型魔法/科技符文"
+         style="left:30%;top:35%;width:40%;height:30%;z-index:1"></div>
+
+    <div description="墙壁-上：高耸的Boss房墙壁，装饰华丽"
+         style="left:0;top:0;width:100%;height:6%;z-index:3"></div>
+
+    <div description="墙壁-下：高耸的Boss房墙壁，入口"
+         style="left:0;top:94%;width:100%;height:6%;z-index:3"></div>
+
+    <div description="墙壁-左：高耸的墙壁，战利品展示"
+         style="left:0;top:0;width:6%;height:100%;z-index:3"></div>
+
+    <div description="墙壁-右：高耸的墙壁，Boss相关装饰"
+         style="left:94%;top:0;width:6%;height:100%;z-index:3"></div>
+
+    <div description="大型柱子-左上：可躲避的大型柱子"
+         style="left:15%;top:20%;width:8%;height:14%;z-index:2"></div>
+
+    <div description="大型柱子-右上：可躲避的大型柱子"
+         style="left:77%;top:20%;width:8%;height:14%;z-index:2"></div>
+
+    <div description="大型柱子-左下：可躲避的大型柱子"
+         style="left:15%;top:66%;width:8%;height:14%;z-index:2"></div>
+
+    <div description="大型柱子-右下：可躲避的大型柱子"
+         style="left:77%;top:66%;width:8%;height:14%;z-index:2"></div>
+
+    <div description="场景机关-左：可能的陷阱或机关"
+         style="left:25%;top:45%;width:8%;height:10%;z-index:2"></div>
+
+    <div description="场景机关-右：可能的陷阱或机关"
+         style="left:67%;top:45%;width:8%;height:10%;z-index:2"></div>
+
+    <div description="入口门：从精英房进入，进入后锁定，Boss战开始"
+         style="left:45%;top:94%;width:10%;height:4%;z-index:4"></div>
+
+    <div description="Boss刷新点：Boss刷新位置，中央区域"
+         style="left:38%;top:38%;width:24%;height:24%;z-index:1"></div>
+
+    <div description="Boss掉落区域：击杀Boss后掉落稀有装备"
+         style="left:45%;top:45%;width:10%;height:10%;z-index:1"></div>
+
+    <div description="通关宝箱：副本通关奖励"
+         style="left:45%;top:75%;width:10%;height:8%;z-index:4"></div>
+
+    <div description="返回传送门：通关后出现，返回大地图"
+         style="left:45%;top:85%;width:10%;height:6%;z-index:4"></div>
+
+    <div description="戏剧性光柱：从顶部射入的史诗光效"
+         style="left:35%;top:25%;width:30%;height:50%;z-index:2"></div>
+
+    <div description="顶棚装饰：Boss房顶棚，角色进入时半透明"
+         style="left:20%;top:15%;width:60%;height:30%;z-index:5"></div>
+
+  </div>
+</body>
+</html>

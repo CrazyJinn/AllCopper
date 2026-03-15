@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>UI背景 - 主菜单</title>
+  <!--
+    UI背景 (UI Background)
+
+    用途：主菜单界面的背景
+    特点：简洁，不干扰UI元素阅读，通常有暗角或渐变效果
+    尺寸：1920×1080px
+  -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 100vw; height: 100vh; overflow: hidden; }
+    body > div { position: relative; width: 100%; height: 100%; }
+    body > div > div { position: absolute; }
+  </style>
+</head>
+<body>
+  <div id="ui_mainmenu_001"
+       description="主菜单背景：末世废土氛围，压抑但带有一丝希望，油画风格，平视，暗色系黑灰锈红，中心微光四周暗角">
+
+    <div description="背景：废土地平线，断裂的建筑轮廓，灰蒙天空，夕阳余晖"
+         style="left:0;top:0;width:100%;height:100%;z-index:1"></div>
+
+    <div description="远景废墟：倒塌的摩天楼剪影，电线杆轮廓"
+         style="left:0;top:15%;width:100%;height:40%;z-index:2"></div>
+
+    <div description="中景废土：荒芜的沙地，散落的残骸，枯树"
+         style="left:0;top:45%;width:100%;height:35%;z-index:3"></div>
+
+    <div description="近景地面：碎石地面，生锈金属碎片"
+         style="left:0;top:75%;width:100%;height:25%;z-index:4"></div>
+
+    <div description="暗角效果：四周渐暗，中央区域留亮"
+         style="left:0;top:0;width:100%;height:100%;z-index:5"></div>
+
+    <div description="中心微光：中央区域的微弱光线，暗示希望"
+         style="left:35%;top:30%;width:30%;height:40%;z-index:4"></div>
+
+    <div description="尘埃粒子：飘浮的灰尘颗粒，微弱光线中可见"
+         style="left:0;top:0;width:100%;height:100%;z-index:6"></div>
+
+    <div description="游戏Logo区域：上方中央，预留位置"
+         style="left:30%;top:15%;width:40%;height:20%;z-index:7"></div>
+
+    <div description="菜单按钮区域：中央偏下，预留位置"
+         style="left:35%;top:50%;width:30%;height:35%;z-index:7"></div>
+
+  </div>
+</body>
+</html>

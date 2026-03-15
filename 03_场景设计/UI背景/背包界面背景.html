@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>UI背景 - 背包界面</title>
+  <!--
+    UI背景 (UI Background)
+
+    用途：背包/物品界面的背景
+    特点：简洁，不干扰物品查看，半透明
+    尺寸：1920×1080px
+  -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 100vw; height: 100vh; overflow: hidden; }
+    body > div { position: relative; width: 100%; height: 100%; }
+    body > div > div { position: absolute; }
+  </style>
+</head>
+<body>
+  <div id="ui_inventory_001"
+       description="背包界面背景：游戏画面模糊变暗，半透明深色遮罩，简洁不干扰物品查看">
+
+    <div description="模糊游戏画面：当前游戏场景的模糊版本"
+         style="left:0;top:0;width:100%;height:100%;z-index:1"></div>
+
+    <div description="半透明遮罩：深灰色半透明遮罩，60%透明度"
+         style="left:0;top:0;width:100%;height:100%;z-index:2"></div>
+
+    <div description="背包面板背景：左侧物品网格区域背景"
+         style="left:10%;top:15%;width:35%;height:70%;z-index:3"></div>
+
+    <div description="物品详情背景：右侧物品详情区域背景"
+         style="left:55%;top:15%;width:35%;height:70%;z-index:3"></div>
+
+    <div description="面板边框：装饰性边框元素"
+         style="left:8%;top:13%;width:84%;height:74%;z-index:4"></div>
+
+  </div>
+</body>
+</html>

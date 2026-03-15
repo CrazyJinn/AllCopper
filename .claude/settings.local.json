@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python \"C:\\\\Users\\\\crazy\\\\.claude\\\\skills\\\\skill-creator\\\\scripts\\\\init_skill.py\" game-requirement-analysis --path \"h:/project/X/万物为铜\")"
+      "Bash(python \"C:\\\\Users\\\\crazy\\\\.claude\\\\skills\\\\skill-creator\\\\scripts\\\\init_skill.py\" game-requirement-analysis --path \"h:/project/X/万物为铜\")",
+      "Bash(python \"C:\\\\Users\\\\crazy\\\\.claude\\\\skills\\\\skill-creator\\\\scripts\\\\init_skill.py\" \"yarn-spinner\" --path \"h:/project/X/万物为铜/.claude/skills\")"
     ]
   }
 }

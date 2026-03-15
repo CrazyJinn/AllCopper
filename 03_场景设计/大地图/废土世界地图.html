@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>废土世界地图</title>
+  <!--
+    大地图 (World Map)
+
+    用途：游戏世界地图、区域导航
+    特点：俯视角全景，标注可点击的地点/区域
+    尺寸：8192×8192px
+  -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 100vw; height: 100vh; overflow: hidden; }
+    body > div { position: relative; width: 100%; height: 100%; }
+    body > div > div { position: absolute; }
+  </style>
+</head>
+<body>
+  <div id="map_world_001"
+       description="废土世界地图：末世废土世界，支离破碎的大陆，油画风格，俯视角，黄褐色调废土风格，均匀光照略带黄昏感">
+
+    <div description="地图底图：黄褐色荒原，断裂的道路网络，干涸的河床，散布的废墟残骸"
+         style="left:0;top:0;width:100%;height:100%;z-index:1"></div>
+
+    <div description="地图装饰：飘浮的沙尘云层，核冬天残留的灰色云团，尘雾效果"
+         style="left:0;top:0;width:100%;height:100%;z-index:2"></div>
+
+    <div description="骑士团城镇：黑白灰建筑群，外骨骼标志，城墙围护的军事化据点"
+         style="left:15%;top:30%;width:8%;height:12%;z-index:3"></div>
+
+    <div description="秘术协会城镇：紫色魔法塔楼，发光符文环绕，神秘氛围"
+         style="left:70%;top:55%;width:8%;height:12%;z-index:3"></div>
+
+    <div description="教会城镇：金色圣殿穹顶，白色建筑群，庄严神圣"
+         style="left:45%;top:20%;width:8%;height:12%;z-index:3"></div>
+
+    <div description="废土区域：荒芜的沙地，散落的残骸，危险标记，战斗区域"
+         style="left:30%;top:40%;width:25%;height:20%;z-index:3"></div>
+
+    <div description="变异森林：扭曲的紫色树冠，发光孢子，危险植被"
+         style="left:75%;top:35%;width:10%;height:12%;z-index:3"></div>
+
+    <div description="城市废墟：倒塌的摩天楼轮廓，瓦砾堆积，科技残留"
+         style="left:55%;top:45%;width:12%;height:14%;z-index:3"></div>
+
+    <div description="灰雪地入口：灰白色雪原边缘，暴风雪区域标记"
+         style="left:40%;top:5%;width:8%;height:10%;z-index:3"></div>
+
+    <div description="副本入口散布点：地下入口标记，隐藏在废土各处"
+         style="left:35%;top:50%;width:5%;height:6%;z-index:4"></div>
+
+    <div description="副本入口散布点：地下入口标记"
+         style="left:60%;top:35%;width:5%;height:6%;z-index:4"></div>
+
+    <div description="副本入口散布点：地下入口标记"
+         style="left:25%;top:60%;width:5%;height:6%;z-index:4"></div>
+
+  </div>
+</body>
+</html>

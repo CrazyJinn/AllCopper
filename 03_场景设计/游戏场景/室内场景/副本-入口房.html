@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>副本-入口房</title>
+  <!--
+    室内游戏场景 (Indoor Scene)
+
+    用途：副本入口房间，安全起点
+    特点：封闭空间感，墙壁边界清晰，补给准备区
+    尺寸：1024×1024px
+  -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 100vw; height: 100vh; overflow: hidden; }
+    body > div { position: relative; width: 100%; height: 100%; }
+    body > div > div { position: absolute; }
+  </style>
+</head>
+<body>
+  <div id="dungeon_entrance_001"
+       description="副本入口房：安全的起点房间，补给准备区，油画风格，俯视角，暖色调微光，安全氛围">
+
+    <div description="地面：根据副本主题的石板/废墟地面，完好无损"
+         style="left:10%;top:10%;width:80%;height:80%;z-index:1"></div>
+
+    <div description="墙壁-上：完整墙壁，入口门位置"
+         style="left:0;top:0;width:100%;height:10%;z-index:3"></div>
+
+    <div description="墙壁-下：完整墙壁，装饰性纹理"
+         style="left:0;top:90%;width:100%;height:10%;z-index:3"></div>
+
+    <div description="墙壁-左：完整墙壁，火把照明"
+         style="left:0;top:0;width:10%;height:100%;z-index:3"></div>
+
+    <div description="墙壁-右：完整墙壁，火把照明"
+         style="left:90%;top:0;width:10%;height:100%;z-index:3"></div>
+
+    <div description="入口传送门：返回大地图的传送点，发光效果"
+         style="left:45%;top:5%;width:10%;height:8%;z-index:4"></div>
+
+    <div description="补给箱：初始补给获取点，发光提示"
+         style="left:45%;top:45%;width:10%;height:10%;z-index:4"></div>
+
+    <div description="出口门：前往普通房，始终开启"
+         style="left:45%;top:85%;width:10%;height:8%;z-index:4"></div>
+
+    <div description="火把装饰-左：墙壁火把，暖光照明"
+         style="left:8%;top:45%;width:4%;height:8%;z-index:4"></div>
+
+    <div description="火把装饰-右：墙壁火把，暖光照明"
+         style="left:88%;top:45%;width:4%;height:8%;z-index:4"></div>
+
+    <div description="休息区标识：安全区域的视觉提示"
+         style="left:30%;top:30%;width:40%;height:40%;z-index:2"></div>
+
+  </div>
+</body>
+</html>
