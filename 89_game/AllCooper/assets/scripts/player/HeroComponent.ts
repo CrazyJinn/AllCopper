@@ -3,7 +3,7 @@
  * 使用 SpriteAtlas 序列帧动画
  */
 
-import { _decorator, Component, Node, Sprite, SpriteFrame, Vec3, Input, EventMouse, EventKeyboard, Camera, find, input, SpriteAtlas, Enum } from 'cc';
+import { _decorator, Component, Node, Sprite, SpriteFrame, Vec3, Input, EventMouse, EventKeyboard, Camera, find, input, SpriteAtlas, Enum, UITransform, view } from 'cc';
 import { PlayerController } from './PlayerController';
 import { CharacterData, WEI_DATA, ROLAND_DATA } from '../data/CharacterData';
 import { inputManager, InputAction } from './InputManager';
@@ -53,6 +53,10 @@ export class HeroComponent extends Component {
     @property(SpriteAtlas)
     atlas: SpriteAtlas | null = null;
 
+    /** 背景图节点（用于计算边界） */
+    @property(Node)
+    backgroundNode: Node | null = null;
+
     /** 帧率（FPS） */
     @property
     frameRate: number = 12;
@@ -98,9 +102,11 @@ export class HeroComponent extends Component {
         if (!this.controller) return;
 
         this.updateMouseWorldPosition();
-        inputManager.update(deltaTime);
+        // 注意：先让 controller 处理输入，再由 inputManager 重置状态
         this.controller.update(deltaTime);
+        inputManager.update(deltaTime);
         this.syncPosition();
+        this.updateCameraFollow();
         this.updateDirectionFromInput();
         this.updateFrameAnimation(deltaTime);
     }
@@ -170,36 +176,29 @@ export class HeroComponent extends Component {
     /**
      * 从 SpriteAtlas 加载所有动作帧
      * 帧命名规范: {角色}_{动作}_{方向}_{帧号}
-     * 例如: wei_walk_down_0001, wei_walk_up_0001, wei_walk_left_0001, wei_walk_right_0001
+     * 例如: wei_walk_down_0001, wei_walk_up_0001
      *       wei_idle_down_0001 (待机默认朝下)
+     *       左右方向通过水平翻转实现，无需单独帧
      */
     private loadFramesFromAtlas() {
         if (!this.atlas) return;
 
         const prefix = this.heroType === HeroType.WEI ? 'wei_' : 'roland_';
-        const directions = [Direction.DOWN, Direction.UP, Direction.LEFT, Direction.RIGHT];
+        // 只需要上下两个方向，左右通过翻转实现
+        const directions = [Direction.DOWN, Direction.UP];
 
-        // 需要方向的动画
-        const directedActions: ActionName[] = ['idle', 'walk'];
-        // 不需要方向的动画
-        const staticActions: ActionName[] = ['attack', 'skill', 'hurt', 'dodge', 'death'];
+        // 所有动画都需要方向
+        const directedActions: ActionName[] = ['idle', 'walk', 'attack', 'skill', 'hurt', 'dodge', 'death'];
 
         // 加载带方向的动画
         for (const action of directedActions) {
             for (const dir of directions) {
                 const key = `${action}_${dir}`;
-                const frames = this.loadActionFrames(`${prefix}${action}_${dir}`);
+                const fullPrefix = `${prefix}${action}_${dir}`;
+                const frames = this.loadActionFrames(fullPrefix);
                 if (frames.length > 0) {
                     this.framesCache.set(key, frames);
                 }
-            }
-        }
-
-        // 加载不带方向的动画
-        for (const action of staticActions) {
-            const frames = this.loadActionFrames(`${prefix}${action}`);
-            if (frames.length > 0) {
-                this.framesCache.set(action, frames);
             }
         }
     }
@@ -218,7 +217,6 @@ export class HeroComponent extends Component {
             // 尝试4位数字格式 (wei_walk_down_0001)
             const frameNum = index < 10 ? '000' + index : (index < 100 ? '00' + index : (index < 1000 ? '0' + index : String(index)));
             const frameName = `${prefix}_${frameNum}`;
-            console.log(frameNum);
             const frame = this.atlas.getSpriteFrame(frameName);
 
             if (frame) {
@@ -237,18 +235,21 @@ export class HeroComponent extends Component {
 
     /**
      * 根据移动向量获取方向
+     * 只返回 UP 或 DOWN，左右通过翻转实现
      */
     private getDirectionFromMovement(x: number, y: number): Direction {
         if (x === 0 && y === 0) {
             return this.currentDirection; // 保持当前方向
         }
 
-        // 判断主要方向（上下优先于左右）
-        if (Math.abs(y) >= Math.abs(x)) {
-            return y > 0 ? Direction.UP : Direction.DOWN;
-        } else {
-            return x > 0 ? Direction.RIGHT : Direction.LEFT;
+        // 只有上下移动才改变 UP/DOWN 状态
+        if (y > 0) {
+            return Direction.UP;
+        } else if (y < 0) {
+            return Direction.DOWN;
         }
+        // 纯左右移动时保持当前方向
+        return this.currentDirection;
     }
 
     // ========== 输入处理 ==========
@@ -266,8 +267,12 @@ export class HeroComponent extends Component {
     }
 
     private onMouseDown(event: EventMouse) {
-        if (event.getButton() === 0) {
+        const button = event.getButton();
+        if (button === 0) {
+            console.log('[HeroComponent] 鼠标左键按下');
             inputManager.setActionPressed(InputAction.ATTACK, true);
+        } else if (button === 2) {
+            console.log('[HeroComponent] 鼠标右键按下');
         }
     }
 
@@ -293,6 +298,45 @@ export class HeroComponent extends Component {
         this.node.setWorldPosition(pos.x, pos.y, 0);
     }
 
+    // ========== 相机跟随 ==========
+
+    /**
+     * 更新相机跟随角色
+     * 相机跟随角色移动，但不超出背景边界
+     */
+    private updateCameraFollow() {
+        if (!this.camera || !this.controller) return;
+
+        const playerPos = this.controller.position;
+        const cameraNode = this.camera.node;
+
+        // 获取相机视口大小（一半）
+        const visibleSize = view.getVisibleSize();
+        const halfViewportWidth = visibleSize.width / 2;
+        const halfViewportHeight = visibleSize.height / 2;
+
+        // 计算相机边界
+        let minX = -Infinity, maxX = Infinity;
+        let minY = -Infinity, maxY = Infinity;
+
+        if (this.backgroundNode) {
+            const bgTransform = this.backgroundNode.getComponent(UITransform);
+            const bgWidth = bgTransform?.width ?? 0;
+            const bgHeight = bgTransform?.height ?? 0;
+
+            minX = -bgWidth / 2 + halfViewportWidth;
+            maxX = bgWidth / 2 - halfViewportWidth;
+            minY = -bgHeight / 2 + halfViewportHeight;
+            maxY = bgHeight / 2 - halfViewportHeight;
+        }
+
+        // 限制相机位置
+        const cameraX = Math.max(minX, Math.min(maxX, playerPos.x));
+        const cameraY = Math.max(minY, Math.min(maxY, playerPos.y));
+
+        cameraNode.setWorldPosition(cameraX, cameraY, 0);
+    }
+
     // ========== 序列帧动画 ==========
 
     /**
@@ -302,11 +346,21 @@ export class HeroComponent extends Component {
      */
     private playAction(actionName: string, forceDirection?: Direction) {
         const action = actionName as ActionName;
-        const direction = forceDirection ?? this.currentDirection;
 
-        // 需要方向的动画
-        const directedActions = ['idle', 'walk'];
-        const needsDirection = directedActions.indexOf(action) >= 0;
+        // 所有动画都需要方向
+        const needsDirection = true;
+
+        // 如果需要方向但没有强制指定，从当前输入实时获取方向
+        let direction: Direction;
+        if (forceDirection) {
+            direction = forceDirection;
+        } else if (needsDirection) {
+            // 从输入实时获取方向，而不是使用可能过时的 currentDirection
+            const movement = inputManager.movementVector;
+            direction = this.getDirectionFromMovement(movement.x, movement.y);
+        } else {
+            direction = this.currentDirection;
+        }
 
         // 构建缓存 key
         const cacheKey = needsDirection ? `${action}_${direction}` : action;
@@ -327,7 +381,6 @@ export class HeroComponent extends Component {
 
         // 从缓存获取帧列表
         const frames = this.framesCache.get(cacheKey);
-        console.log(cacheKey);
         if (frames && frames.length > 0) {
             this.currentFrames = frames;
         } else {

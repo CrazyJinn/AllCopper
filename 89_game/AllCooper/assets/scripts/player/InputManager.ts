@@ -314,16 +314,27 @@ export class InputManager {
         let x = 0;
         let y = 0;
 
-        if (this.isActionPressed(InputAction.MOVE_UP)) y += 1;
-        if (this.isActionPressed(InputAction.MOVE_DOWN)) y -= 1;
-        if (this.isActionPressed(InputAction.MOVE_LEFT)) x -= 1;
-        if (this.isActionPressed(InputAction.MOVE_RIGHT)) x += 1;
+        const upPressed = this.isActionPressed(InputAction.MOVE_UP);
+        const downPressed = this.isActionPressed(InputAction.MOVE_DOWN);
+        const leftPressed = this.isActionPressed(InputAction.MOVE_LEFT);
+        const rightPressed = this.isActionPressed(InputAction.MOVE_RIGHT);
+
+        if (upPressed) y += 1;
+        if (downPressed) y -= 1;
+        if (leftPressed) x -= 1;
+        if (rightPressed) x += 1;
 
         // 归一化向量
         const length = Math.sqrt(x * x + y * y);
         if (length > 0) {
             x /= length;
             y /= length;
+        }
+
+        // 调试日志：输出调用栈
+        const stack = new Error().stack?.split('\n').slice(2, 4).join(' <- ') || 'unknown';
+        if (x !== 0 || y !== 0) {
+            console.log(`[InputManager] 移动向量: x=${x.toFixed(4)}, y=${y.toFixed(4)} | 按键: W=${upPressed}, A=${leftPressed}, S=${downPressed}, D=${rightPressed}`);
         }
 
         this._movementVector = { x, y };
@@ -423,11 +434,14 @@ export class InputManager {
 
     /**
      * 设置按键状态（供 Cocos 输入系统调用）
-     * @param keyCode 按键码
+     * @param keyCode 按键码（Cocos 的 keyCode）
      * @param pressed 是否按下
      */
     setKeyPressed(keyCode: any, pressed: boolean): void {
-        const key = typeof keyCode === 'string' ? keyCode.toUpperCase() : String(keyCode);
+        // 将 keyCode 转换为字符
+        const key = this.keyCodeToKey(keyCode);
+        console.log(`setKeyPressed: keyCode=${keyCode}, key=${key}, pressed=${pressed}`);
+
         const state = this.keyStates.get(key) || this.createDefaultKeyState();
 
         if (pressed && !state.isPressed) {
@@ -440,6 +454,35 @@ export class InputManager {
         }
 
         this.keyStates.set(key, state);
+    }
+
+    /**
+     * 将 Cocos keyCode 转换为按键字符
+     */
+    private keyCodeToKey(keyCode: any): string {
+        // 如果已经是字符串，直接返回大写
+        if (typeof keyCode === 'string') {
+            return keyCode.toUpperCase();
+        }
+
+        // 常用键码映射表
+        const keyCodeMap: Record<number, string> = {
+            87: 'W',  // W
+            65: 'A',  // A
+            83: 'S',  // S
+            68: 'D',  // D
+            81: 'Q',  // Q
+            69: 'E',  // E
+            82: 'R',  // R
+            70: 'F',  // F
+            73: 'I',  // I
+            67: 'C',  // C
+            32: 'SPACE', // Space
+            27: 'ESCAPE', // Escape
+            9: 'TAB', // Tab
+        };
+
+        return keyCodeMap[keyCode] || String(keyCode);
     }
 
     /**

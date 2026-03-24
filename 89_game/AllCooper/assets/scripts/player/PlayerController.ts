@@ -282,6 +282,8 @@ export class PlayerController {
     private _facingAngle: number = 0;
     /** 当前速度 */
     private _velocity: { x: number; y: number } = { x: 0, y: 0 };
+    /** 面向方向：1=右，-1=左 */
+    private _facingX: 1 | -1 = 1;
 
     /** Cocos节点引用（由引擎绑定） */
     private node: any = null;
@@ -304,6 +306,11 @@ export class PlayerController {
     /** 获取朝向角度 */
     get facingAngle(): number {
         return this._facingAngle;
+    }
+
+    /** 获取面向方向：1=右，-1=左 */
+    get facingX(): 1 | -1 {
+        return this._facingX;
     }
 
     /** 获取速度 */
@@ -370,8 +377,7 @@ export class PlayerController {
      * 每帧更新
      */
     update(deltaTime: number): void {
-        // 更新输入
-        inputManager.update(deltaTime);
+        // 注意：inputManager.update() 已在 HeroComponent.update 中调用，不要重复调用
 
         // 更新状态机
         this.stateMachine.update(deltaTime);
@@ -427,9 +433,39 @@ export class PlayerController {
         this._position.x += this._velocity.x * deltaTime;
         this._position.y += this._velocity.y * deltaTime;
 
+        // 调试日志
+        const absX = Math.abs(direction.x);
+        const willFlip = absX > 0.1;
+        console.log(`[PlayerController.move] direction.x=${direction.x.toFixed(4)}, abs=${absX.toFixed(4)}, 阈值=0.1, 会翻转=${willFlip}, 当前facingX=${this._facingX}`);
+
+        // 只有左右移动时才更新面向（添加阈值防止浮点误差）
+        if (willFlip) {
+            this._facingX = direction.x > 0 ? 1 : -1;
+        }
+
         if (this.node) {
             this.node.setPosition(this._position.x, this._position.y);
+            this.updateNodeScale();
         }
+    }
+
+    /**
+     * 更新节点缩放（实现水平翻转）
+     */
+    private updateNodeScale(): void {
+        if (this.node) {
+            const currentScale = this.node.scale;
+            console.log(`[PlayerController.updateNodeScale] 设置 scale=(${this._facingX}, 1), 当前 scale=(${currentScale?.x}, ${currentScale?.y})`);
+            this.node.setScale(this._facingX, 1);
+        }
+    }
+
+    /**
+     * 设置面向方向
+     */
+    setFacingX(facing: 1 | -1): void {
+        this._facingX = facing;
+        this.updateNodeScale();
     }
 
     /**
@@ -440,6 +476,14 @@ export class PlayerController {
         const dx = mousePos.x - this._position.x;
         const dy = mousePos.y - this._position.y;
         this._facingAngle = Math.atan2(dy, dx);
+
+        // 根据鼠标位置更新面向
+        if (dx > 0) {
+            this._facingX = 1;
+        } else if (dx < 0) {
+            this._facingX = -1;
+        }
+        this.updateNodeScale();
     }
 
     /**
