@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "description": "资源搬运增量追踪清单模板",
+  "lastUpdate": "",
+  "resources": {
+    "_comment": "资源路径 -> 资源信息的映射",
+    "textures/characters/{type}/{id}_{name}/design.png": {
+      "source": "源文件路径",
+      "hash": "SHA256 文件哈希，用于增量检测",
+      "copiedAt": "搬运时间 ISO 8601 格式",
+      "status": "终稿"
+    },
+    "scripts/{module}/{file}.ts": {
+      "source": "04_code/{module}/{file}.ts",
+      "hash": "SHA256 文件哈希",
+      "copiedAt": "搬运时间"
+    }
+  },
+  "stats": {
+    "totalFiles": 0,
+    "lastSync": ""
+  }
+}

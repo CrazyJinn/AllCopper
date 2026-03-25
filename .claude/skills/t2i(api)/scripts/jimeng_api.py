@@ -24,7 +24,7 @@ import requests
 def load_settings():
     """从项目根目录的 settings.json 加载配置"""
     script_dir = Path(__file__).parent
-    # 脚本在 .claude/skills/图片生成(即梦_API)/scripts/ 下，需要往上4级到项目根目录
+    # 脚本在 .claude/skills/t2i(api)/scripts/ 下，需要往上4级到项目根目录
     settings_path = script_dir.parent.parent.parent.parent / "settings.json"
 
     if not settings_path.exists():
@@ -43,7 +43,7 @@ VERSION = "2022-08-31"
 REGION = "cn-north-1"
 HOST = "visual.volcengineapi.com"
 CONTENT_TYPE = "application/json"
-REQ_KEY = _settings.get("REQ_KEY", "jimeng_t2i_v31")
+REQ_KEY = _settings.get("t2i_model", "jimeng_t2i_v31")
 
 # API密钥
 AK = _settings.get("AccessKeyId", "")

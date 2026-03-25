@@ -331,12 +331,6 @@ export class InputManager {
             y /= length;
         }
 
-        // 调试日志：输出调用栈
-        const stack = new Error().stack?.split('\n').slice(2, 4).join(' <- ') || 'unknown';
-        if (x !== 0 || y !== 0) {
-            console.log(`[InputManager] 移动向量: x=${x.toFixed(4)}, y=${y.toFixed(4)} | 按键: W=${upPressed}, A=${leftPressed}, S=${downPressed}, D=${rightPressed}`);
-        }
-
         this._movementVector = { x, y };
     }
 
@@ -440,8 +434,6 @@ export class InputManager {
     setKeyPressed(keyCode: any, pressed: boolean): void {
         // 将 keyCode 转换为字符
         const key = this.keyCodeToKey(keyCode);
-        console.log(`setKeyPressed: keyCode=${keyCode}, key=${key}, pressed=${pressed}`);
-
         const state = this.keyStates.get(key) || this.createDefaultKeyState();
 
         if (pressed && !state.isPressed) {

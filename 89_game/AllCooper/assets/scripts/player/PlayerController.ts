@@ -189,7 +189,6 @@ class AttackState extends BaseState<PlayerContext> {
         controller.playAnimation('attack');
         this.attackTimer = 0;
         this.hasDealtDamage = false;
-
         // 角色朝向鼠标
         controller.faceMouse();
     }
@@ -436,8 +435,6 @@ export class PlayerController {
         // 调试日志
         const absX = Math.abs(direction.x);
         const willFlip = absX > 0.1;
-        console.log(`[PlayerController.move] direction.x=${direction.x.toFixed(4)}, abs=${absX.toFixed(4)}, 阈值=0.1, 会翻转=${willFlip}, 当前facingX=${this._facingX}`);
-
         // 只有左右移动时才更新面向（添加阈值防止浮点误差）
         if (willFlip) {
             this._facingX = direction.x > 0 ? 1 : -1;
@@ -455,7 +452,6 @@ export class PlayerController {
     private updateNodeScale(): void {
         if (this.node) {
             const currentScale = this.node.scale;
-            console.log(`[PlayerController.updateNodeScale] 设置 scale=(${this._facingX}, 1), 当前 scale=(${currentScale?.x}, ${currentScale?.y})`);
             this.node.setScale(this._facingX, 1);
         }
     }
@@ -510,8 +506,10 @@ export class PlayerController {
      * 播放动画
      */
     playAnimation(animName: string): void {
+        console.log("1111");
         if (this.animationCallback) {
             this.animationCallback(animName);
+            console.log(animName+"1111");
         }
         if (this.node) {
             // 调用Cocos的动画组件
