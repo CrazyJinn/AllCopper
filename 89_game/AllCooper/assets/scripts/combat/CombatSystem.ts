@@ -1,6 +1,6 @@
 /**
  * 战斗系统
- * 管理战斗逻辑、伤害判定、技能系统
+ * 管理战斗逻辑、伤害判定、技能系统、攻击实体
  */
 
 import { DamageCalculator, DamageResult, DamageParams } from './DamageCalculator';
@@ -9,6 +9,9 @@ import { CharacterData, CharacterRuntimeState } from '../data/CharacterData';
 import { MonsterData, MonsterRuntimeState } from '../data/MonsterData';
 import { eventSystem, GameEvent } from '../core/EventSystem';
 import { DamageType } from '../core/GameConfig';
+import { AttackEntity, AttackEntityData, AttackEntityType, generateAttackEntityId } from './AttackEntity';
+import { Projectile, ProjectileData, ProjectileConfig } from './Projectile';
+import { MeleeHitbox, MeleeHitboxData, MeleeHitboxConfig, MeleeHitboxShape } from './MeleeHitbox';
 
 /** 攻击类型 */
 export enum AttackType {
@@ -77,6 +80,8 @@ export class CombatSystem {
 
     /** 战斗实体映射 */
     private entities: Map<string, CombatEntity> = new Map();
+    /** 攻击实体映射 */
+    private attackEntities: Map<string, AttackEntity> = new Map();
     /** 伤害数字队列 */
     private damageNumbers: { position: { x: number; y: number }; damage: number; isCrit: boolean }[] = [];
 
@@ -300,6 +305,193 @@ export class CombatSystem {
                 }
             }
         }
+
+        // 更新攻击实体
+        this.updateAttackEntities(deltaTime);
+    }
+
+    // ==================== 攻击实体管理 ====================
+
+    /**
+     * 创建并注册投射物
+     */
+    createProjectile(config: ProjectileConfig): Projectile {
+        const projectile = Projectile.create(config);
+        this.attackEntities.set(projectile.id, projectile);
+        return projectile;
+    }
+
+    /**
+     * 创建并注册近战判定框（扇形）
+     */
+    createSectorHitbox(config: MeleeHitboxConfig): MeleeHitbox {
+        const hitbox = MeleeHitbox.createSector(config);
+        this.attackEntities.set(hitbox.id, hitbox);
+        return hitbox;
+    }
+
+    /**
+     * 创建并注册近战判定框（圆形）
+     */
+    createCircleHitbox(config: MeleeHitboxConfig): MeleeHitbox {
+        const hitbox = MeleeHitbox.createCircle(config);
+        this.attackEntities.set(hitbox.id, hitbox);
+        return hitbox;
+    }
+
+    /**
+     * 创建并注册近战判定框（矩形）
+     */
+    createRectangleHitbox(config: MeleeHitboxConfig & { width: number }): MeleeHitbox {
+        const hitbox = MeleeHitbox.createRectangle(config);
+        this.attackEntities.set(hitbox.id, hitbox);
+        return hitbox;
+    }
+
+    /**
+     * 注册攻击实体
+     */
+    registerAttackEntity(entity: AttackEntity): void {
+        this.attackEntities.set(entity.id, entity);
+    }
+
+    /**
+     * 注销攻击实体
+     */
+    unregisterAttackEntity(entityId: string): void {
+        this.attackEntities.delete(entityId);
+    }
+
+    /**
+     * 获取攻击实体
+     */
+    getAttackEntity(entityId: string): AttackEntity | undefined {
+        return this.attackEntities.get(entityId);
+    }
+
+    /**
+     * 获取所有活跃的攻击实体
+     */
+    getActiveAttackEntities(): AttackEntity[] {
+        return Array.from(this.attackEntities.values()).filter(e => !e.isFinished);
+    }
+
+    /**
+     * 更新所有攻击实体
+     */
+    private updateAttackEntities(deltaTime: number): void {
+        const finishedEntities: string[] = [];
+
+        for (const [id, entity] of this.attackEntities) {
+            if (entity.isFinished) {
+                finishedEntities.push(id);
+                continue;
+            }
+
+            // 更新攻击实体
+            entity.update(deltaTime);
+
+            // 检测碰撞
+            this.checkAttackEntityCollisions(entity);
+
+            // 检查是否结束
+            if (entity.isFinished) {
+                finishedEntities.push(id);
+            }
+        }
+
+        // 清理已结束的攻击实体
+        for (const id of finishedEntities) {
+            this.attackEntities.delete(id);
+        }
+    }
+
+    /**
+     * 检测攻击实体碰撞
+     */
+    private checkAttackEntityCollisions(entity: AttackEntity): void {
+        if (entity.isFinished) return;
+
+        const entityData = entity.getAttackData();
+
+        for (const target of this.entities.values()) {
+            // 不能命中自己
+            if (target.id === entityData.ownerId) continue;
+            if (target.isDead) continue;
+
+            // 检查是否可以命中
+            if (!entity.canHitTarget(target.id)) continue;
+
+            // 碰撞检测
+            const targetRadius = 20; // 默认目标半径，可以从 target 获取
+            if (entity.checkCollision(target.position, targetRadius)) {
+                // 获取攻击者
+                const attacker = this.entities.get(entityData.ownerId);
+
+                // 计算伤害
+                const attackData: AttackData = {
+                    attackerId: entityData.ownerId,
+                    attackType: entity.type === AttackEntityType.PROJECTILE ? AttackType.RANGED : AttackType.MELEE,
+                    baseDamage: entityData.baseDamage,
+                    damageType: entityData.damageType,
+                    range: entityData.hitboxRadius,
+                    position: entityData.position,
+                    direction: entityData.direction,
+                    canCrit: entityData.canCrit,
+                    critRate: entityData.critRate,
+                    attachedBuff: entityData.attachedBuff,
+                };
+
+                const result = this.calculateDamageFromEntity(attacker, target, entityData);
+
+                if (!result.isDodged) {
+                    target.takeDamage(result, entityData.ownerId);
+
+                    // 施加Buff
+                    if (entityData.attachedBuff) {
+                        target.buffSystem.addBuff(entityData.attachedBuff, entityData.ownerId);
+                    }
+
+                    // 添加伤害数字
+                    this.addDamageNumber(target.position, result.finalDamage, result.isCrit);
+
+                    // 触发事件
+                    eventSystem.emit(GameEvent.DAMAGE_DEALT, {
+                        target: target.id,
+                        damage: result.finalDamage,
+                        isCrit: result.isCrit,
+                        damageType: entityData.damageType,
+                    });
+
+                    // 记录命中
+                    entity.recordHit(target.id);
+                }
+            }
+        }
+    }
+
+    /**
+     * 从攻击实体数据计算伤害
+     */
+    private calculateDamageFromEntity(
+        attacker: CombatEntity | undefined,
+        target: CombatEntity,
+        entityData: AttackEntityData
+    ): DamageResult {
+        const params: DamageParams = {
+            baseDamage: entityData.baseDamage,
+            attack: attacker?.stats.attack || 0,
+            defense: target.stats.defense,
+            critRate: entityData.canCrit ? entityData.critRate : 0,
+            critMultiplier: attacker?.stats.critMultiplier || 1.5,
+            damageType: entityData.damageType,
+            targetShield: target.stats.shield,
+            targetMaxShield: target.stats.maxShield,
+            shieldAbsorbRate: target.stats.shieldAbsorbRate,
+            isInvincible: target.isInvincible || target.buffSystem.isInvincible(),
+        };
+
+        return DamageCalculator.calculate(params);
     }
 
     /**
@@ -307,6 +499,7 @@ export class CombatSystem {
      */
     clear(): void {
         this.entities.clear();
+        this.attackEntities.clear();
         this.damageNumbers = [];
     }
 }

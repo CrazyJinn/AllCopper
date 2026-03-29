@@ -8,6 +8,8 @@ import { StateMachine, PlayerStateName, BaseState } from './StateMachine';
 import { CharacterData, CharacterRuntimeState, CharacterDataFactory } from '../data/CharacterData';
 import { eventSystem, GameEvent } from '../core/EventSystem';
 import { Faction } from '../core/GameConfig';
+import { MeleeHitbox, MeleeHitboxShape } from '../combat/MeleeHitbox';
+import { combatSystem } from '../combat/CombatSystem';
 
 /** 玩家上下文 */
 export interface PlayerContext {
@@ -22,6 +24,7 @@ class IdleState extends BaseState<PlayerContext> {
 
     enter(context: PlayerContext): void {
         const controller = context.controller;
+        console.log('[IdleState] enter - 进入待机');
         controller.playAnimation('idle');
     }
 
@@ -112,6 +115,7 @@ class WalkState extends BaseState<PlayerContext> {
         if (movement.x !== 0 || movement.y !== 0) {
             controller.move(movement, deltaTime);
         } else {
+            console.log('[WalkState] movementVector = (' + movement.x.toFixed(2) + ', ' + movement.y.toFixed(2) + '), 切换到IDLE');
             controller.stateMachine.changeState(PlayerStateName.IDLE);
         }
     }
@@ -186,12 +190,12 @@ class AttackState extends BaseState<PlayerContext> {
 
     enter(context: PlayerContext): void {
         const controller = context.controller;
+        // 先更新朝向，再播放动画
+        controller.faceMouse();
         controller.playAnimation('attack');
         this.attackTimer = 0;
         this.hasDealtDamage = false;
-
-        // 角色朝向鼠标
-        controller.faceMouse();
+        console.log('[AttackState] enter - 攻击开始');
     }
 
     update(context: PlayerContext, deltaTime: number): void {
@@ -205,6 +209,7 @@ class AttackState extends BaseState<PlayerContext> {
         }
 
         if (this.attackTimer >= this.attackDuration) {
+            console.log('[AttackState] attackTimer=' + this.attackTimer.toFixed(3) + ' >= duration=' + this.attackDuration + ', 切换到IDLE');
             controller.stateMachine.changeState(PlayerStateName.IDLE);
         }
     }
@@ -282,6 +287,8 @@ export class PlayerController {
     private _facingAngle: number = 0;
     /** 当前速度 */
     private _velocity: { x: number; y: number } = { x: 0, y: 0 };
+    /** 面向方向：1=右，-1=左 */
+    private _facingX: 1 | -1 = 1;
 
     /** Cocos节点引用（由引擎绑定） */
     private node: any = null;
@@ -289,8 +296,8 @@ export class PlayerController {
     constructor(characterData: CharacterData) {
         this.characterData = characterData;
         this.runtimeState = CharacterDataFactory.createRuntimeState(characterData);
-        this.stateMachine = new StateMachine<PlayerContext>(this as any);
         this.context = { controller: this };
+        this.stateMachine = new StateMachine<PlayerContext>(this.context);
 
         this.setupStates();
         this.stateMachine.setInitialState(PlayerStateName.IDLE);
@@ -304,6 +311,11 @@ export class PlayerController {
     /** 获取朝向角度 */
     get facingAngle(): number {
         return this._facingAngle;
+    }
+
+    /** 获取面向方向：1=右，-1=左 */
+    get facingX(): 1 | -1 {
+        return this._facingX;
     }
 
     /** 获取速度 */
@@ -370,8 +382,7 @@ export class PlayerController {
      * 每帧更新
      */
     update(deltaTime: number): void {
-        // 更新输入
-        inputManager.update(deltaTime);
+        // 注意：inputManager.update() 已在 HeroComponent.update 中调用，不要重复调用
 
         // 更新状态机
         this.stateMachine.update(deltaTime);
@@ -427,9 +438,36 @@ export class PlayerController {
         this._position.x += this._velocity.x * deltaTime;
         this._position.y += this._velocity.y * deltaTime;
 
+        // 调试日志
+        const absX = Math.abs(direction.x);
+        const willFlip = absX > 0.1;
+        // 只有左右移动时才更新面向（添加阈值防止浮点误差）
+        if (willFlip) {
+            this._facingX = direction.x > 0 ? 1 : -1;
+        }
+
         if (this.node) {
             this.node.setPosition(this._position.x, this._position.y);
+            this.updateNodeScale();
         }
+    }
+
+    /**
+     * 更新节点缩放（实现水平翻转）
+     */
+    private updateNodeScale(): void {
+        if (this.node) {
+            const currentScale = this.node.scale;
+            this.node.setScale(this._facingX, 1);
+        }
+    }
+
+    /**
+     * 设置面向方向
+     */
+    setFacingX(facing: 1 | -1): void {
+        this._facingX = facing;
+        this.updateNodeScale();
     }
 
     /**
@@ -440,6 +478,14 @@ export class PlayerController {
         const dx = mousePos.x - this._position.x;
         const dy = mousePos.y - this._position.y;
         this._facingAngle = Math.atan2(dy, dx);
+
+        // 根据鼠标位置更新面向
+        if (dx > 0) {
+            this._facingX = 1;
+        } else if (dx < 0) {
+            this._facingX = -1;
+        }
+        this.updateNodeScale();
     }
 
     /**
@@ -452,13 +498,22 @@ export class PlayerController {
         };
     }
 
+    /** 动画播放回调 */
+    private animationCallback: ((animName: string) => void) | null = null;
+
+    /**
+     * 设置动画播放回调
+     */
+    setAnimationCallback(callback: (animName: string) => void): void {
+        this.animationCallback = callback;
+    }
+
     /**
      * 播放动画
      */
     playAnimation(animName: string): void {
-        if (this.node) {
-            // 调用Cocos的动画组件
-            // this.node.getComponent(Animation).play(animName);
+        if (this.animationCallback) {
+            this.animationCallback(animName);
         }
     }
 
@@ -478,9 +533,29 @@ export class PlayerController {
 
     /**
      * 执行攻击
+     * 创建近战判定框并注册到战斗系统
      */
     performAttack(): void {
         const damage = this.characterData.stats.attack;
+        const combat = this.characterData.combat;
+
+        // 创建扇形近战判定框
+        const hitbox = MeleeHitbox.createSector({
+            ownerId: this.characterData.id,
+            ownerPosition: this._position,
+            facingAngle: this._facingAngle,
+            shape: MeleeHitboxShape.SECTOR,
+            range: combat.attackRange,
+            baseDamage: damage,
+            duration: 0.1, // 100ms 判定时间
+            sectorAngle: Math.PI / 3, // 60度扇形
+            piercing: false,
+        });
+
+        // 注册到战斗系统
+        combatSystem.registerAttackEntity(hitbox);
+
+        // 发射事件（用于动画/音效）
         eventSystem.emit(GameEvent.ATTACK_PERFORMED, {
             attackerId: this.characterData.id,
             damage,

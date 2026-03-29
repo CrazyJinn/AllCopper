@@ -22,6 +22,7 @@ class IdleState extends BaseState<PlayerContext> {
 
     enter(context: PlayerContext): void {
         const controller = context.controller;
+        console.log('[IdleState] enter - 进入待机');
         controller.playAnimation('idle');
     }
 
@@ -112,6 +113,7 @@ class WalkState extends BaseState<PlayerContext> {
         if (movement.x !== 0 || movement.y !== 0) {
             controller.move(movement, deltaTime);
         } else {
+            console.log('[WalkState] movementVector = (' + movement.x.toFixed(2) + ', ' + movement.y.toFixed(2) + '), 切换到IDLE');
             controller.stateMachine.changeState(PlayerStateName.IDLE);
         }
     }
@@ -186,11 +188,12 @@ class AttackState extends BaseState<PlayerContext> {
 
     enter(context: PlayerContext): void {
         const controller = context.controller;
+        // 先更新朝向，再播放动画
+        controller.faceMouse();
         controller.playAnimation('attack');
         this.attackTimer = 0;
         this.hasDealtDamage = false;
-        // 角色朝向鼠标
-        controller.faceMouse();
+        console.log('[AttackState] enter - 攻击开始');
     }
 
     update(context: PlayerContext, deltaTime: number): void {
@@ -204,6 +207,7 @@ class AttackState extends BaseState<PlayerContext> {
         }
 
         if (this.attackTimer >= this.attackDuration) {
+            console.log('[AttackState] attackTimer=' + this.attackTimer.toFixed(3) + ' >= duration=' + this.attackDuration + ', 切换到IDLE');
             controller.stateMachine.changeState(PlayerStateName.IDLE);
         }
     }
@@ -506,14 +510,8 @@ export class PlayerController {
      * 播放动画
      */
     playAnimation(animName: string): void {
-        console.log("1111");
         if (this.animationCallback) {
             this.animationCallback(animName);
-            console.log(animName+"1111");
-        }
-        if (this.node) {
-            // 调用Cocos的动画组件
-            // this.node.getComponent(Animation).play(animName);
         }
     }
 

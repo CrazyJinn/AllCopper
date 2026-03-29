@@ -141,8 +141,8 @@ export class InputManager {
             [InputAction.MAP]: InputMapping.MAP,
             [InputAction.INVENTORY]: InputMapping.INVENTORY,
             [InputAction.CHARACTER]: InputMapping.CHARACTER,
-            [InputAction.ATTACK]: MouseMapping.ATTACK.toString(),
-            [InputAction.ULTIMATE]: MouseMapping.ULTIMATE.toString(),
+            [InputAction.ATTACK]: MouseMapping.ATTACK,
+            [InputAction.ULTIMATE]: MouseMapping.ULTIMATE,
         };
     }
 
@@ -331,7 +331,13 @@ export class InputManager {
             y /= length;
         }
 
+        const prevVector = this._movementVector;
         this._movementVector = { x, y };
+
+        // 只在状态变化时打印日志
+        if (prevVector.x !== x || prevVector.y !== y) {
+            console.log('[InputManager] movementVector 变化: (' + prevVector.x.toFixed(2) + ',' + prevVector.y.toFixed(2) + ') -> (' + x.toFixed(2) + ',' + y.toFixed(2) + ')');
+        }
     }
 
     /**

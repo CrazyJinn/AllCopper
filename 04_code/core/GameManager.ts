@@ -36,7 +36,7 @@ export class GameManager {
     private _state: GameState = GameState.NONE;
     private _isPaused: boolean = false;
     private _frameRate: number = FrameRate.TARGET;
-    private _currentResolution = Resolution.HD;
+    private _currentResolution: typeof Resolution.HD | typeof Resolution.SD = Resolution.HD;
     private _deltaTime: number = 0;
     private _lastFrameTime: number = 0;
 
@@ -67,7 +67,7 @@ export class GameManager {
     }
 
     /** 当前分辨率 */
-    get resolution(): typeof Resolution.HD {
+    get resolution(): typeof Resolution.HD | typeof Resolution.SD {
         return this._currentResolution;
     }
 

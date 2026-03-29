@@ -314,10 +314,15 @@ export class InputManager {
         let x = 0;
         let y = 0;
 
-        if (this.isActionPressed(InputAction.MOVE_UP)) y += 1;
-        if (this.isActionPressed(InputAction.MOVE_DOWN)) y -= 1;
-        if (this.isActionPressed(InputAction.MOVE_LEFT)) x -= 1;
-        if (this.isActionPressed(InputAction.MOVE_RIGHT)) x += 1;
+        const upPressed = this.isActionPressed(InputAction.MOVE_UP);
+        const downPressed = this.isActionPressed(InputAction.MOVE_DOWN);
+        const leftPressed = this.isActionPressed(InputAction.MOVE_LEFT);
+        const rightPressed = this.isActionPressed(InputAction.MOVE_RIGHT);
+
+        if (upPressed) y += 1;
+        if (downPressed) y -= 1;
+        if (leftPressed) x -= 1;
+        if (rightPressed) x += 1;
 
         // 归一化向量
         const length = Math.sqrt(x * x + y * y);
@@ -326,7 +331,13 @@ export class InputManager {
             y /= length;
         }
 
+        const prevVector = this._movementVector;
         this._movementVector = { x, y };
+
+        // 只在状态变化时打印日志
+        if (prevVector.x !== x || prevVector.y !== y) {
+            console.log('[InputManager] movementVector 变化: (' + prevVector.x.toFixed(2) + ',' + prevVector.y.toFixed(2) + ') -> (' + x.toFixed(2) + ',' + y.toFixed(2) + ')');
+        }
     }
 
     /**
@@ -417,6 +428,81 @@ export class InputManager {
      */
     setWorldPosition(x: number, y: number): void {
         this.mouseState.worldPosition = { x, y };
+    }
+
+    // ========== Cocos Creator 输入适配方法 ==========
+
+    /**
+     * 设置按键状态（供 Cocos 输入系统调用）
+     * @param keyCode 按键码（Cocos 的 keyCode）
+     * @param pressed 是否按下
+     */
+    setKeyPressed(keyCode: any, pressed: boolean): void {
+        // 将 keyCode 转换为字符
+        const key = this.keyCodeToKey(keyCode);
+        const state = this.keyStates.get(key) || this.createDefaultKeyState();
+
+        if (pressed && !state.isPressed) {
+            state.justPressed = true;
+            state.isPressed = true;
+        } else if (!pressed && state.isPressed) {
+            state.isPressed = false;
+            state.justReleased = true;
+            state.holdTime = 0;
+        }
+
+        this.keyStates.set(key, state);
+    }
+
+    /**
+     * 将 Cocos keyCode 转换为按键字符
+     */
+    private keyCodeToKey(keyCode: any): string {
+        // 如果已经是字符串，直接返回大写
+        if (typeof keyCode === 'string') {
+            return keyCode.toUpperCase();
+        }
+
+        // 常用键码映射表
+        const keyCodeMap: Record<number, string> = {
+            87: 'W',  // W
+            65: 'A',  // A
+            83: 'S',  // S
+            68: 'D',  // D
+            81: 'Q',  // Q
+            69: 'E',  // E
+            82: 'R',  // R
+            70: 'F',  // F
+            73: 'I',  // I
+            67: 'C',  // C
+            32: 'SPACE', // Space
+            27: 'ESCAPE', // Escape
+            9: 'TAB', // Tab
+        };
+
+        return keyCodeMap[keyCode] || String(keyCode);
+    }
+
+    /**
+     * 设置鼠标世界坐标（供 Cocos 输入系统调用）
+     */
+    setMouseWorldPosition(x: number, y: number): void {
+        this.mouseState.worldPosition = { x, y };
+    }
+
+    /**
+     * 设置动作按下状态（供 Cocos 输入系统调用）
+     */
+    setActionPressed(action: InputAction, pressed: boolean): void {
+        if (action === InputAction.ATTACK) {
+            if (pressed) {
+                this.mouseState.leftButton.isPressed = true;
+                this.mouseState.leftButton.justPressed = true;
+            } else {
+                this.mouseState.leftButton.isPressed = false;
+                this.mouseState.leftButton.justReleased = true;
+            }
+        }
     }
 }
 

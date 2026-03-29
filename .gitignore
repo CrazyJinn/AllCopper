@@ -1,5 +1,9 @@
 # API密钥配置
 settings.json
+.claude/settings.local.json
+
+# Dependencies
+node_modules/
 
 #//////////////////////////
 # Cocos Creator

@@ -27,8 +27,17 @@ export * from './ai';
 // 经济系统
 export * from './economy';
 
-// 对话系统
-export * from './dialog';
+// 对话系统（排除与 core 重复的 EmotionType）
+export {
+    DialogComponent,
+    SimpleDialogSystem,
+    PortraitManager,
+    startSimpleDialog,
+    registerDefaultCharacters,
+    registerCharacter,
+    isDialogActive,
+    endCurrentDialog,
+} from './dialog';
 
 // 游戏初始化
 import { gameManager } from './core/GameManager';

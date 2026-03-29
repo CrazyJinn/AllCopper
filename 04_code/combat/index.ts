@@ -5,3 +5,6 @@
 export * from './DamageCalculator';
 export * from './BuffSystem';
 export * from './CombatSystem';
+export * from './AttackEntity';
+export * from './Projectile';
+export * from './MeleeHitbox';

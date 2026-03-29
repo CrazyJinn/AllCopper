@@ -5,3 +5,4 @@
 export * from './InputManager';
 export * from './StateMachine';
 export * from './PlayerController';
+export * from './HeroComponent';

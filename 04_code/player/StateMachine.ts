@@ -132,6 +132,7 @@ export class StateMachine<T> {
      */
     changeState(stateName: string): boolean {
         if (!this._currentState) {
+            console.log('[StateMachine] changeState 失败: 当前状态为空');
             return false;
         }
 
@@ -143,8 +144,11 @@ export class StateMachine<T> {
 
         // 检查是否可以转换
         if (!targetState.canEnter(this.context)) {
+            console.log('[StateMachine] changeState 失败: canEnter返回false, ' + this._currentState.name + ' -> ' + stateName);
             return false;
         }
+
+        console.log('[StateMachine] 状态切换: ' + this._currentState.name + ' -> ' + stateName);
 
         // 执行转换
         this._currentState.exit(this.context);

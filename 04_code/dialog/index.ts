@@ -2,4 +2,8 @@
  * 对话系统模块导出
  */
 
-export * from './DialogSystem';
+export * from './DialogData';
+export * from './PortraitManager';
+export * from './SimpleDialogSystem';
+export * from './DialogComponent';
+export * from './DialogLoader';
