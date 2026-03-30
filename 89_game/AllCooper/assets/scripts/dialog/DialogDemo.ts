@@ -92,26 +92,30 @@ export class DialogTrigger extends Component {
             // 1. 定义角色立绘配置
             const characters = [
                 {
-                    characterId: 'char_001_roland',
+                    characterId: 'char_001',
                     name: '罗兰',
                     defaultPosition: PortraitPosition.LEFT,
                     emotionPaths: new Map([
-                        [EmotionType.DEFAULT, 'roland/default'],
-                        [EmotionType.HAPPY, 'roland/happy'],
-                        [EmotionType.ANGRY, 'roland/angry'],
-                        [EmotionType.SAD, 'roland/sad'],
-                        [EmotionType.SURPRISED, 'roland/surprised'],
-                        [EmotionType.THINKING, 'roland/thinking'],
+                        [EmotionType.DEFAULT, 'char_001/calm'],
+                        [EmotionType.SMILE, 'char_001/smile'],
+                        [EmotionType.LAUGH, 'char_001/laugh'],
+                        [EmotionType.ANGRY, 'char_001/angry'],
+                        [EmotionType.SAD, 'char_001/sad'],
+                        [EmotionType.THINK, 'char_001/think'],
                     ]),
                 },
                 {
-                    characterId: 'char_002_wei',
+                    characterId: 'char_002',
                     name: '薇',
                     defaultPosition: PortraitPosition.RIGHT,
                     emotionPaths: new Map([
-                        [EmotionType.DEFAULT, 'wei/default'],
-                        [EmotionType.HAPPY, 'wei/happy'],
-                        [EmotionType.ANGRY, 'wei/angry'],
+                        [EmotionType.DEFAULT, 'char_002/calm'],
+                        [EmotionType.SMILE, 'char_002/smile'],
+                        [EmotionType.LAUGH, 'char_002/laugh'],
+                        [EmotionType.ANGRY, 'char_002/angry'],
+                        [EmotionType.FURIOUS, 'char_002/furious'],
+                        [EmotionType.SAD, 'char_002/sad'],
+                        [EmotionType.THINK, 'char_002/think'],
                     ]),
                 },
             ];

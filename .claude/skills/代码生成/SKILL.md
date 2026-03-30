@@ -19,7 +19,7 @@ triggers:
 
 ## 输出
 
-输出目录：`04_code/`
+输出目录：`89_game/AllCooper/assets/scripts/`
 
 - 源代码文件（按模块组织）
 - 代码注释

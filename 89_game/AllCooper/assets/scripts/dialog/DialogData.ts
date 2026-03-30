@@ -3,19 +3,17 @@
  * 用于纯剧情推进的对话系统
  */
 
-/** 表情类型 */
+/** 表情类型（与 resources/portraits/char_XXX/ 下的文件名对应） */
 export enum EmotionType {
-    DEFAULT = 'default',
-    HAPPY = 'happy',
-    ANGRY = 'angry',
-    SAD = 'sad',
-    SURPRISED = 'surprised',
-    SCARED = 'scared',
-    THINKING = 'thinking',
-    EMBARRASSED = 'embarrassed',
-    COLD = 'cold',
-    DETERMINED = 'determined',
-    PAIN = 'pain',
+    DEFAULT = 'calm',      // 平静（默认）
+    CALM = 'calm',         // 平静
+    SMILE = 'smile',       // 微笑
+    LAUGH = 'laugh',       // 大笑
+    ANGRY = 'angry',       // 愤怒
+    FURIOUS = 'furious',   // 暴怒
+    SAD = 'sad',           // 沮丧
+    THINK = 'think',       // 思索
+    COLD = 'cold',         // 冷漠
 }
 
 /** 立绘位置 */

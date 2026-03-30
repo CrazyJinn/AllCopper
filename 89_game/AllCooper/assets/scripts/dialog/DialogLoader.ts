@@ -7,13 +7,15 @@
  *   dialogs/
  *     dialog_001.json      <- 对话脚本
  *   portraits/
- *     roland/
- *       default.png
- *       happy.png
- *       angry.png
- *     wei/
- *       default.png
- *       happy.png
+ *     char_001/            <- 角色ID（罗兰）
+ *       calm.png           <- 平静
+ *       smile.png          <- 微笑
+ *       laugh.png          <- 大笑
+ *       angry.png          <- 愤怒
+ *     char_002/            <- 角色（薇）
+ *       calm.png
+ *       smile.png
+ *       ...
  */
 
 import { resources, JsonAsset, SpriteFrame, AssetManager, Node, Sprite } from 'cc';
@@ -93,14 +95,13 @@ export class DialogLoader {
     // ==================== 立绘加载 ====================
 
     /** 支持的图片格式（按优先级尝试） */
-    // private static IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg'];
-    private static IMAGE_EXTENSIONS = ['jpeg'];
+    private static IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg'];
 
     /**
      * 加载单个立绘 SpriteFrame
      * Cocos Creator 的 resources.load 不需要文件扩展名
      * @param path 相对于 resources/portraits/ 的路径，不含后缀
-     * @example loadPortrait('roland/default')
+     * @example loadPortrait('char_001/calm')
      */
     loadPortrait(path: string): Promise<SpriteFrame> {
         return new Promise((resolve, reject) => {
@@ -300,30 +301,31 @@ export class DialogLoader {
      */
     private getPredefinedConfig(characterId: string): CharacterPortraitResources | null {
         const configs: Record<string, CharacterPortraitResources> = {
-            'char_001_roland': {
-                characterId: 'char_001_roland',
+            'char_001': {
+                characterId: 'char_001',
                 name: '罗兰',
                 defaultPosition: PortraitPosition.LEFT,
                 emotionPaths: new Map([
-                    [EmotionType.DEFAULT, 'roland/default'],
-                    [EmotionType.HAPPY, 'roland/happy'],
-                    [EmotionType.ANGRY, 'roland/angry'],
-                    [EmotionType.SAD, 'roland/sad'],
-                    [EmotionType.SURPRISED, 'roland/surprised'],
-                    [EmotionType.THINKING, 'roland/thinking'],
+                    [EmotionType.DEFAULT, 'char_001/calm'],
+                    [EmotionType.SMILE, 'char_001/smile'],
+                    [EmotionType.LAUGH, 'char_001/laugh'],
+                    [EmotionType.ANGRY, 'char_001/angry'],
+                    [EmotionType.SAD, 'char_001/sad'],
+                    [EmotionType.THINK, 'char_001/think'],
                 ]),
             },
-            'char_002_wei': {
-                characterId: 'char_002_wei',
+            'char_002': {
+                characterId: 'char_002',
                 name: '薇',
                 defaultPosition: PortraitPosition.RIGHT,
                 emotionPaths: new Map([
-                    [EmotionType.DEFAULT, 'wei/default'],
-                    [EmotionType.HAPPY, 'wei/happy'],
-                    [EmotionType.ANGRY, 'wei/angry'],
-                    [EmotionType.SAD, 'wei/sad'],
-                    [EmotionType.SURPRISED, 'wei/surprised'],
-                    [EmotionType.THINKING, 'wei/thinking'],
+                    [EmotionType.DEFAULT, 'char_002/calm'],
+                    [EmotionType.SMILE, 'char_002/smile'],
+                    [EmotionType.LAUGH, 'char_002/laugh'],
+                    [EmotionType.ANGRY, 'char_002/angry'],
+                    [EmotionType.FURIOUS, 'char_002/furious'],
+                    [EmotionType.SAD, 'char_002/sad'],
+                    [EmotionType.THINK, 'char_002/think'],
                 ]),
             },
         };

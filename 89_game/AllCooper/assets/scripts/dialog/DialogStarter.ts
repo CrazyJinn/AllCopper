@@ -82,7 +82,7 @@ export function registerCharacter(config: {
     id: string;
     name: string;
     position: 'left' | 'right';
-    emotions: Record<string, string>;  // { default: 'roland/default', happy: 'roland/happy' }
+    emotions: Record<string, string>;  // { calm: 'char_001/calm', smile: 'char_001/smile' }
 }): void {
     const positionMap: Record<string, PortraitPosition> = {
         'left': PortraitPosition.LEFT,
@@ -135,33 +135,32 @@ function getCharacterConfigs(ids?: string[]): CharacterPortraitResources[] {
 export function registerDefaultCharacters(): void {
     // 罗兰 - 科技派
     registerCharacter({
-        id: 'char_001_roland',
+        id: 'char_001',
         name: '罗兰',
         position: 'left',
         emotions: {
-            'default': 'roland/default',
-            'happy': 'roland/happy',
-            'angry': 'roland/angry',
-            'sad': 'roland/sad',
-            'surprised': 'roland/surprised',
-            'thinking': 'roland/thinking',
-            'determined': 'roland/determined',
+            'calm': 'char_001/calm',
+            'smile': 'char_001/smile',
+            'laugh': 'char_001/laugh',
+            'angry': 'char_001/angry',
+            'sad': 'char_001/sad',
+            'think': 'char_001/think',
         },
     });
 
     // 薇 - 魔法派
     registerCharacter({
-        id: 'char_002_wei',
+        id: 'char_002',
         name: '薇',
         position: 'right',
         emotions: {
-            'default': 'wei/default',
-            'happy': 'wei/happy',
-            'angry': 'wei/angry',
-            'sad': 'wei/sad',
-            'surprised': 'wei/surprised',
-            'thinking': 'wei/thinking',
-            'determined': 'wei/determined',
+            'calm': 'char_002/calm',
+            'smile': 'char_002/smile',
+            'laugh': 'char_002/laugh',
+            'angry': 'char_002/angry',
+            'furious': 'char_002/furious',
+            'sad': 'char_002/sad',
+            'think': 'char_002/think',
         },
     });
 

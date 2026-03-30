@@ -59,12 +59,12 @@ const script = await dialogLoader.loadDialogJson('chapter1/dialog_001');
 
 // 加载角色立绘
 const frames = await dialogLoader.loadCharacterPortraits({
-    characterId: 'char_001_roland',
+    characterId: 'char_001',
     name: '罗兰',
     defaultPosition: PortraitPosition.LEFT,
     emotionPaths: new Map([
-        [EmotionType.DEFAULT, 'roland/default'],
-        [EmotionType.HAPPY, 'roland/happy'],
+        [EmotionType.DEFAULT, 'char_001/calm'],
+        [EmotionType.SMILE, 'char_001/smile'],
     ]),
 });
 ```
