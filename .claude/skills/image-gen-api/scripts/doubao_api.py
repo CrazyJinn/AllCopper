@@ -9,9 +9,13 @@
     python doubao_api.py submit "提示词" --size 2048x2048
     python doubao_api.py submit "提示词" --model doubao-seedream-4.5 --size 2K
 
-    # 图生图
+    # 图生图（单图）
     python doubao_api.py submit "提示词" --image ./设计图.jpg
     python doubao_api.py submit "提示词" --image-url https://xxx.jpg --model doubao-seededit-3.0-i2i
+
+    # 多参考图生成（最多14张）
+    python doubao_api.py submit "提示词" --image ./图1.jpg --image ./图2.jpg --image ./图3.jpg
+    python doubao_api.py submit "提示词" --image-dir ./参考图/
 
     # 查询和下载
     python doubao_api.py query <task_id>
@@ -85,12 +89,39 @@ def image_to_base64(image_path: str) -> str:
     return f"data:{mime_type};base64,{data}"
 
 
+def images_to_base64(image_paths: List[str]) -> List[str]:
+    """将多个本地图片转换为base64格式列表"""
+    result = []
+    for image_path in image_paths:
+        result.append(image_to_base64(image_path))
+    return result
+
+
+def load_images_from_dir(directory: str) -> List[str]:
+    """从目录加载所有图片文件"""
+    supported_extensions = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tiff", ".gif"}
+    image_paths = []
+
+    dir_path = Path(directory)
+    if not dir_path.exists():
+        raise FileNotFoundError(f"目录不存在: {directory}")
+
+    for ext in supported_extensions:
+        image_paths.extend(dir_path.glob(f"*{ext}"))
+        image_paths.extend(dir_path.glob(f"*{ext.upper()}"))
+
+    # 掌序不排序以保证顺序一致
+    image_paths.sort(key=lambda x: x.name)
+
+    return [str(p) for p in image_paths]
+
+
 def submit_task(
     prompt: str,
     model: str = DEFAULT_MODEL,
     size: str = "2048x2048",
-    image: Optional[str] = None,
-    image_url: Optional[str] = None,
+    image: Optional[List[str]] = None,
+    image_url: Optional[List[str]] = None,
     seed: int = -1,
     guidance_scale: Optional[float] = None,
     response_format: str = "url",
@@ -107,8 +138,8 @@ def submit_task(
         prompt: 提示词
         model: 模型名称
         size: 输出尺寸，如 "2048x2048" 或 "2K"
-        image: 本地图片路径（图生图）
-        image_url: 图片URL（图生图）
+        image: 本地图片路径列表（图生图，最多14张）
+        image_url: 图片URL列表（图生图，最多14张）
         seed: 随机种子（仅3.0-t2i/seededit-3.0-i2i支持）
         guidance_scale: 文本权重（仅3.0-t2i/seededit-3.0-i2i支持）
         response_format: 返回格式，"url" 或 "b64_json"
@@ -131,11 +162,20 @@ def submit_task(
     # 尺寸设置
     body["size"] = size
 
-    # 图生图：添加输入图片
+    # 图生图：添加输入图片（支持多张）
+    images = []
     if image:
-        body["image"] = image_to_base64(image)
-    elif image_url:
-        body["image"] = image_url
+        for img_path in image:
+            images.append(image_to_base64(img_path))
+    if image_url:
+        for url in image_url:
+            images.append(url)
+
+    if images:
+        if len(images) == 1:
+            body["image"] = images[0]
+        else:
+            body["image"] = images
 
     # 模型特定参数
     if model in ["doubao-seedream-3.0-t2i", "doubao-seededit-3.0-i2i"]:
@@ -337,7 +377,7 @@ def main():
         seed = -1
         guidance_scale = None
         response_format = "url"
-        output_format = "jpeg"
+        output_format = "png"
         watermark = False
         sequential_image_generation = "disabled"
         max_images = 1

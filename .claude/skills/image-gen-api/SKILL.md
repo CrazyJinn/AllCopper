@@ -10,26 +10,26 @@ allowed-tools: Read, Bash, Write, Edit
 
 ## 工作流程
 
-> **重要**：API并发限制为1，必须串行处理每个任务。
+> **并发控制**：API 支持最多 5 个并发请求，建议控制在 2-3 个以确保稳定性。对于大批量任务，可使用并发处理提高效率。
 
 ### 场景图片生成（文生图）
 
 1. 读取 `03_场景设计/场景设计总览.md`，筛选状态为"提示词"的场景
-2. 对每个待生成场景**串行处理**：
+2. **并发处理**待生成场景（建议 2-3 个并发）：
    - 进入场景文件夹，读取 `提示词.md` 提取提示词
    - 根据场景类型选择图片尺寸
    - 执行 `python scripts/doubao_api.py submit "<提示词>" --size WxH` 提交任务
    - 从返回结果中获取图片 URL
    - 执行 `python scripts/doubao_api.py download <url> <output_path>` 下载图片
    - 下载成功后更新状态为"初稿"
-3. 继续处理下一个场景
+3. 继续处理下一批场景
 
 ### 角色立绘表情生成（图生图）
 
 1. 读取 `02_角色设计/角色设计总览.md`
 2. 找到所有角色的"**立绘表情状态**"表格
 3. 筛选状态为"提示词"的表情
-4. 对每个待生成表情**串行处理**：
+4. **并发处理**待生成表情（建议 2-3 个并发）：
    - 进入角色文件夹，读取 `立绘表情提示词.md`
    - 提取对应表情的提示词
    - 找到该角色的设计图终稿作为输入图片
@@ -37,7 +37,17 @@ allowed-tools: Read, Bash, Write, Edit
    - 从返回结果中获取图片 URL
    - 执行 `python scripts/doubao_api.py download <url> <output_path>` 下载图片
    - 下载成功后更新状态为"初稿"
-5. 继续处理下一个表情
+5. 继续处理下一批表情
+
+### 多参考图生成（融合风格）
+
+1. 收集多张参考图片（最多 14 张）
+2. 使用 `--image` 参数传入多张图片：
+   ```bash
+   python scripts/doubao_api.py submit "<提示词>" --image <图片1> --image <图片2> --image <图片3>
+   ```
+3. API 会融合多张参考图的风格生成新图片
+4. 下载生成的图片
 
 ## 脚本用法
 
@@ -52,6 +62,11 @@ python scripts/doubao_api.py submit "提示词" --size 2048x2048
 python scripts/doubao_api.py submit "提示词" --image ./设计图.jpg
 # 可选参数：--size 1328x1328 --model doubao-seededit-3.0-i2i
 # 输出: {"data": [{"url": "https://..."}], "usage": {...}}
+
+# 多参考图生成 - 融合多张图片风格（最多14张）
+python scripts/doubao_api.py submit "提示词" --image ./图1.jpg --image ./图2.jpg --image ./图3.jpg
+# 或使用通配符
+python scripts/doubao_api.py submit "提示词" --image-dir ./参考图/
 
 # 下载图片
 python scripts/doubao_api.py download <url> <output_path>
@@ -72,7 +87,7 @@ python scripts/doubao_api.py wait '<json_result>' <output_path>
 | --model | string | doubao-seedream-5.0-lite | 模型名称 |
 | --size | string | 2048x2048 | 输出尺寸（宽x高） |
 | --response-format | string | url | 返回格式：url 或 b64_json |
-| --output-format | string | jpeg | 输出格式：jpeg 或 png |
+| --output-format | string | png | 输出格式：jpeg 或 png |
 | --no-watermark | flag | - | 禁用水印 |
 
 ### 图生图参数
@@ -118,13 +133,13 @@ python scripts/doubao_api.py wait '<json_result>' <output_path>
 | 输入图片审核未通过 | 跳过该任务，记录原因 |
 | 输入文本审核未通过 | 跳过该任务，记录原因 |
 | 输出图片审核未通过 | 可重试1-2次 |
-| QPS/并发超限 | 等待30秒后重试 |
+| QPS/并发超限 | 减少并发数，等待30秒后重试 |
 
 ## 输出目录与文件命名规范
 
 ### 命名格式
 
-所有生成图片统一使用格式：`{type}_{YYYY-MM-DD}_{序号}.jpeg`
+所有生成图片统一使用格式：`{type}_{YYYY-MM-DD}_{序号}.png`
 
 | 类型 | type 前缀 |
 |-----|----------|
@@ -142,28 +157,28 @@ python scripts/doubao_api.py wait '<json_result>' <output_path>
 ├── 主角/
 │   └── char_001_罗兰/
 │       ├── 设计图/
-│       │   ├── char_2026-03-29_001.jpeg
-│       │   └── char_2026-03-29_001.png
+│       │   ├── char_2026-03-29_001.png
+│       │   └── char_2026-03-29_002.png
 │       ├── 立绘/
-│       │   └── expr_2026-03-29_001_愤怒.jpeg
+│       │   └── expr_2026-03-29_001_愤怒.png
 │       └── 动画/
-│           └── anim_2026-03-29_001_攻击_01.jpeg
+│           └── anim_2026-03-29_001_攻击_01.png
 ├── NPC/
 │   └── npc_001_康拉德/
 │       └── 设计图/
-│           └── npc_2026-03-29_001.jpeg
+│           └── npc_2026-03-29_001.png
 └── 怪物/
     └── enemy_001_辐射巨鼠/
         └── 设计图/
-            └── enemy_2026-03-29_001.jpeg
+            └── enemy_2026-03-29_001.png
 
 03_场景设计/
 ├── 室内/
 │   └── scene_001_废弃实验室/
-│       └── scene_2026-03-29_001.jpeg
+│       └── scene_2026-03-29_001.png
 └── 室外/
     └── scene_002_城市废墟/
-        └── scene_2026-03-29_001.jpeg
+        └── scene_2026-03-29_001.png
 ```
 
 ### 文件命名规则
@@ -172,10 +187,10 @@ python scripts/doubao_api.py wait '<json_result>' <output_path>
 2. **序号**：三位数字，从 001 开始（如 001, 002, 003）
 3. **后缀**：可选，用于区分同一批次的不同内容（如表情名、动作名）
 4. **示例**：
-   - `char_2026-03-29_001.jpeg` - 角色设计图
-   - `expr_2026-03-29_001_愤怒.jpeg` - 立绘表情
-   - `anim_2026-03-29_001_攻击_01.jpeg` - 动画帧（帧号两位数）
-   - `scene_2026-03-29_001.jpeg` - 场景图片
+   - `char_2026-03-29_001.png` - 角色设计图
+   - `expr_2026-03-29_001_愤怒.png` - 立绘表情
+   - `anim_2026-03-29_001_攻击_01.png` - 动画帧（帧号两位数）
+   - `scene_2026-03-29_001.png` - 场景图片
 
 ## 配置说明
 

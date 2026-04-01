@@ -1,6 +1,6 @@
 ---
 name: game-requirement-analysis
-description: "2D游戏开发需求分析，将世界观和设定集转化为结构化的开发需求文档。触发条件：(1) 分析游戏世界观/设定集生成需求文档 (2) 需求分析阶段 (3) 生成游戏基本信息、角色/场景/UI/音频/代码需求文档"
+description: "2D游戏开发需求分析，将世界观和设定集转化为结构化的开发需求文档。触发条件：(1) 分析游戏世界观/设定集生成需求文档 (2) 需求分析阶段 (3) 生成角色/场景/UI/音频/代码需求文档，游戏基本信息保存到项目memory"
 ---
 
 # 游戏需求分析
@@ -18,11 +18,19 @@ description: "2D游戏开发需求分析，将世界观和设定集转化为结�
 
 ## 输出
 
-生成以下6个文档到 `01_需求文档/` 目录：
+### 1. 项目 Memory
+
+将游戏基本信息保存到项目 memory 目录（`~/.claude/projects/[project-id]/memory/game-info.md`）：
+- 游戏名称、类型、平台
+- 美术风格、参考作品
+- 核心玩法概述
+
+### 2. 需求文档
+
+生成以下5个文档到 `01_需求文档/` 目录：
 
 ```
 01_需求文档/
-├── 游戏基本信息.md      # 游戏概述、类型、平台、技术栈
 ├── 角色需求.md          # 角色列表、外观描述、动画需求
 ├── 场景需求.md          # 场景列表、环境描述、交互元素
 ├── UI需求.md            # HUD、菜单、对话、背包、战斗UI
@@ -34,8 +42,9 @@ description: "2D游戏开发需求分析，将世界观和设定集转化为结�
 
 1. 读取 `00_init/世界设定.md` 和 `00_init/游戏概览.md`
 2. 分析提取关键信息（见 [references/extraction-guide.md](references/extraction-guide.md)）
-3. 按模板格式生成6个输出文档（见 [references/output-templates.md](references/output-templates.md)）
-4. 确认输出文件已正确生成
+3. 将游戏基本信息保存到项目 memory
+4. 按模板格式生成5个需求文档（见 [references/output-templates.md](references/output-templates.md)）
+5. 确认输出文件已正确生成
 
 ## 调用方式
 
