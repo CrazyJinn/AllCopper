@@ -4,130 +4,130 @@
 %%{init: {'flowchart': {'nodeSpacing': 50, 'rankSpacing': 80, 'curve': 'basis', 'htmlLabels': true}, 'themeVariables': {'nodeTextAlignment': 'center', 'subGraphTitleFontWeight': 'bold'}}}%%
 flowchart TB
     %% ========== 前期准备 ==========
-    subgraph S0前期准备["<b>前期准备</b>"]
+    subgraph 前期准备["<b>前期准备</b>"]
         A1[游戏概览.md]
         A2[世界设定.md]
         A3[剧本大纲.md]
     end
 
-    %% ========== 1. 需求分析 ==========
-    subgraph S1需求分析["<b>需求分析</b>"]
-        S1O1[游戏基本信息.memory]
+    %% ========== 需求分析 ==========
+    subgraph 需求分析["<b>需求分析</b>"]
+        S1O1[CLAUDE.md]
         S1O2[角色需求.md]
         S1O3[场景需求.md]
         S1O4[音频需求.md]
         S1O5[代码需求.md]
     end
 
-    %% ========== 2. 剧本拆解 ==========
-    subgraph S2剧本拆解["<b>剧本拆解</b>"]
+    %% ========== 剧本拆解 ==========
+    subgraph 剧本拆解["<b>剧本拆解</b>"]
         S2O1[剧本.md]
         S2O2[立绘提示词.md]
         S2O3[过场提示词.md]
     end
 
-    %% ========== 3. 角色设计 ==========
-    subgraph S3角色设计["<b>角色设计</b>"]
+    %% ========== 角色设计 ==========
+    subgraph 角色设计["<b>角色设计</b>"]
         S3O1[角色设计图提示词.md]
     end
 
-    %% ========== 4. 场景设计 ==========
-    subgraph S4场景设计["<b>场景设计</b>"]
+    %% ========== 场景设计 ==========
+    subgraph 场景设计["<b>场景设计</b>"]
         S4O1[大地图.md]
         S4O2[游戏场景.md]
         S4O3[对话背景.md]
         S4O4[UI背景.md]
     end
 
-    %% ========== 5. 代码需求分析 ==========
-    subgraph S5代码需求分析["<b>代码需求分析</b>"]
+    %% ========== 代码需求分析 ==========
+    subgraph 代码需求分析["<b>代码需求分析</b>"]
         S5O1[需求分析文档]
     end
 
-    %% ========== 6. t2i(人工) ==========
-    subgraph S6t2i人工["<b>t2i (人工)</b>"]
+    %% ========== t2i(人工) ==========
+    subgraph t2i人工["<b>t2i (人工)</b>"]
         S6O1[角色设计图.png]
     end
 
-    %% ========== 7. t2i(api) ==========
-    subgraph S7t2iapi["<b>t2i (api)</b>"]
+    %% ========== t2i(api) ==========
+    subgraph t2iapi["<b>t2i (api)</b>"]
         S7O1[场景图片.png]
     end
 
-    %% ========== 8. i2i(api) ==========
-    subgraph S8i2i图片["<b>i2i (api)</b>"]
+    %% ========== i2i(api) ==========
+    subgraph i2i图片["<b>i2i (api)</b>"]
         S8O1[立绘.png]
         S8O2[过场.png]
     end
 
-    %% ========== 9. i2i(人工) ==========
-    subgraph S9i2i人工["<b>i2i (人工)</b>"]
+    %% ========== i2i(人工) ==========
+    subgraph i2i人工["<b>i2i (人工)</b>"]
         S9O1[Q版设计图.png]
     end
 
-    %% ========== 10. i2v(api) ==========
-    subgraph S10i2vapi["<b>i2v (api)</b>"]
+    %% ========== i2v(api) ==========
+    subgraph i2vapi["<b>i2v (api)</b>"]
         S10O1[Q版动画视频.mp4]
     end
 
-    %% ========== 11. 精灵帧提取 ==========
-    subgraph S11精灵帧提取["<b>精灵帧提取 (ffmpeg)</b>"]
+    %% ========== 精灵帧提取 ==========
+    subgraph 精灵帧提取["<b>精灵帧提取 (ffmpeg)</b>"]
         S11O1[精灵帧序列.png]
         S11O2[精灵图集.png]
     end
 
-    %% ========== 12. 音频实现 ==========
-    subgraph S12音频实现["<b>音频实现</b>"]
+    %% ========== 音频实现 ==========
+    subgraph 音频实现["<b>音频实现</b>"]
         S12O1[BGM.mp3]
         S12O2[音效.mp3]
     end
 
-    %% ========== 13. 代码生成 ==========
-    subgraph S13代码生成["<b>代码生成</b>"]
+    %% ========== 代码生成 ==========
+    subgraph 代码生成["<b>代码生成</b>"]
         S13O1[游戏代码]
     end
 
-    %% ========== 14. 资源搬运 ==========
-    subgraph S14资源搬运["<b>资源搬运</b>"]
+    %% ========== 资源搬运 ==========
+    subgraph 资源搬运["<b>资源搬运</b>"]
         S14O1[游戏assets目录]
     end
 
-    %% ========== 15. 游戏组装 ==========
-    subgraph S15游戏组装["<b>游戏组装 (人工)</b>"]
+    %% ========== 游戏组装 ==========
+    subgraph 游戏组装["<b>游戏组装 (人工)</b>"]
         S15O1[游戏成品]
     end
 
-    %% ========== 16. 剧本组装 ==========
-    subgraph S16剧本组装["<b>剧本组装 (人工)</b>"]
+    %% ========== 剧本组装 ==========
+    subgraph 剧本组装["<b>剧本组装 (人工)</b>"]
         S16O1[剧本.json]
     end
 
     %% ========== 主流程连接线 ==========
-    A1 & A2 --> S1需求分析
-    A3 --> S2剧本拆解
+    A1 & A2 --> 需求分析
+    A3 --> 剧本拆解
 
-    S1O2 --> S3角色设计
-    S1O3 --> S4场景设计
-    S1O5 --> S5代码需求分析
+    S1O2 --> 角色设计
+    S1O3 --> 场景设计
+    S1O5 --> 代码需求分析
 
-    S3O1 --> S6t2i人工
-    S2O2 & S2O3 --> S8i2i图片
-    S4O1 & S4O2 & S4O3 & S4O4 --> S7t2iapi
+    S3O1 --> t2i人工
+    S2O2 & S2O3 --> i2i图片
+    S4O1 & S4O2 & S4O3 & S4O4 --> t2iapi
 
-    S6O1 --> S8i2i图片
-    S6O1 --> S9i2i人工
+    S6O1 --> i2i图片
+    S6O1 --> i2i人工
 
-    S9O1 --> S10i2vapi
-    S10O1 --> S11精灵帧提取
+    S9O1 --> i2vapi
+    S10O1 --> 精灵帧提取
 
-    S1O4 --> S12音频实现
+    S1O4 --> 音频实现
 
-    S5O1 --> S13代码生成
+    S5O1 --> 代码生成
 
-    S2O1 --> S16剧本组装
+    S2O1 --> 剧本组装
 
-    S7O1 & S8O1 & S8O2 & S11O1 & S11O2 & S12O1 & S12O2 --> S14资源搬运
-    S14O1 & S13O1 & S16O1 --> S15游戏组装
+    S7O1 & S8O1 & S8O2 & S11O1 & S11O2 & S12O1 & S12O2 --> 资源搬运
+    S14O1 & S13O1 & S16O1 --> 游戏组装
 
     %% ========== 样式定义 ==========
     classDef manual fill:#ffebee,stroke:#c62828,stroke-width:3px,color:#000
@@ -135,10 +135,10 @@ flowchart TB
     classDef auto fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000
     classDef input fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000
 
-    class S6t2i人工,S9i2i人工,S15游戏组装 manual
-    class S8i2i图片,S10i2vapi semi
-    class S7t2iapi,S11精灵帧提取,S14资源搬运 auto
-    class S0前期准备 input
+    class t2i人工,i2i人工,游戏组装 manual
+    class i2i图片,i2vapi semi
+    class t2iapi,精灵帧提取,资源搬运 auto
+    class 前期准备 input
 ```
 
 ---

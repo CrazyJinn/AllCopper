@@ -1,0 +1,16 @@
+# history.yaml — 执行历史记录
+# 由 /流程管理 init 初始化
+
+history:
+  - task_id: 需求分析
+    skill: 需求分析
+    status: completed
+    started_at: "2026-04-03T00:00:00"
+    completed_at: "2026-04-03T00:30:00"
+    duration: 30min
+    outputs:
+      - CLAUDE.md
+      - 01_需求文档/角色需求.md
+      - 01_需求文档/场景需求.md
+      - 01_需求文档/音频需求.md
+      - 01_需求文档/代码需求.md
