@@ -7,78 +7,61 @@ description: "2D游戏开发需求分析，将世界观和设定集转化为结�
 
 从世界观和设定集文档中提取并生成结构化的游戏开发需求。
 
-## 输入
+## 执行流程
 
-### 前期准备文件
+### 阶段1：从 backlog 获取任务
 
-从 `00_init/` 目录读取：
+读取 `99_流程管理/backlog.yaml`，找到 `task_id: 需求分析` 的条目，获取：
+- `inputs`: 输入文件列表（`00_init/游戏概览.md`、`00_init/世界设定.md`）
+- `outputs`: 预期输出文件列表
 
-| 文件 | 必需 | 说明 |
-|-----|-----|-----|
-| 游戏概览.md | 是 | 游戏整体概述、类型、平台等信息 |
-| 世界设定.md | 是 | 游戏世界的基础设定 |
+若 backlog 中无本任务，说明当前无可执行任务，提示用户使用 `/流程管理` 初始化。
 
-### 流程数据
+### 阶段2：执行需求分析
 
-从 `99_变更管理/流程数据/` 读取（由 `/流程管理` 维护）：
+1. 按 `inputs` 逐个读取输入文件，检查是否全部存在。缺失则终止并报告
+2. 分析提取关键信息（见 [references/extraction-guide.md](references/extraction-guide.md)）
+3. 生成 `CLAUDE.md` 项目配置文件（游戏基本信息统一在此维护）
+4. 按模板格式生成4个需求文档（见 [references/output-templates.md](references/output-templates.md)）：
+   ```
+   01_需求文档/
+   ├── 角色需求.md          # 角色列表、外观描述、动画需求
+   ├── 场景需求.md          # 场景列表、环境描述、交互元素
+   ├── 音频需求.md          # BGM列表、音效需求、风格参考
+   └── 代码需求.md          # 核心系统、UI系统、功能模块
+   ```
+5. 验证 `outputs` 中的所有文件已正确生成
 
-| 文件 | 必需 | 说明 |
-|-----|-----|------|
-| workflow.yaml | 是 | 当前工作流状态，包含节点配置、上下游依赖 |
-| feedback.yaml | 否 | 待处理的反馈队列（如 update_input 触发重新分析） |
-| history.yaml | 否 | 执行历史（判断是否为重新执行） |
+### 阶段3：写入 feedback 摘要
 
-## 输出
+执行完成后，向 `99_流程管理/feedback.yaml` 追加执行摘要：
 
-### 1. CLAUDE.md
-
-项目配置文件，包含游戏基本信息和项目约定，供 Claude Code 和下游 skill（场景设计等）使用。
-
-### 2. 需求文档
-
-生成以下4个文档到 `01_需求文档/` 目录：
-
+```yaml
+entries:
+  - task_id: 需求分析
+    skill: 需求分析
+    executed_at: "<当前时间 ISO格式>"
+    processed:              # 已成功完成
+      - "生成角色需求文档"
+      - "生成场景需求文档"
+    unprocessed:            # 需后续处理，留在 backlog
+      - "音频需求待补充"
+    unable_to_process:      # 无法处理，标记 blocked
+      - []
 ```
-01_需求文档/
-├── 角色需求.md          # 角色列表、外观描述、动画需求 → 下游: 角色设计
-├── 场景需求.md          # 场景列表、环境描述、交互元素 → 下游: 场景设计
-├── 音频需求.md          # BGM列表、音效需求、风格参考 → 下游: 音频实现
-└── 代码需求.md          # 核心系统、UI系统、功能模块   → 下游: 代码需求分析
-```
 
-## 工作流程
+**三类摘要说明**：
 
-1. 读取 `99_变更管理/流程数据/workflow.yaml`，找到 `skill: 需求分析` 的节点，**只处理自己的节点**，不触碰其他节点
-2. 检查 `feedback.yaml` 是否有本节点相关的待处理反馈
-3. 读取节点 `inputs` 指定的文件：`00_init/游戏概览.md` 和 `00_init/世界设定.md`
-4. 分析提取关键信息（见 [references/extraction-guide.md](references/extraction-guide.md)）
-5. 生成 `CLAUDE.md` 项目配置文件（游戏基本信息统一在此维护）
-6. 按模板格式生成4个需求文档（见 [references/output-templates.md](references/output-templates.md)）
-7. 验证节点 `outputs` 列表中的所有文件已正确生成
-8. 若验证失败，写入 `99_变更管理/流程数据/feedback.yaml`，**流程到此结束，不执行后续步骤**
-9. **更新 workflow.yaml**（验证通过后执行）：
-   - 将本节点（需求分析）的 `status` 更新为 `completed`
-   - 将本节点的 `completed_at` 更新为当前时间
-   - 清空本节点的 `todo_list: []`
-   - 遍历本节点的 `successors`（角色设计、场景设计、代码需求分析、音频实现），将 `status` 为 `pending` 的下游节点更新为 `ready`，并设置 `ready_at` 为当前时间
-   - 根据实际生成的输出内容，更新下游节点的 `todo_list`：
-     - **角色设计**: `"根据角色需求文档生成角色设计图提示词"`
-     - **场景设计**: `"根据场景需求文档和CLAUDE.md生成场景设计提示词"`
-     - **代码需求分析**: `"分析代码架构和技术需求"`
-     - **音频实现**: `"根据音频需求文档制作BGM和音效"`
-   - 更新 `updated_at` 为当前时间
-   - **只修改本节点和下游节点的数据，不触碰其他节点**
+| 类型 | 含义 | 后续动作 |
+|------|------|----------|
+| processed | 已成功完成 | 节点标记 completed |
+| unprocessed | 需要后续处理 | 保留在 backlog |
+| unable_to_process | 无法处理，需人工介入 | 节点标记 blocked |
 
-## 下游任务
+## 参考文档
 
-本 skill 完成后，以下任务变为可执行：
-
-| 输出文件 | 下游任务 | 执行方式 |
-|---------|---------|---------|
-| 角色需求.md | 角色设计 | skill |
-| CLAUDE.md + 场景需求.md | 场景设计 | skill |
-| 代码需求.md | 代码需求分析 | 人工 |
-| 音频需求.md | 音频实现 | 人工 |
+- **信息提取指南**: [references/extraction-guide.md](references/extraction-guide.md)
+- **输出文档模板**: [references/output-templates.md](references/output-templates.md)
 
 ## 调用方式
 

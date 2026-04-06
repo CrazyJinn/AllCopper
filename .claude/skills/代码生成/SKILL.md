@@ -1,65 +1,64 @@
 ---
 name: 代码生成
-description: "根据需求文档生成游戏代码"
-triggers:
-  - 生成代码
-  - 编写代码
-  - 实现功能
-  - 编程
+description: "根据解决方案设计文档生成 Godot + GDScript 游戏代码。触发条件：(1) 生成代码 (2) 编写代码 (3) 实现功能 (4) 编程"
 ---
 
-# 编程 Skill
+# 代码生成 Skill
 
-根据需求文档分析并生成游戏代码。
+根据需求分析文档和测试用例设计，生成 Godot + GDScript 游戏代码。
 
-## 输入
+## 执行流程
 
-- 代码需求文档：`01_需求文档/代码需求.md`
-- 游戏基本信息：`01_需求文档/游戏基本信息.md`
+### 阶段1：从 backlog 获取任务
 
-## 输出
+读取 `99_流程管理/backlog.yaml`，找到 `task_id: 代码生成` 的条目，获取：
+- `inputs`: 输入文件列表
+- `outputs`: 预期输出文件列表
 
-输出目录：`89_game/AllCooper/assets/scripts/`
+若 backlog 中无本任务，说明当前无可执行任务，提示用户使用 `/流程管理` 初始化。
 
-- 源代码文件（按模块组织）
-- 代码注释
-- 使用指南（README.md）
+### 阶段2：执行代码生成
 
-## 工作流程
+1. 按 `inputs` 读取输入文件（`06_解决方案/需求分析文档.md`、`06_解决方案/测试用例设计.md`、`CLAUDE.md`），检查是否全部存在。缺失则终止并报告
+2. **分析方案** - 理解系统架构、模块划分、接口定义和测试用例
+3. **确认结构** - 按需求分析文档的文件组织方案，确认输出目录结构
+4. **生成代码** - 按模块逐一生成代码，遵循编码规范（见 [references/coding-standards.md](references/coding-standards.md)），添加必要注释
+5. 输出到 `89_game/AllCooper/` 对应子目录（scripts/、scenes/、assets/）
+6. 验证 `outputs` 中的所有文件已正确生成
 
-### 1. 读取需求
+### 阶段3：写入 feedback 摘要
 
-- 阅读代码需求文档
-- 理解功能需求和技术要求
+执行完成后，向 `99_流程管理/feedback.yaml` 追加执行摘要：
 
-### 2. 分析设计
-
-- 分析需求中的功能模块
-- 确定代码结构和文件组织
-- 设计模块间的接口关系
-
-### 3. 生成代码
-
-- 按模块逐一生成代码
-- 遵循编码规范
-- 添加必要注释
-
-### 4. 生成使用指南
-- 以md格式输出
-
-## 编码规范
-
-参考 `references/coding-standards.md`
-
-## 使用方式
-
-```
-使用编程skill生成[模块名]代码
-使用编程skill实现[功能描述]
+```yaml
+entries:
+  - task_id: 代码生成
+    skill: 代码生成
+    executed_at: "<当前时间 ISO格式>"
+    processed:              # 已成功完成
+      - "生成角色控制模块"
+      - "生成战斗系统"
+    unprocessed:            # 需后续处理，留在 backlog
+      - "UI系统代码待补充"
+    unable_to_process:      # 无法处理，标记 blocked
+      - []
 ```
 
-## 注意事项
+**三类摘要说明**：
 
-1. 先读取需求文档再生成代码
-2. 代码风格保持一致
-3. 生成后进行代码审查
+| 类型 | 含义 | 后续动作 |
+|------|------|----------|
+| processed | 已成功完成 | 节点标记 completed |
+| unprocessed | 需要后续处理 | 保留在 backlog |
+| unable_to_process | 无法处理，需人工介入 | 节点标记 blocked |
+
+## 参考文档
+
+- **编码规范**: [references/coding-standards.md](references/coding-standards.md)
+
+## 调用方式
+
+```
+/代码生成
+或由 /流程管理 next 自动调度
+```

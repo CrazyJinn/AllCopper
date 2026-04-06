@@ -58,7 +58,7 @@ IMAGES_ENDPOINT = f"{API_BASE_URL}/images/generations"
 API_KEY = _settings.get("doubao_api_key", "")
 
 # 默认模型
-DEFAULT_MODEL = _settings.get("doubao_model", "doubao-seedream-5.0-lite")
+DEFAULT_MODEL = _settings.get("seedream_model", "doubao-seedream-5.0-lite")
 
 
 def get_headers() -> dict:

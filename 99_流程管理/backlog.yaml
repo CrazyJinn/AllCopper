@@ -1,0 +1,51 @@
+tasks:
+  - task_id: 代码生成
+    skill: 代码生成
+    inputs:
+      - 01_需求文档/需求分析文档.md
+      - 01_需求文档/测试用例设计.md
+    outputs:
+      - 89_game/AllCooper/
+    items:
+      - "阶段1：基础框架（EventBus, DataManager, GameManager, SceneManager, CharacterBase, ResourceSystem, PlayerController, 主菜单UI）"
+      - "阶段2：核心战斗（DamageSystem, SkillBase, TechSkill, MagicSkill, Projectile, EnemyBase, EnemyAI, SpawnSystem, HUD, BossHPBar）"
+      - "阶段3：内容系统（DungeonManager, RoomBase, DialogueManager, DialogueUI, InventoryManager, QuickBar, InventoryUI, PauseMenu, MapSystem, MapUI）"
+      - "阶段4：扩展系统与UI（EconomyManager, ShopUI, LoreManager, LoreUI, CharacterPanel, SettingsUI, DamageNumber, DungeonResultUI, SaveManager, AudioManager）"
+
+  - task_id: 音频实现
+    skill: null
+    inputs:
+      - 01_需求文档/音频需求.md
+    outputs:
+      - 05_音频/BGM.mp3
+      - 05_音频/音效.mp3
+    items:
+      - "生成BGM"
+      - "生成音效"
+
+  - task_id: 剧本组装
+    skill: null
+    inputs:
+      - 04_剧本/剧本.md
+    outputs:
+      - 04_剧本/剧本.json
+    items:
+      - "将分场剧本组装为游戏引擎可用的JSON数据格式"
+
+  - task_id: 文生图api
+    skill: image-gen-api
+    inputs:
+      - 02_角色设计/角色设计总览.md
+      - 03_场景设计/大地图.md
+      - 03_场景设计/游戏场景.md
+      - 03_场景设计/对话背景.md
+      - 03_场景设计/UI背景.md
+    outputs:
+      - 02_角色设计/角色设计图.png
+      - 03_场景设计/场景图片.png
+    items:
+      - "根据角色设计总览，生成全部角色设计图"
+      - "根据大地图提示词，生成大地图区域图片"
+      - "根据游戏场景提示词，生成聚集点和副本场景图片"
+      - "根据对话背景提示词，生成对话背景图片"
+      - "根据UI背景提示词，生成UI背景图片"

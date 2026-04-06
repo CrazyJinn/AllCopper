@@ -36,19 +36,22 @@ import re
 
 def extract_subgraphs(mermaid_code):
     """提取所有子图定义"""
-    pattern = r'subgraph\s+(\w+)\["(.+?)"\]'
+    # 匹配中文子图 ID：subgraph 需求分析["<b>需求分析</b>"]
+    pattern = r'subgraph\s+([\w\u4e00-\u9fff]+)\["(.+?)"\]'
     matches = re.findall(pattern, mermaid_code)
-    return {id: name for id, name in matches}
+    return {id: re.sub(r'<[^>]+>', '', name) for id, name in matches}
+    # 结果: {'需求分析': '需求分析', '角色设计': '角色设计', ...}
 ```
 
 #### 2. 提取节点（产出物）
 
 ```python
 def extract_nodes(mermaid_code):
-    """提取所有节点定义"""
-    pattern = r'(\w+)\[(.+?)\]'
+    """提取所有节点定义（产出物节点，如 S1O1[CLAUDE.md]）"""
+    pattern = r'([A-Z]\d+O\d+)\[(.+?)\]'
     matches = re.findall(pattern, mermaid_code)
     return {id: name for id, name in matches}
+    # 结果: {'S1O1': 'CLAUDE.md', 'S1O2': '角色需求.md', ...}
 ```
 
 #### 3. 提取依赖关系
@@ -111,28 +114,7 @@ def extract_styles(mermaid_code):
 
 ## 当前项目流程结构
 
-从README解析出的结构：
-
-```
-阶段列表:
-S0前期准备 → 游戏概览, 世界设定, 剧本大纲
-S1需求分析 → 游戏基本信息, 角色需求, 场景需求, 音频需求, 代码需求
-S2剧本拆解 → 剧本, 立绘提示词, 动画提示词
-S3角色设计 → 角色设计图提示词
-S4场景设计 → 大地图, 游戏场景, 对话背景, UI背景
-S5代码需求分析 → 需求分析文档
-S6t2i人工 → 角色设计图.png [manual]
-S7t2iapi → 场景图片.png [auto]
-S8i2i图片 → 立绘.png, 动画.png [semi]
-S9i2i人工 → Q版设计图.png [manual]
-S10i2vapi → Q版动画视频.mp4 [semi]
-S11精灵帧提取 → 精灵帧序列, 精灵图集 [auto]
-S12音频实现 → BGM, 音效 [auto]
-S13代码生成 → 游戏代码 [auto]
-S14资源搬运 → 游戏assets目录 [auto]
-S15游戏组装 → 游戏成品 [manual]
-S16剧本组装 → 剧本.json [manual]
-```
+实时从 `README.md` 的 mermaid 代码块中解析，不要硬编码或缓存。流程结构可能随 README 更新而变化。
 
 ## 拓扑排序
 
