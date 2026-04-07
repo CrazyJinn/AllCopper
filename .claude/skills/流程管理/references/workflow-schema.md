@@ -32,7 +32,6 @@ nodes:
   description: "功能描述"
   execution_type: skill         # skill | api | manual | auto
   inputs: [00_init/游戏概览.md]
-  outputs: [01_需求文档/角色需求.md]
   predecessors: [前期准备]
   successors: [角色设计]
   check_condition: "01_需求文档/角色需求.md 存在"
@@ -72,7 +71,6 @@ tasks:
   - task_id: 需求分析
     skill: 需求分析
     inputs: [00_init/游戏概览.md]
-    outputs: [01_需求文档/角色需求.md]
     items:                          # 分配给 skill 的具体任务，逐个执行
       - "分析角色需求，生成角色需求文档"
       - "分析场景需求，生成场景需求文档"
@@ -81,7 +79,6 @@ tasks:
   - task_id: 角色设计
     skill: 角色设计
     inputs: [01_需求文档/角色需求.md]
-    outputs: [02_角色设计/角色设计总览.md]
     items:
       - "设计主角罗兰的角色立绘提示词"
       - "设计主角薇的角色立绘提示词"
@@ -89,9 +86,9 @@ tasks:
 ```
 
 **items 生成规则**：
-- 从 workflow.yaml 节点的 outputs 推导，每个输出文件对应一个 item
-- 也可根据节点 description 细化拆分
+- 根据节点 description 和 skill 的能力拆分为可执行的子任务
 - skill 收到 items 后逐个执行，每完成一个 item 更新进度
+- skill 根据 inputs 自行决定产出内容，流程管理不限定输出
 
 **生成时机**：
 - `init`: 初始化时生成
@@ -160,7 +157,6 @@ archived:
 | mermaid 元素 | yaml 字段 |
 |-------------|----------|
 | `subgraph ID["name"]` | nodes.ID.name |
-| `S1O1[文件名]` | outputs 列表 |
 | `A & B --> C` | C.predecessors: [A, B] |
 | `classDef manual` | execution_type: manual |
 

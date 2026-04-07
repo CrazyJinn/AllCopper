@@ -69,9 +69,9 @@ allowed-tools: Read, Bash, Write, Edit
 ### Step 1: 唤起对应 skill
 
 1. 从 `backlog.yaml` 取第一个待办任务
-2. 从 `workflow.yaml` 读取该任务的 inputs、outputs、skill 名称
+2. 从 `workflow.yaml` 读取该任务的 inputs、skill 名称
 3. 更新该节点 status: in_progress
-4. 调用对应 skill: `/{skill_name}`，传入 inputs、outputs 和 **items（任务列表）**
+4. 调用对应 skill: `/{skill_name}`，传入 inputs 和 **items（任务列表）**
 5. skill 逐个执行 items 中的任务，执行完成后自行写入 `feedback.yaml`
 
 ### Step 2: 写入 history
@@ -140,13 +140,14 @@ history:
 
 `run` 命令调用 skill 时提供：
 - **inputs**: workflow.yaml 中该节点的 inputs 列表
-- **outputs**: workflow.yaml 中该节点的 outputs 列表
 - **items**: backlog.yaml 中该任务的 items 列表（skill 逐个执行）
+
+skill 根据_inputs_自行决定产出，流程管理不限定其输出内容。
 
 ### skill 执行职责
 
 流程管理负责：
-1. 调用 skill 时传入 inputs、outputs、items（任务列表）
+1. 调用 skill 时传入 inputs、items（任务列表），不限定 skill 的产出
 2. 从 feedback.yaml 读取 skill 写入的执行结果
 3. 写入 history.yaml、更新 workflow.yaml 节点状态
 

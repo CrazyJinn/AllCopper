@@ -181,7 +181,7 @@ curl -X POST https://ark.cn-beijing.volces.com/api/v3/images/generations \
   -H "Content-Type: application/json" \
   -d '{
     "model": "doubao-seedream-5.0-lite",
-    "prompt": "骑士团阵营城镇，室外场景，白天，晴朗",
+    "prompt": "骑士团阵营城镇，功能场景，白天，晴朗",
     "size": "2048x2048",
     "response_format": "url",
     "watermark": false

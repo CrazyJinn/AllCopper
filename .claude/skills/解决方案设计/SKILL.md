@@ -13,23 +13,22 @@ description: "基于代码需求进行技术方案分析，输出需求分析文
 
 读取 `99_流程管理/backlog.yaml`，找到 `task_id: 解决方案设计` 的条目，获取：
 - `inputs`: 输入文件列表
-- `outputs`: 预期输出文件列表
+- `items`: 待办事项
 
 若 backlog 中无本任务，说明当前无可执行任务，提示用户使用 `/流程管理` 初始化。
 
 ### 阶段2：执行解决方案设计
 
-1. 按 `inputs` 读取输入文件（`01_需求文档/代码需求.md`、`CLAUDE.md`），检查是否全部存在。缺失则终止并报告
+1. 按 `inputs` 读取输入文件，检查是否全部存在。缺失则终止并报告
 2. **分析需求** - 提取核心系统、功能模块、数据结构需求（见 [references/analysis-guide.md](references/analysis-guide.md)）
 3. **设计架构** - 为每个系统设计模块划分、接口定义、数据流和依赖关系
-4. **生成需求分析文档** - 输出到 `06_解决方案/需求分析文档.md`，包含：
+4. **生成需求分析文档** - 输出到 `10_解决方案设计/需求分析文档.md`，包含：
    - 系统总览与模块依赖图
    - 每个核心系统的详细技术方案
    - 接口定义与通信协议
    - 数据结构设计
    - 开发优先级与里程碑
-5. **设计测试用例** - 输出到 `06_解决方案/测试用例设计.md`（见 [references/test-design-guide.md](references/test-design-guide.md)）
-6. 验证 `outputs` 中的所有文件已正确生成
+5. **设计测试用例** - 输出到 `10_解决方案设计/测试用例设计.md`（见 [references/test-design-guide.md](references/test-design-guide.md)）
 
 ### 阶段3：写入 feedback 摘要
 
