@@ -14,7 +14,7 @@ allowed-tools: Read, Bash, Write, Edit
 
 读取 `99_流程管理/backlog.yaml`，找到 `skill: image-gen-api` 的条目（可能为 `文生图api` 或 `图生图api`），获取：
 - `inputs`: 输入文件列表
-- `outputs`: 预期输出文件列表
+- `items`: 待办事项
 
 若 backlog 中无本任务，说明当前无可执行任务，提示用户使用 `/流程管理` 初始化。
 

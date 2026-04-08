@@ -12,7 +12,7 @@ allowed-tools: Read, Bash, Write, Edit
 
 ### 阶段1：从 backlog 获取任务
 
-读取 `99_流程管理/backlog.yaml`，找到 `skill: image-to-video` 的条目，获取 `inputs` 和 `outputs`。
+读取 `99_流程管理/backlog.yaml`，找到 `skill: image-to-video` 的条目，获取 `inputs` 和 `items`。
 
 若 backlog 中无本任务，提示用户使用 `/流程管理` 初始化。
 

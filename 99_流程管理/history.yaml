@@ -1,4 +1,40 @@
 history:
+  - task_id: 代码生成
+    skill: 代码生成
+    status: completed
+    started_at: "2026-04-08T16:00:00"
+    completed_at: "2026-04-08T16:30:00"
+    summary: "生成全部游戏源代码：3个Autoload单例、角色控制系统、战斗系统(策略模式双路线)、伤害系统、怪物AI(状态机+能力组件)、房间系统、对话系统、大地图、背包、经济、过场、文献、存档、6个UI界面，共30个C#源文件"
+  - task_id: 角色设计
+    skill: 角色设计
+    status: completed
+    started_at: "2026-04-08T14:00:00"
+    completed_at: "2026-04-08T14:20:00"
+    summary: "完成全部NPC(5)+怪物(12)设计提示词：5个NPC设计图提示词+5个NPC动画提示词、12个怪物设计图提示词+12个怪物动画提示词，更新角色设计总览"
+  - task_id: 剧本拆解
+    skill: 剧本拆解
+    status: completed
+    started_at: "2026-04-08T12:00:00"
+    completed_at: "2026-04-08T12:30:00"
+    summary: "完成5幕30场景分场剧本、角色立绘表情需求汇总、4角色立绘提示词(罗兰7表情+2变装、薇8表情+1变装+2变装、康拉德5表情+2变装、塞巴斯蒂安3表情+1变装)、26张过场画面提示词、剧本总览"
+  - task_id: review
+    skill: 流程管理
+    status: completed
+    started_at: "2026-04-08T01:00:00"
+    completed_at: "2026-04-08T01:00:00"
+    summary: "处理场景设计反馈（已确认完成），重新加入剧本拆解到待办队列（retry_count=1），移除已完成的场景设计"
+  - task_id: 场景设计
+    skill: 场景设计
+    status: completed
+    started_at: "2026-04-08T00:15:00"
+    completed_at: "2026-04-08T00:30:00"
+    summary: "重做全部15条场景提示词：移除负面提示词，全部转为Seedream 5.0 lite自然语言格式（5战斗场景+2功能场景+7对话背景+1 UI背景），更新场景设计总览"
+  - task_id: 角色设计
+    skill: 角色设计
+    status: partial
+    started_at: "2026-04-08T00:00:00"
+    completed_at: "2026-04-08T00:05:00"
+    summary: "重新生成主角提示词：罗兰设计图+动画提示词(8动作×2方向)、薇设计图+动画提示词(8动作×2方向)，移除负面提示词，优化自然语言描述。NPC和怪物提示词待后续生成"
   - task_id: 解决方案设计
     skill: 解决方案设计
     status: completed

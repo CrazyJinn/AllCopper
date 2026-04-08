@@ -44,9 +44,9 @@ nodes:
     successors: [图生图api, 剧本组装]
     check_condition: "04_剧本/剧本总览.md 存在"
     status: completed
-    retry_count: 0
-    started_at: "2026-04-07T22:00:00"
-    completed_at: "2026-04-07T22:30:00"
+    retry_count: 2
+    started_at: "2026-04-08T12:00:00"
+    completed_at: "2026-04-08T12:30:00"
 
   角色设计:
     name: 角色设计
@@ -58,10 +58,10 @@ nodes:
     predecessors: [需求分析]
     successors: [文生图api]
     check_condition: "02_角色设计/角色设计总览.md 存在"
-    status: in_progress
-    retry_count: 0
-    started_at: "2026-04-07T21:00:00"
-    completed_at: "2026-04-07T21:15:00"
+    status: completed
+    retry_count: 2
+    started_at: "2026-04-08T14:00:00"
+    completed_at: "2026-04-08T14:20:00"
 
   场景设计:
     name: 场景设计
@@ -74,9 +74,9 @@ nodes:
     successors: [文生图api]
     check_condition: "03_场景设计/场景设计总览.md 存在"
     status: completed
-    retry_count: 0
-    started_at: "2026-04-07T23:00:00"
-    completed_at: "2026-04-07T23:10:00"
+    retry_count: 2
+    started_at: "2026-04-08T00:15:00"
+    completed_at: "2026-04-08T00:30:00"
 
   解决方案设计:
     name: 解决方案设计
@@ -103,7 +103,7 @@ nodes:
     predecessors: [角色设计, 场景设计]
     successors: [图生图api, 图生图人工, 资源搬运]
     check_condition: "02_角色设计/角色设计总览.md 和 03_场景设计/场景设计总览.md 中有终稿图片"
-    status: pending
+    status: ready
     retry_count: 0
     started_at: null
     completed_at: null
@@ -193,10 +193,10 @@ nodes:
     predecessors: [解决方案设计]
     successors: [游戏组装]
     check_condition: "89_game/AllCooper/scripts/ 目录存在且有代码文件"
-    status: ready
+    status: completed
     retry_count: 0
-    started_at: null
-    completed_at: null
+    started_at: "2026-04-08T16:00:00"
+    completed_at: "2026-04-08T16:30:00"
 
   剧本组装:
     name: 剧本组装
