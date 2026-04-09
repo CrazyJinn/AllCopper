@@ -59,9 +59,9 @@ nodes:
     successors: [文生图api]
     check_condition: "02_角色设计/角色设计总览.md 存在"
     status: completed
-    retry_count: 2
-    started_at: "2026-04-08T14:00:00"
-    completed_at: "2026-04-08T14:20:00"
+    retry_count: 5
+    started_at: "2026-04-09T14:00:00"
+    completed_at: "2026-04-09T14:30:00"
 
   场景设计:
     name: 场景设计
@@ -103,10 +103,10 @@ nodes:
     predecessors: [角色设计, 场景设计]
     successors: [图生图api, 图生图人工, 资源搬运]
     check_condition: "02_角色设计/角色设计总览.md 和 03_场景设计/场景设计总览.md 中有终稿图片"
-    status: ready
+    status: completed
     retry_count: 0
-    started_at: null
-    completed_at: null
+    started_at: "2026-04-09T20:00:00"
+    completed_at: "2026-04-10T00:20:00"
 
   图生图api:
     name: 图生图 (api)
@@ -118,7 +118,7 @@ nodes:
     predecessors: [剧本拆解, 文生图api]
     successors: [资源搬运]
     check_condition: "02_角色设计/ 中有终稿立绘和过场图"
-    status: pending
+    status: ready
     retry_count: 0
     started_at: null
     completed_at: null
@@ -133,7 +133,7 @@ nodes:
     predecessors: [文生图api]
     successors: [图生视频api]
     check_condition: "02_角色设计/ 中有终稿Q版设计图"
-    status: pending
+    status: ready
     retry_count: 0
     started_at: null
     completed_at: null
