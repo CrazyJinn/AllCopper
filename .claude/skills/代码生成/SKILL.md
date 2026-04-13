@@ -1,11 +1,28 @@
 ---
 name: 代码生成
-description: "根据解决方案设计文档生成 Godot + GDScript 游戏代码。触发条件：(1) 生成代码 (2) 编写代码 (3) 实现功能 (4) 编程"
+description: "根据解决方案设计文档生成 Godot + C# 游戏代码。触发条件：(1) 生成代码 (2) 编写代码 (3) 实现功能 (4) 编程"
 ---
 
 # 代码生成 Skill
 
-根据需求分析文档和测试用例设计，生成 Godot + GDScript 游戏代码。
+根据需求分析文档和测试用例设计，生成 Godot 4 + C# 游戏代码。
+
+## 技术栈约束
+
+- **语言**：C#（.NET 6+），不使用 GDScript
+- **引擎**：Godot 4.x
+- **场景构建**：所有场景用 C# 代码构建，.tscn 只保留空壳
+- **代码风格**：严格遵循编码规范（见 [references/coding-standards.md](references/coding-standards.md)）
+
+### 强制规则
+
+1. **[GlobalClass]**：所有需要暴露给 Godot 编辑器的类必须标注
+2. **信号**：使用 `[Signal]` + `PascalCaseEventHandler` 委托模式
+3. **节点引用**：使用 `GetNode<T>()` 在 `_Ready()` 中获取，不使用 `[OnReady]` 属性
+4. **组合优于继承**：功能通过子节点组件组合，不创建深层继承链
+5. **类型安全**：所有公共属性和方法必须有显式类型声明
+6. **命名规范**：PascalCase 用于类名、方法名、属性名；_camelCase 用于私有字段
+7. **.tscn 空壳**：场景文件只声明根节点和入口脚本，所有子节点在 C# 的 `BuildScene` 方法中创建
 
 ## 执行流程
 
@@ -22,8 +39,72 @@ description: "根据解决方案设计文档生成 Godot + GDScript 游戏代码
 1. 按 `inputs` 读取输入文件，检查是否全部存在。缺失则终止并报告
 2. **分析方案** - 理解系统架构、模块划分、接口定义和测试用例
 3. **确认结构** - 按需求分析文档的文件组织方案，确认输出目录结构
-4. **生成代码** - 按模块逐一生成代码，遵循编码规范（见 [references/coding-standards.md](references/coding-standards.md)），添加必要注释
-5. 输出到 `89_game/AllCooper/` 对应子目录（scripts/、scenes/、assets/）
+4. **生成代码** - 按模块逐一生成代码，遵循以下顺序：
+   - **数据层**：先生成 Resource 数据类（CharacterData、ItemData、EnemyData 等）
+   - **组件层**：再生成可复用组件（HealthComponent、HitboxComponent 等）
+   - **系统层**：然后生成系统脚本（PlayerController、EnemyAI 等）
+   - **场景层**：最后生成场景入口脚本和 `BuildScene` 方法
+   - **Autoload**：全局单例类（GameManager、EventBus 等）
+5. 每个生成的 `.cs` 文件需包含：
+   - `using Godot;` 引用
+   - `[GlobalClass]` 类标注
+   - XML 文档注释（`/// <summary>`）
+   - 信号声明（`[Signal]` + `EventHandler` 委托）
+   - `[Export]` 属性用于编辑器可配置值
+6. 输出到 `89_game/AllCooper/` 对应子目录（scripts/、scenes/、assets/）
+
+### 代码生成模板
+
+#### Resource 数据类
+
+```csharp
+using Godot;
+
+[GlobalClass]
+public partial class XxxData : Resource
+{
+    [Export] public string Id { get; set; } = "";
+    // ... 其他字段
+}
+```
+
+#### 组件类
+
+```csharp
+using Godot;
+
+[GlobalClass]
+public partial class XxxComponent : Node
+{
+    [Signal]
+    public delegate void XxxChangedEventHandler(float newValue);
+
+    [Export]
+    public float SomeValue { get; set; } = 0f;
+
+    public override void _Ready() { ... }
+}
+```
+
+#### 场景入口类
+
+```csharp
+using Godot;
+
+[GlobalClass]
+public partial class XxxScene : Node2D
+{
+    public override void _Ready()
+    {
+        BuildScene(this);
+    }
+
+    public static void BuildScene(Node root)
+    {
+        // 动态创建所有子节点
+    }
+}
+```
 
 ### 阶段3：写入 feedback 摘要
 
@@ -54,6 +135,7 @@ entries:
 ## 参考文档
 
 - **编码规范**: [references/coding-standards.md](references/coding-standards.md)
+- **Godot 参考文档**: `godot参考文档`（项目根目录）— C# 信号模式、组合架构、Autoload 规则
 
 ## 调用方式
 

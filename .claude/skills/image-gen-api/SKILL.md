@@ -22,6 +22,8 @@ allowed-tools: Read, Bash, Write, Edit
 
 > **并发控制**：API 支持最多 5 个并发请求，建议控制在 2-3 个以确保稳定性。
 
+> **尺寸参数（强制）**：每次调用 `submit` 时必须通过 `--size` 显式传入图片尺寸。尺寸从当前任务的需求/上下文中确定（如场景类型、角色资源规格、backlog 条目说明等）。若无法从上下文中明确尺寸，**必须向用户确认**后再调用，禁止省略 `--size` 或使用默认值。
+
 根据任务类型执行对应流程：
 
 #### 场景图片生成（文生图）
@@ -29,7 +31,7 @@ allowed-tools: Read, Bash, Write, Edit
 1. 读取 `03_场景设计/场景设计总览.md`，筛选状态为"提示词"的场景
 2. **并发处理**待生成场景（建议 2-3 个并发）：
    - 进入场景文件夹，读取 `提示词.md` 提取提示词
-   - 根据场景类型选择图片尺寸
+   - 从场景类型、需求文档或上下文中确定图片尺寸
    - 执行 `python scripts/doubao_api.py submit "<提示词>" --size WxH` 提交任务
    - 从返回结果中获取图片 URL
    - 执行 `python scripts/doubao_api.py download <url> <output_path>` 下载图片
@@ -43,7 +45,8 @@ allowed-tools: Read, Bash, Write, Edit
 4. **并发处理**待生成表情（建议 2-3 个并发）：
    - 进入角色文件夹，读取 `立绘表情提示词.md`
    - 找到该角色的设计图终稿作为输入图片
-   - 执行 `python scripts/doubao_api.py submit "<提示词>" --image <设计图路径>` 提交任务
+   - 从角色类型、需求文档或上下文中确定图片尺寸
+   - 执行 `python scripts/doubao_api.py submit "<提示词>" --image <设计图路径> --size WxH` 提交任务
    - 下载图片并更新状态为"初稿"
 
 #### 多参考图生成（融合风格）
@@ -83,11 +86,11 @@ entries:
 > 脚本位于技能目录的 `scripts/doubao_api.py`
 
 ```bash
-# 文生图
+# 文生图（--size 为必填参数）
 python scripts/doubao_api.py submit "提示词" --size 2048x2048
 
-# 图生图
-python scripts/doubao_api.py submit "提示词" --image ./设计图.jpg
+# 图生图（--size 为必填参数）
+python scripts/doubao_api.py submit "提示词" --image ./设计图.jpg --size 2048x2048
 
 # 下载图片
 python scripts/doubao_api.py download <url> <output_path>
@@ -105,7 +108,7 @@ python scripts/doubao_api.py wait '<json_result>' <output_path>
 | 参数 | 类型 | 默认值 | 说明 |
 |-----|------|-------|------|
 | --model | string | doubao-seedream-5.0-lite | 模型名称 |
-| --size | string | 2048x2048 | 输出尺寸（宽x高） |
+| --size | string | — | **必填**。输出尺寸（宽x高），从任务需求中确定，不明确时向用户确认 |
 | --no-watermark | flag | - | 禁用水印 |
 
 ### 图生图参数
@@ -116,6 +119,8 @@ python scripts/doubao_api.py wait '<json_result>' <output_path>
 | --image-url | string | 图片URL |
 
 ## 尺寸规格
+
+> API 支持的预设尺寸，供确定 `--size` 时参考。具体使用哪个尺寸须从当前任务的需求中明确。
 
 | 分辨率 | 宽高比 | 尺寸 |
 |-------|-------|------|

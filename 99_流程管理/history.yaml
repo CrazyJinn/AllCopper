@@ -1,108 +1,134 @@
 history:
-  - task_id: 文生图api
-    skill: image-gen-api
-    status: completed
-    started_at: "2026-04-09T20:00:00"
-    completed_at: "2026-04-10T00:20:00"
-    summary: "完成全部15张场景图片生成：5战斗场景(2048x2048)+2功能场景(2848x1600)+7对话背景(2848x1600)+1 UI背景(2848x1600)，场景设计总览全部更新为初稿"
-  - task_id: review
+  - task_id: review-代码生成（全阶段完成）
     skill: 流程管理
     status: completed
-    started_at: "2026-04-09T23:25:00"
-    completed_at: "2026-04-09T23:25:00"
-    summary: "处理文生图api反馈：确认19角色设计图已生成(初稿)，场景图片保留在待办队列。文生图api保持in_progress"
-  - task_id: 文生图api
-    skill: image-gen-api
-    status: partial
-    started_at: "2026-04-09T22:58:00"
-    completed_at: "2026-04-09T23:20:00"
-    summary: "完成全部19角色设计图生成(28张PNG，2048x2048)：2主角×3视角+5NPC×2视角+12怪物×1视角。enemy_003骨翼鸦因敏感词需修改提示词重试。场景图片未生成（用户仅要求角色设计）"
-  - task_id: 角色设计
-    skill: 角色设计
-    status: completed
-    started_at: "2026-04-09T14:00:00"
-    completed_at: "2026-04-09T14:30:00"
-    summary: "第5次重做：重新生成全部19角色设计提示词。2主角设计图(3视角)+动画(8动作×2方向)、4NPC设计图(2视角)+简化动画、1NPC塞巴斯蒂安完整动画(5动作×2方向)、12怪物设计图(45°)+动画(5-6动作×2方向)，更新角色设计总览"
-  - task_id: review
-    skill: 流程管理
-    status: completed
-    started_at: "2026-04-09T13:00:00"
-    completed_at: "2026-04-09T13:00:00"
-    summary: "用户对角色设计不满意，已删除02_角色设计全部内容。重置角色设计节点(ready, retry_count=4)，级联重置文生图api(pending)，更新待办队列"
-  - task_id: review
-    skill: 流程管理
-    status: completed
-    started_at: "2026-04-09T12:20:00"
-    completed_at: "2026-04-09T12:20:00"
-    summary: "确认角色设计重做完成(completed)，级联更新文生图api(ready)，更新待办队列"
-  - task_id: 角色设计
-    skill: 角色设计
-    status: completed
-    started_at: "2026-04-09T12:00:00"
-    completed_at: "2026-04-09T12:15:00"
-    summary: "重新生成全部19角色设计提示词：2主角设计图+动画(8动作×2方向)、5NPC设计图+动画(简化2-6动作)、12怪物设计图+动画(5-6动作×2方向)，更新角色设计总览"
-  - task_id: review
-    skill: 流程管理
-    status: completed
-    started_at: "2026-04-09T00:00:00"
-    completed_at: "2026-04-09T00:00:00"
-    summary: "用户对角色设计不满意，已删除02_角色设计全部内容。重置角色设计节点(ready, retry_count=3)，级联重置文生图api(pending)，更新待办队列"
+    started_at: "2026-04-13T00:25:00"
+    completed_at: "2026-04-13T00:26:00"
+    summary: "处理代码生成反馈：4阶段全部确认完成（基础框架、核心战斗、内容系统、UI与扩展）。节点已completed，无级联变更。feedback已清空。"
   - task_id: 代码生成
     skill: 代码生成
     status: completed
-    started_at: "2026-04-08T16:00:00"
-    completed_at: "2026-04-08T16:30:00"
-    summary: "生成全部游戏源代码：3个Autoload单例、角色控制系统、战斗系统(策略模式双路线)、伤害系统、怪物AI(状态机+能力组件)、房间系统、对话系统、大地图、背包、经济、过场、文献、存档、6个UI界面，共30个C#源文件"
-  - task_id: 角色设计
-    skill: 角色设计
+    started_at: "2026-04-13T00:15:00"
+    completed_at: "2026-04-13T00:25:00"
+    summary: "完成全部4阶段51个C#文件生成：阶段1基础框架（Enums/EventBus/GameManager/ObjectPool/HealthComponent/HitboxComponent/HurtboxComponent/PlayerController）、阶段2核心战斗（CombatResourceComponent/StatusEffectComponent/TechCombatMode/MagicCombatMode/EnemyController/EnemyAIComponent/AudioManager/BossHPBar/DamageNumber）、阶段3内容系统（BattleScene/RoomManager/DoorController/EnemySpawner/InventoryComponent/HotbarComponent/EconomyComponent/DialogManager/DialogUI/ShopController+10个Resource数据类）、阶段4 UI与扩展（HUD/MainMenuUI/PauseMenuUI/InventoryUI/ShopUI/SkillCDIndicator/HotbarUI/MinimapUI/WorldMapUI/DocumentCollectionUI/SettingsUI/CharacterPanelUI/SaveData）"
+  - task_id: 解决方案设计（重做）
+    skill: 解决方案设计
     status: completed
-    started_at: "2026-04-08T14:00:00"
-    completed_at: "2026-04-08T14:20:00"
-    summary: "完成全部NPC(5)+怪物(12)设计提示词：5个NPC设计图提示词+5个NPC动画提示词、12个怪物设计图提示词+12个怪物动画提示词，更新角色设计总览"
-  - task_id: 剧本拆解
-    skill: 剧本拆解
-    status: completed
-    started_at: "2026-04-08T12:00:00"
-    completed_at: "2026-04-08T12:30:00"
-    summary: "完成5幕30场景分场剧本、角色立绘表情需求汇总、4角色立绘提示词(罗兰7表情+2变装、薇8表情+1变装+2变装、康拉德5表情+2变装、塞巴斯蒂安3表情+1变装)、26张过场画面提示词、剧本总览"
-  - task_id: review
+    started_at: "2026-04-13T00:05:00"
+    completed_at: "2026-04-13T00:10:00"
+    summary: "重做完成：需求分析文档（35个系统+C#接口定义+场景树设计+11个Resource数据结构+4个Autoload+4阶段里程碑）、测试用例设计（15个系统测试+4个集成场景+6个性能测试）。backlog代码生成任务已更新4阶段分解。"
+  - task_id: review-解决方案设计重做
     skill: 流程管理
     status: completed
-    started_at: "2026-04-08T01:00:00"
-    completed_at: "2026-04-08T01:00:00"
-    summary: "处理场景设计反馈（已确认完成），重新加入剧本拆解到待办队列（retry_count=1），移除已完成的场景设计"
-  - task_id: 场景设计
-    skill: 场景设计
-    status: completed
-    started_at: "2026-04-08T00:15:00"
-    completed_at: "2026-04-08T00:30:00"
-    summary: "重做全部15条场景提示词：移除负面提示词，全部转为Seedream 5.0 lite自然语言格式（5战斗场景+2功能场景+7对话背景+1 UI背景），更新场景设计总览"
-  - task_id: 角色设计
-    skill: 角色设计
-    status: partial
-    started_at: "2026-04-08T00:00:00"
-    completed_at: "2026-04-08T00:05:00"
-    summary: "重新生成主角提示词：罗兰设计图+动画提示词(8动作×2方向)、薇设计图+动画提示词(8动作×2方向)，移除负面提示词，优化自然语言描述。NPC和怪物提示词待后续生成"
+    started_at: "2026-04-13T00:00:00"
+    completed_at: "2026-04-13T00:02:00"
+    summary: "用户要求重做解决方案设计。删除10_解决方案设计/下两个文档，重置解决方案设计(completed→ready)、代码生成(in_progress→pending)。backlog代码生成任务已更新为待定。"
   - task_id: 解决方案设计
     skill: 解决方案设计
     status: completed
-    started_at: "2026-04-07T23:30:00"
-    completed_at: "2026-04-07T23:45:00"
-    summary: "完成需求分析文档（9个P0+7个P1+2个P2系统，含依赖图、接口定义、数据结构、架构模式、4阶段里程碑）和测试用例设计（75+测试用例）"
+    started_at: "2026-04-12T23:00:00"
+    completed_at: "2026-04-12T23:30:00"
+    summary: "完成需求分析文档（15个系统详细设计+模块依赖图+数据结构+文件结构+4阶段里程碑）和测试用例设计（12个系统单元/集成/边界测试+3个集成测试场景+7个性能测试场景）"
+  - task_id: review-剧本拆解
+    skill: 流程管理
+    status: completed
+    started_at: "2026-04-12T22:35:00"
+    completed_at: "2026-04-12T22:38:00"
+    summary: "处理剧本拆解反馈：分场剧本确认完成（五幕）。立绘表情提示词和过场动画提示词未生成，保留为遗留任务在backlog中。节点保持completed（completion_note已记录）。feedback已清空。"
+  - task_id: review-图生视频api（主角动画反馈）
+    skill: 流程管理
+    status: completed
+    started_at: "2026-04-12T19:35:00"
+    completed_at: "2026-04-12T19:38:00"
+    summary: "处理图生视频api反馈：char_001+char_002共8段动画视频确认完成。节点保持in_progress，剩余NPC(5)简化动画+怪物(12)完整动画。backlog已更新，feedback已清空。"
+  - task_id: 图生视频api（char_001+char_002 待机+奔跑）
+    skill: image-to-video
+    status: partial
+    started_at: "2026-04-12T19:28:00"
+    completed_at: "2026-04-12T19:30:00"
+    summary: "生成char_001罗兰+char_002薇共8段动画视频（各2角色×2动作×2方向=8段），全部5s 720p camera-fixed。剩余：5个NPC简化动画+12个怪物完整动画。"
+  - task_id: review-图生图人工（用户确认完成）
+    skill: 流程管理
+    status: completed
+    started_at: "2026-04-12T19:00:00"
+    completed_at: "2026-04-12T19:02:00"
+    summary: "用户确认图生图人工已完成。节点标记completed。级联更新：图生视频api(pending→ready)。backlog已更新，下一步为剧本拆解/解决方案设计/图生视频api。"
+  - task_id: review-文生图api（场景图片反馈·节点完成）
+    skill: 流程管理
+    status: completed
+    started_at: "2026-04-12T18:40:00"
+    completed_at: "2026-04-12T18:45:00"
+    summary: "处理文生图api场景图片反馈：67张场景图片全部确认完成。文生图api节点标记completed。级联更新：图生图人工(pending→ready)，图生图api/资源搬运保持pending。backlog已更新，feedback已清空。"
+  - task_id: 文生图api（全部场景图片）
+    skill: image-gen-api
+    status: completed
+    started_at: "2026-04-12T18:18:00"
+    completed_at: "2026-04-12T18:35:00"
+    summary: "生成全部场景图片62张：5功能场景背景、20战斗场景房间背景(4场景x5房)、31战斗场景摆件(10+8+7+6)、8对话背景(含4室内变体)、3UI背景。全部一次成功无失败"
+  - task_id: review-文生图api（全部角色设计图反馈）
+    skill: 流程管理
+    status: completed
+    started_at: "2026-04-12T02:15:00"
+    completed_at: "2026-04-12T02:20:00"
+    summary: "处理文生图api反馈：char_001+5个NPC共24张设计图全部确认完成。文生图api保持in_progress，仅剩场景图片(4战斗+5功能+5对话+3UI)。backlog已更新，feedback已清空。"
+  - task_id: 文生图api（全部角色设计图）
+    skill: image-gen-api
+    status: completed
+    started_at: "2026-04-12T01:48:00"
+    completed_at: "2026-04-12T02:10:00"
+    summary: "生成6角色共24张设计图：char_001罗兰(手绘动漫正面+背面、Q版正面+背面)、npc_001康拉德~npc_005渊宇各(手绘动漫正面+背面、Q版正面+背面)，全部2048x2048文生图，状态更新为初稿。场景图片待后续生成。"
+  - task_id: review-文生图api（怪物Q版设计图反馈）
+    skill: 流程管理
+    status: completed
+    started_at: "2026-04-12T01:00:00"
+    completed_at: "2026-04-12T01:05:00"
+    summary: "处理文生图api反馈：11个怪物Q版设计图(enemy_001~004,006~012)确认完成。文生图api保持in_progress，剩余：char_001设计图、5个NPC设计图、全部场景图片。backlog已更新，feedback已清空。"
+  - task_id: 文生图api（怪物Q版设计图·第二批）
+    skill: image-gen-api
+    status: completed
+    started_at: "2026-04-12T00:38:00"
+    completed_at: "2026-04-12T00:50:00"
+    summary: "生成11个怪物Q版设计图（enemy_001~004,006~012），2048x2048文生图，enemy_005已有初稿跳过。状态更新为初稿"
+  - task_id: 文生图api（怪物手绘Q版风格设计图）
+    skill: image-gen-api
+    status: completed
+    started_at: "2026-04-11T23:45:00"
+    completed_at: "2026-04-11T23:55:00"
+    summary: "生成12个怪物手绘Q版风格设计图（enemy_001~012），全部2048x2048文生图，状态更新为初稿"
+  - task_id: 角色设计（重做）
+    skill: 角色设计
+    status: completed
+    started_at: "2026-04-11T23:05:00"
+    completed_at: "2026-04-11T23:30:00"
+    summary: "重做完成：19角色全部提示词生成（2主角设计图+手绘Q版风格+10动画、5NPC设计图+手绘Q版风格+2动画、12怪物手绘Q版风格+完整动画），共45个文件+角色设计总览"
+  - task_id: review-角色设计重做
+    skill: 流程管理
+    status: completed
+    started_at: "2026-04-11T23:00:00"
+    completed_at: "2026-04-11T23:00:00"
+    summary: "用户要求重做角色设计。02_角色设计/全部文件已删除。级联重置：角色设计(completed→ready)、文生图api(in_progress→pending)。下游节点(图生图api/图生图人工/图生视频api/精灵帧提取)保持pending。"
+  - task_id: 文生图api（主角）
+    skill: image-gen-api
+    status: partial
+    started_at: "2026-04-11T22:17:00"
+    completed_at: "2026-04-11T22:19:00"
+    summary: "生成2主角共4张手绘动漫设计图（罗兰正面/背面、薇正面/背面），状态更新为初稿。NPC和怪物设计图待后续生成"
   - task_id: 场景设计
     skill: 场景设计
     status: completed
-    started_at: "2026-04-07T23:00:00"
-    completed_at: "2026-04-07T23:10:00"
-    summary: "完成全部15条场景提示词：5战斗场景+2功能场景+7对话背景+1UI背景，含阵营配色匹配和场景设计总览"
-archived:
-  - period: "2026-04-07 ~ 2026-04-07"
-    total: 4
-    completed: 3
-    failed: 1
-    tasks: [剧本拆解(partial), 角色设计(partial), 场景设计, 解决方案设计]
-  - period: "2026-04-07"
-    total: 1
-    completed: 1
-    failed: 0
-    tasks: [需求分析]
+    started_at: "2026-04-11T10:00:00"
+    completed_at: "2026-04-11T10:30:00"
+    summary: "完成全部场景提示词生成：4战斗场景(20房间背景+31摆件)、5功能场景(6背景)、5对话背景(8变体)、3UI背景，共63条提示词"
+  - task_id: 角色设计
+    skill: 角色设计
+    status: completed
+    started_at: "2026-04-11T01:00:00"
+    completed_at: "2026-04-11T01:30:00"
+    summary: "完成全部19角色提示词生成：2主角(设计图+手绘Q版风格+10动画)、5NPC(设计图+手绘Q版风格+2动画)、12怪物(手绘Q版风格+完整动画)、角色设计总览"
+  - task_id: 需求分析
+    skill: 需求分析
+    status: completed
+    started_at: "2026-04-11T00:00:00"
+    completed_at: "2026-04-11T00:30:00"
+    summary: "完成全部需求分析：CLAUDE.md、角色需求(19角色)、场景需求(12场景)、音频需求(16BGM+42音效)、代码需求(10系统+14UI)"
+archived: []

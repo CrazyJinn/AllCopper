@@ -1,135 +1,126 @@
 using Godot;
 
 /// <summary>
-/// 背包界面 - 网格拖拽式背包
+/// 背包界面UI
+/// 网格布局显示物品，支持拖拽移动、详情查看、快捷栏绑定
 /// </summary>
-public partial class InventoryUI : CanvasLayer
+[GlobalClass]
+public partial class InventoryUI : Control
 {
-    private Control _root;
-    private GridContainer _grid;
-    private TextureRect[,] _slots;
-    private int _gridWidth = 10;
-    private int _gridHeight = 6;
+    // ===== 信号 =====
+
+    [Signal]
+    public delegate void ItemSelectedEventHandler(string itemId);
+
+    [Signal]
+    public delegate void ItemMovedEventHandler(string itemId, Vector2I from, Vector2I to);
+
+    [Signal]
+    public delegate void ClosedEventHandler();
+
+    // ===== 子节点引用 =====
+
+    private GridContainer _itemGrid;
+    private Panel _detailPanel;
+    private Control _hotbarDisplay;
+    private Label _currencyLabel;
 
     public override void _Ready()
     {
-        Layer = 30;
+        BuildScene();
+    }
 
-        _root = new Control { Name = "InventoryRoot" };
-        _root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        AddChild(_root);
+    /// <summary>
+    /// 刷新背包显示
+    /// </summary>
+    /// <param name="inventory">背包组件</param>
+    public void Refresh(InventoryComponent inventory)
+    {
+        if (_itemGrid == null || inventory == null) return;
 
-        // 背景
-        var bg = new ColorRect { Color = new Color(0, 0, 0, 0.7f) };
-        bg.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        _root.AddChild(bg);
-
-        // 居中面板
-        var panel = new Panel { Name = "InventoryPanel" };
-        panel.SetAnchorsPreset(Control.LayoutPreset.Center);
-        panel.CustomMinimumSize = new Vector2(500, 400);
-        _root.AddChild(panel);
-
-        // 标题
-        var title = new Label { Text = "背包", Position = new Vector2(20, 10) };
-        panel.AddChild(title);
-
-        // 网格容器
-        _grid = new GridContainer
+        // 清空网格
+        foreach (var child in _itemGrid.GetChildren())
         {
-            Name = "ItemGrid",
-            Columns = _gridWidth,
-            Position = new Vector2(20, 50)
-        };
-        panel.AddChild(_grid);
-
-        _slots = new TextureRect[_gridWidth, _gridHeight];
-        for (int y = 0; y < _gridHeight; y++)
-        {
-            for (int x = 0; x < _gridWidth; x++)
-            {
-                var slot = new TextureRect
-                {
-                    CustomMinimumSize = new Vector2(48, 48),
-                    StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
-                    Name = $"Slot_{x}_{y}"
-                };
-                var style = new StyleBoxFlat
-                {
-                    BgColor = new Color(0.2f, 0.2f, 0.2f, 0.8f),
-                    BorderColor = new Color(0.5f, 0.5f, 0.5f),
-                    BorderWidthBottom = 1,
-                    BorderWidthTop = 1,
-                    BorderWidthLeft = 1,
-                    BorderWidthRight = 1
-                };
-                slot.AddThemeStyleboxOverride("panel", style);
-                _grid.AddChild(slot);
-                _slots[x, y] = slot;
-            }
+            child.QueueFree();
         }
 
-        _root.Visible = false;
-
-        // 连接信号
-        if (InventoryManager.Instance != null)
+        // 重新填充
+        var items = inventory.GetAllItems();
+        foreach (var (itemId, pos, count) in items)
         {
-            InventoryManager.Instance.ItemAdded += OnItemAdded;
-            InventoryManager.Instance.ItemRemoved += OnItemRemoved;
+            var slot = new Panel();
+            var label = new Label { Text = $"{itemId}\n{count}" };
+            slot.AddChild(label);
+            _itemGrid.AddChild(slot);
         }
     }
 
-    public override void _Input(InputEvent @event)
+    /// <summary>
+    /// 显示物品详情
+    /// </summary>
+    /// <param name="item">物品数据</param>
+    public void ShowItemDetail(ItemData item)
     {
-        if (@event.IsActionPressed("toggle_inventory"))
+        if (_detailPanel == null || item == null) return;
+
+        // 清空详情面板
+        foreach (var child in _detailPanel.GetChildren())
         {
-            _root.Visible = !_root.Visible;
-            if (_root.Visible)
-            {
-                GameManager.Instance?.ChangeState(GameEnums.GameState.Paused);
-            }
-            else
-            {
-                GameManager.Instance?.RestorePreviousState();
-            }
-        }
-    }
-
-    private void OnItemAdded(string itemId, Vector2I position)
-    {
-        RefreshGrid();
-    }
-
-    private void OnItemRemoved(string itemId, Vector2I position)
-    {
-        RefreshGrid();
-    }
-
-    private void RefreshGrid()
-    {
-        // 清空所有格子
-        for (int y = 0; y < _gridHeight; y++)
-        {
-            for (int x = 0; x < _gridWidth; x++)
-            {
-                _slots[x, y].Texture = null;
-            }
+            child.QueueFree();
         }
 
-        // 从背包管理器填充
-        var inventory = InventoryManager.Instance;
-        if (inventory == null) return;
+        var nameLabel = new Label { Text = item.DisplayName };
+        var descLabel = new Label { Text = item.Description };
+        _detailPanel.AddChild(nameLabel);
+        _detailPanel.AddChild(descLabel);
+    }
 
-        for (int y = 0; y < _gridHeight; y++)
-        {
-            for (int x = 0; x < _gridWidth; x++)
-            {
-                var item = inventory.GetItemAt(new Vector2I(x, y));
-                if (item != null && item.Icon != null)
-                {
-                    _slots[x, y].Texture = item.Icon;
-                }
-            }
-        }
+    /// <summary>
+    /// 代码构建子节点
+    /// </summary>
+    private void BuildScene()
+    {
+        SetAnchorsPreset(Control.LayoutPreset.FullRect);
+
+        // 半透明背景
+        var overlay = new ColorRect();
+        overlay.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        overlay.Color = new Color(0, 0, 0, 0.5f);
+        AddChild(overlay);
+        overlay.Owner = this;
+
+        // 主容器
+        var container = new HBoxContainer();
+        container.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect, Control.LayoutPreset.KeepSize, 40);
+        AddChild(container);
+        container.Owner = this;
+
+        // 物品网格
+        _itemGrid = new GridContainer();
+        _itemGrid.Name = "ItemGrid";
+        _itemGrid.Columns = 10;
+        _itemGrid.CustomMinimumSize = new Vector2(500, 400);
+        container.AddChild(_itemGrid);
+        _itemGrid.Owner = this;
+
+        // 详情面板
+        _detailPanel = new Panel();
+        _detailPanel.Name = "DetailPanel";
+        _detailPanel.CustomMinimumSize = new Vector2(300, 400);
+        container.AddChild(_detailPanel);
+        _detailPanel.Owner = this;
+
+        // 货币标签
+        _currencyLabel = new Label();
+        _currencyLabel.Name = "CurrencyLabel";
+        _currencyLabel.Text = "0";
+        container.AddChild(_currencyLabel);
+        _currencyLabel.Owner = this;
+
+        // 关闭按钮
+        var closeButton = new Button { Text = "关闭" };
+        closeButton.Pressed += () => EmitSignal(SignalName.Closed);
+        container.AddChild(closeButton);
+        closeButton.Owner = this;
     }
 }

@@ -1,127 +1,142 @@
 using Godot;
 
 /// <summary>
-/// 音频管理器 - Autoload单例
-/// BGM淡入淡出切换、音效多通道播放、分通道音量控制
+/// 音频管理器（Autoload）
+/// 管理BGM播放/淡入淡出、多通道SFX播放、音量控制
 /// </summary>
+[GlobalClass]
 public partial class AudioManager : Node
 {
     public static AudioManager Instance { get; private set; }
 
-    [Signal] public delegate void BgmChangedEventHandler(string bgmId);
-
-    public bool IsPlaying => _bgmPlayer?.Playing ?? false;
+    /// <summary>SFX通道数量</summary>
+    public const int SfxChannelCount = 8;
 
     private AudioStreamPlayer _bgmPlayer;
-    private AudioStreamPlayer _bgmFadePlayer;
-    private Node _sfxPool;
-
-    private float _masterVolume = 1f;
-    private float _bgmVolume = 0.8f;
+    private AudioStreamPlayer[] _sfxPlayers;
+    private float _bgmVolume = 1f;
     private float _sfxVolume = 1f;
-
-    private const int MaxSfxChannels = 8;
-    private const float BgmFadeDuration = 1f;
-    private float _bgmFadeTimer;
-    private bool _bgmFading;
-    private string _pendingBgm;
-
-    public override void _EnterTree()
-    {
-        Instance = this;
-    }
+    private Tween _bgmFadeTween;
 
     public override void _Ready()
     {
-        _bgmPlayer = new AudioStreamPlayer { Name = "BGMPlayer" };
-        _bgmFadePlayer = new AudioStreamPlayer { Name = "BGMFadePlayer" };
-        _sfxPool = new Node { Name = "SFXPool" };
+        Instance = this;
 
+        // BGM 播放器
+        _bgmPlayer = new AudioStreamPlayer();
+        _bgmPlayer.Name = "BGMPlayer";
         AddChild(_bgmPlayer);
-        AddChild(_bgmFadePlayer);
-        AddChild(_sfxPool);
 
-        for (int i = 0; i < MaxSfxChannels; i++)
+        // SFX 多通道播放器
+        _sfxPlayers = new AudioStreamPlayer[SfxChannelCount];
+        for (int i = 0; i < SfxChannelCount; i++)
         {
-            var player = new AudioStreamPlayer { Name = $"SFX_{i}" };
-            _sfxPool.AddChild(player);
+            _sfxPlayers[i] = new AudioStreamPlayer();
+            _sfxPlayers[i].Name = $"SFXPlayer_{i}";
+            AddChild(_sfxPlayers[i]);
         }
     }
 
-    public override void _Process(double delta)
+    /// <summary>
+    /// 播放BGM（带淡入）
+    /// </summary>
+    /// <param name="path">音频资源路径</param>
+    /// <param name="fadeTime">淡入时间（秒）</param>
+    public void PlayBGM(string path, float fadeTime = 1f)
     {
-        if (!_bgmFading) return;
-
-        _bgmFadeTimer += (float)delta;
-        float t = _bgmFadeTimer / BgmFadeDuration;
-
-        if (t >= 1f)
+        var stream = GD.Load<AudioStream>(path);
+        if (stream == null)
         {
-            _bgmPlayer.Stream = _bgmFadePlayer.Stream;
-            _bgmPlayer.Play();
-            _bgmPlayer.VolumeDb = Mathf.LinearToDb(_bgmVolume * _masterVolume);
-            _bgmFadePlayer.Stop();
-            _bgmFading = false;
-            EmitSignal(SignalName.BgmChanged, _pendingBgm);
+            GD.PrintErr($"[AudioManager] BGM not found: {path}");
+            return;
         }
-        else
-        {
-            _bgmPlayer.VolumeDb = Mathf.LinearToDb((1f - t) * _bgmVolume * _masterVolume);
-            _bgmFadePlayer.VolumeDb = Mathf.LinearToDb(t * _bgmVolume * _masterVolume);
-        }
-    }
 
-    /// <summary>播放BGM，支持淡入淡出</summary>
-    public void PlayBgm(string resourcePath, string bgmId = "")
-    {
-        var stream = GD.Load<AudioStream>(resourcePath);
-        if (stream == null) return;
-
-        _pendingBgm = bgmId;
-
+        // 淡出当前BGM
         if (_bgmPlayer.Playing)
         {
-            _bgmFadePlayer.Stream = stream;
-            _bgmFadePlayer.Play();
-            _bgmFadeTimer = 0f;
-            _bgmFading = true;
+            _bgmFadeTween?.Kill();
+            _bgmFadeTween = CreateTween();
+            _bgmFadeTween.TweenProperty(_bgmPlayer, "volume_db", -80f, fadeTime);
+            _bgmFadeTween.TweenCallback(Callable.From(() =>
+            {
+                _bgmPlayer.Stream = stream;
+                _bgmPlayer.VolumeDb = Mathf.LinearToDb(_bgmVolume);
+                _bgmPlayer.Play();
+            }));
         }
         else
         {
             _bgmPlayer.Stream = stream;
-            _bgmPlayer.VolumeDb = Mathf.LinearToDb(_bgmVolume * _masterVolume);
+            _bgmPlayer.VolumeDb = Mathf.LinearToDb(_bgmVolume);
             _bgmPlayer.Play();
-            EmitSignal(SignalName.BgmChanged, bgmId);
         }
     }
 
-    /// <summary>播放音效</summary>
-    public void PlaySfx(string resourcePath)
+    /// <summary>
+    /// 停止BGM（带淡出）
+    /// </summary>
+    /// <param name="fadeTime">淡出时间（秒）</param>
+    public void StopBGM(float fadeTime = 1f)
     {
-        var stream = GD.Load<AudioStream>(resourcePath);
-        if (stream == null) return;
+        if (!_bgmPlayer.Playing) return;
 
-        foreach (AudioStreamPlayer player in _sfxPool.GetChildren())
+        _bgmFadeTween?.Kill();
+        _bgmFadeTween = CreateTween();
+        _bgmFadeTween.TweenProperty(_bgmPlayer, "volume_db", -80f, fadeTime);
+        _bgmFadeTween.TweenCallback(Callable.From(() => _bgmPlayer.Stop()));
+    }
+
+    /// <summary>
+    /// 播放SFX音效（自动选择空闲通道）
+    /// </summary>
+    /// <param name="path">音效资源路径</param>
+    /// <param name="volumeDb">音量（dB）</param>
+    public void PlaySFX(string path, float volumeDb = 0f)
+    {
+        var stream = GD.Load<AudioStream>(path);
+        if (stream == null)
         {
-            if (!player.Playing)
+            GD.PrintErr($"[AudioManager] SFX not found: {path}");
+            return;
+        }
+
+        // 找到空闲通道
+        for (int i = 0; i < SfxChannelCount; i++)
+        {
+            if (!_sfxPlayers[i].Playing)
             {
-                player.Stream = stream;
-                player.VolumeDb = Mathf.LinearToDb(_sfxVolume * _masterVolume);
-                player.Play();
+                _sfxPlayers[i].Stream = stream;
+                _sfxPlayers[i].VolumeDb = Mathf.LinearToDb(_sfxVolume) + volumeDb;
+                _sfxPlayers[i].Play();
                 return;
             }
         }
+
+        // 全部通道忙碌，强制使用第一个
+        _sfxPlayers[0].Stream = stream;
+        _sfxPlayers[0].VolumeDb = Mathf.LinearToDb(_sfxVolume) + volumeDb;
+        _sfxPlayers[0].Play();
     }
 
-    /// <summary>停止BGM</summary>
-    public void StopBgm()
+    /// <summary>
+    /// 设置BGM音量
+    /// </summary>
+    /// <param name="linear">线性音量（0~1）</param>
+    public void SetMusicVolume(float linear)
     {
-        _bgmPlayer.Stop();
-        _bgmFadePlayer.Stop();
-        _bgmFading = false;
+        _bgmVolume = Mathf.Clamp(linear, 0f, 1f);
+        if (_bgmPlayer.Playing)
+        {
+            _bgmPlayer.VolumeDb = Mathf.LinearToDb(_bgmVolume);
+        }
     }
 
-    public void SetMasterVolume(float volume) => _masterVolume = Mathf.Clamp(volume, 0f, 1f);
-    public void SetBgmVolume(float volume) => _bgmVolume = Mathf.Clamp(volume, 0f, 1f);
-    public void SetSfxVolume(float volume) => _sfxVolume = Mathf.Clamp(volume, 0f, 1f);
+    /// <summary>
+    /// 设置SFX音量
+    /// </summary>
+    /// <param name="linear">线性音量（0~1）</param>
+    public void SetSFXVolume(float linear)
+    {
+        _sfxVolume = Mathf.Clamp(linear, 0f, 1f);
+    }
 }
