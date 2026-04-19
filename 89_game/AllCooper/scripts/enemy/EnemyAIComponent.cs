@@ -30,18 +30,27 @@ public partial class EnemyAIComponent : Node
     [Export]
     public float AttackCooldown { get; set; } = 1f;
 
+    // ===== 公共属性 =====
+
+    /// <summary>是否正在攻击中</summary>
+    public bool IsAttacking => _isAttacking;
+
     // ===== 私有字段 =====
 
     private EnemyController _owner;
     private float _attackCooldownTimer;
+    private bool _isAttacking;
     private Vector2 _patrolTarget;
     private float _patrolWaitTimer;
     private bool _waiting;
 
+    // Hitbox 激活窗口（帧比例）
+    private const float HitboxStartRatio = 0.3f;
+    private const float HitboxEndRatio = 0.6f;
+
     /// <summary>
     /// 初始化AI组件
     /// </summary>
-    /// <param name="owner">所属敌人控制器</param>
     public void Initialize(EnemyController owner)
     {
         _owner = owner;
@@ -55,6 +64,13 @@ public partial class EnemyAIComponent : Node
         if (_owner == null || _owner.CurrentState == EnemyState.Dead) return;
 
         float dt = (float)delta;
+
+        // 攻击中：帧级 hitbox 控制 + 等待动画播完
+        if (_isAttacking)
+        {
+            UpdateHitboxByFrame();
+            return;
+        }
 
         // 攻击CD递减
         if (_attackCooldownTimer > 0f)
@@ -77,10 +93,12 @@ public partial class EnemyAIComponent : Node
     /// <summary>
     /// 计算当前帧移动速度
     /// </summary>
-    /// <returns>移动速度向量</returns>
     public Vector2 CalculateVelocity()
     {
         if (_owner == null || _owner.Target == null) return Vector2.Zero;
+
+        // 攻击中不移动
+        if (_isAttacking) return Vector2.Zero;
 
         float distance = _owner.GlobalPosition.DistanceTo(_owner.Target.GlobalPosition);
 
@@ -91,15 +109,10 @@ public partial class EnemyAIComponent : Node
             return Vector2.Zero;
         }
 
-        // 在攻击范围内 → 攻击
+        // 在攻击范围内且CD好了 → 发起攻击
         if (distance <= AttackRange && CanAttack())
         {
-            _owner.ChangeState(EnemyState.Attack);
-            _owner.Hitbox.SetActive(true);
-            _attackCooldownTimer = AttackCooldown;
-
-            // 攻击后短暂延迟关闭 Hitbox
-            _owner.Hitbox.SetActive(false);
+            StartAttack();
             return Vector2.Zero;
         }
 
@@ -116,32 +129,62 @@ public partial class EnemyAIComponent : Node
         return CalculatePatrolVelocity();
     }
 
-    /// <summary>
-    /// 目标是否在侦测范围内
-    /// </summary>
+    /// <summary>目标是否在侦测范围内</summary>
     public bool IsTargetInDetectRange()
     {
         if (_owner?.Target == null) return false;
         return _owner.GlobalPosition.DistanceTo(_owner.Target.GlobalPosition) <= DetectRange;
     }
 
-    /// <summary>
-    /// 目标是否在攻击范围内
-    /// </summary>
+    /// <summary>目标是否在攻击范围内</summary>
     public bool IsTargetInAttackRange()
     {
         if (_owner?.Target == null) return false;
         return _owner.GlobalPosition.DistanceTo(_owner.Target.GlobalPosition) <= AttackRange;
     }
 
-    /// <summary>
-    /// 是否可以攻击（CD结束）
-    /// </summary>
-    public bool CanAttack() => _attackCooldownTimer <= 0f;
+    /// <summary>是否可以攻击（CD结束且不在攻击中）</summary>
+    public bool CanAttack() => _attackCooldownTimer <= 0f && !_isAttacking;
 
-    /// <summary>
-    /// 检查目标是否死亡
-    /// </summary>
+    // ===== 攻击管理 =====
+
+    private void StartAttack()
+    {
+        _isAttacking = true;
+        _attackCooldownTimer = AttackCooldown;
+        _owner.ChangeState(EnemyState.Attack);
+
+        // 订阅动画播完信号
+        _owner.SpriteSheet.AnimatedSprite.AnimationFinished += OnAttackAnimationFinished;
+    }
+
+    private void OnAttackAnimationFinished()
+    {
+        _owner.SpriteSheet.AnimatedSprite.AnimationFinished -= OnAttackAnimationFinished;
+        _isAttacking = false;
+        _owner.Hitbox.SetActive(false);
+        _owner.ChangeState(EnemyState.Chase);
+    }
+
+    /// <summary>根据当前帧控制 hitbox 开关</summary>
+    private void UpdateHitboxByFrame()
+    {
+        var sheet = _owner.SpriteSheet;
+        if (sheet == null) return;
+
+        int frame = sheet.CurrentFrame;
+        int total = sheet.FrameCount;
+        if (total == 0) return;
+
+        int hitboxStart = (int)(total * HitboxStartRatio);
+        int hitboxEnd = (int)(total * HitboxEndRatio);
+
+        _owner.Hitbox.SetActive(frame >= hitboxStart && frame <= hitboxEnd);
+    }
+
+    // ===== 巡逻 =====
+
+    /// <summary>检查目标是否死亡</summary>
     private bool IsTargetDead()
     {
         if (_owner.Target == null) return true;
@@ -149,9 +192,7 @@ public partial class EnemyAIComponent : Node
         return health != null && health.IsDead;
     }
 
-    /// <summary>
-    /// 计算巡逻速度
-    /// </summary>
+    /// <summary>计算巡逻速度</summary>
     private Vector2 CalculatePatrolVelocity()
     {
         if (_waiting) return Vector2.Zero;
@@ -159,18 +200,15 @@ public partial class EnemyAIComponent : Node
         Vector2 toTarget = _patrolTarget - _owner.GlobalPosition;
         if (toTarget.Length() < 10f)
         {
-            // 到达巡逻点，等待
             _waiting = true;
-            _patrolWaitTimer = GD.RandRange(1f, 3f);
+            _patrolWaitTimer = (float)GD.RandRange(1.0, 3.0);
             return Vector2.Zero;
         }
 
         return toTarget.Normalized() * PatrolSpeed;
     }
 
-    /// <summary>
-    /// 随机选择新巡逻目标点（在出生位置附近）
-    /// </summary>
+    /// <summary>随机选择新巡逻目标点（在出生位置附近）</summary>
     private void PickNewPatrolTarget()
     {
         float patrolRadius = 100f;

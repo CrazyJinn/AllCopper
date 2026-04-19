@@ -36,7 +36,7 @@ public partial class ObjectPool : Node
             var instance = CreateInstance(key);
             instance.SetProcess(false);
             instance.SetPhysicsProcess(false);
-            instance.SetVisible(false);
+            if (instance is CanvasItem ci) ci.Visible = false;
             AddChild(instance);
             _pools[key].Push(instance);
         }
@@ -69,7 +69,7 @@ public partial class ObjectPool : Node
 
         instance.SetProcess(true);
         instance.SetPhysicsProcess(true);
-        instance.SetVisible(true);
+        if (instance is CanvasItem ci) ci.Visible = true;
         return instance as T;
     }
 
@@ -84,7 +84,7 @@ public partial class ObjectPool : Node
 
         obj.SetProcess(false);
         obj.SetPhysicsProcess(false);
-        obj.SetVisible(false);
+        if (obj is CanvasItem ci) ci.Visible = false;
 
         if (obj.GetParent() == null)
         {
@@ -115,7 +115,7 @@ public partial class ObjectPool : Node
                 var instance = CreateInstance(kvp.Key);
                 instance.SetProcess(false);
                 instance.SetPhysicsProcess(false);
-                instance.SetVisible(false);
+                if (instance is CanvasItem ci) ci.Visible = false;
                 AddChild(instance);
                 _pools[kvp.Key].Push(instance);
             }

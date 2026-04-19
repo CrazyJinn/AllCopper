@@ -10,14 +10,13 @@ public partial class PlayerController : CharacterBody2D
 {
     // ===== 子节点引用（BuildScene 创建） =====
 
-    private Sprite2D _sprite;
     private CollisionShape2D _collision;
     public HealthComponent Health { get; private set; }
     public HitboxComponent Hitbox { get; private set; }
     public HurtboxComponent Hurtbox { get; private set; }
     public CombatResourceComponent CombatResource { get; private set; }
     public StatusEffectComponent StatusEffect { get; private set; }
-    private AnimationPlayer _anim;
+    public SpriteSheetComponent SpriteSheet { get; private set; }
 
     // ===== 导出属性 =====
 
@@ -55,6 +54,7 @@ public partial class PlayerController : CharacterBody2D
     private float _rollCooldownTimer;
     private Vector2 _rollDirection;
     private Vector2 _inputDirection;
+    private Vector2 _lastMoveDirection = Vector2.Right;
 
     // ===== 生命周期 =====
 
@@ -213,6 +213,9 @@ public partial class PlayerController : CharacterBody2D
             RollDuration = Data.RollDuration;
             RollCooldown = Data.RollCooldown;
 
+            if (!string.IsNullOrEmpty(Data.TpsheetPath) && SpriteSheet != null)
+                SpriteSheet.Initialize(Data.TpsheetPath);
+
             if (Health != null)
             {
                 Health.MaxHealth = Data.MaxHealth;
@@ -248,6 +251,7 @@ public partial class PlayerController : CharacterBody2D
         {
             _inputDirection = _inputDirection.Normalized();
             Velocity = _inputDirection * _moveSpeed;
+            _lastMoveDirection = _inputDirection;
             ChangeState(PlayerState.Moving);
         }
         else
@@ -307,24 +311,26 @@ public partial class PlayerController : CharacterBody2D
     /// </summary>
     private void UpdateAnimation()
     {
-        if (_anim == null) return;
+        if (SpriteSheet == null) return;
+
+        // 攻击时朝向鼠标，其他状态朝向最后的移动方向
+        Vector2 facing = CurrentState == PlayerState.Attacking ? FacingDirection : _lastMoveDirection;
+        string direction = facing.Y >= 0 ? "front" : "back";
+        SpriteSheet.SetFlipH(facing.X > 0);
 
         string animName = CurrentState switch
         {
-            PlayerState.Idle => "idle",
-            PlayerState.Moving => "move",
-            PlayerState.Attacking => "attack",
-            PlayerState.Rolling => "roll",
-            PlayerState.Casting => "cast",
-            PlayerState.Interacting => "interact",
+            PlayerState.Idle => $"idle_{direction}",
+            PlayerState.Moving => $"move_{direction}",
+            PlayerState.Attacking => $"attack_{direction}",
+            PlayerState.Rolling => $"roll_{direction}",
+            PlayerState.Casting => $"cast_{direction}",
+            PlayerState.Interacting => $"interact_{direction}",
             PlayerState.Dead => "dead",
-            _ => "idle"
+            _ => $"idle_{direction}"
         };
 
-        if (_anim.HasAnimation(animName) && !_anim.IsPlaying())
-        {
-            _anim.Play(animName);
-        }
+        SpriteSheet.Play(animName);
     }
 
     /// <summary>
@@ -342,11 +348,11 @@ public partial class PlayerController : CharacterBody2D
     /// </summary>
     private void BuildScene()
     {
-        // Sprite
-        _sprite = new Sprite2D();
-        _sprite.Name = "Sprite";
-        AddChild(_sprite);
-        _sprite.Owner = this;
+        // SpriteSheetComponent
+        SpriteSheet = new SpriteSheetComponent();
+        SpriteSheet.Name = "SpriteSheet";
+        AddChild(SpriteSheet);
+        SpriteSheet.Owner = this;
 
         // CollisionShape（CircleShape2D R=16）
         _collision = new CollisionShape2D();
@@ -393,11 +399,5 @@ public partial class PlayerController : CharacterBody2D
         StatusEffect.Name = "StatusEffectComponent";
         AddChild(StatusEffect);
         StatusEffect.Owner = this;
-
-        // AnimationPlayer
-        _anim = new AnimationPlayer();
-        _anim.Name = "AnimationPlayer";
-        AddChild(_anim);
-        _anim.Owner = this;
     }
 }

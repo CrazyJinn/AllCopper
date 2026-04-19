@@ -144,7 +144,7 @@ nodes:
     retry_count: 0
     started_at: "2026-04-12T20:00:00"
     completed_at: null
-    progress_note: "主角动画完成(8段mp4)；NPC简化动画+怪物完整动画待生成"
+    progress_note: "主角动画重做中：char_002待重新生成待机+奔跑(4段)；char_001等用户提供Q版设计图；剩余NPC+怪物动画待生成"
 
   精灵帧提取:
     name: 精灵帧提取

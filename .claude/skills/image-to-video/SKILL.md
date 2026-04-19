@@ -112,13 +112,13 @@ python scripts/seedance_api.py wait <task_id> <output.mp4>
 
 ## 模型与参数
 
-使用 `doubao-seedance-2-0-260128` 模型（可在 settings.json 中通过 `seedance_model` 配置）。
+使用 `doubao-seedance-1-0-pro-fast-251015` 模型（可在 settings.json 中通过 `seedance_model` 配置）。
 
 ### 通用参数
 
 | 参数 | CLI 参数 | 类型 | 默认值 | 说明 |
 |-----|---------|------|-------|------|
-| model | --model | string | doubao-seedance-2-0-260128 | 模型ID |
+| model | --model | string | doubao-seedance-1-0-pro-fast-251015 | 模型ID |
 | resolution | --resolution | string | 720p | 480p/720p/1080p |
 | ratio | --ratio | string | adaptive | 16:9/4:3/1:1/3:4/9:16/21:9/adaptive |
 | duration | --duration | int | 5 | 视频时长秒数，2.0: [4,15] |

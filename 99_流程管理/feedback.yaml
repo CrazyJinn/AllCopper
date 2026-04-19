@@ -1,1 +1,13 @@
-entries: []
+entries:
+  - task_id: 图生视频（char_002 奔跑动画）
+    skill: image-to-video
+    executed_at: "2026-04-19T22:43:00"
+    processed:
+      - "char_002 移动正面 2s → char_002_run_front_2026-04-19_10.mp4"
+      - "char_002 移动背面 2s → char_002_run_back_2026-04-19_11.mp4"
+    unprocessed:
+      - "char_001 罗兰 待机+奔跑（blocked: 等用户提供Q版设计图）"
+      - "char_001+002 完整动画（攻击/技能/闪避/受击/死亡等）"
+      - "NPC npc_001~005 简化动画"
+      - "怪物 enemy_001~012 完整动画"
+    unable_to_process: []

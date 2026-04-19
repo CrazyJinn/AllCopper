@@ -69,7 +69,7 @@ public partial class CharacterPanelUI : Control
         panel.Owner = this;
 
         var container = new VBoxContainer();
-        container.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect, Control.LayoutPreset.KeepSize, 20);
+        container.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect, Control.LayoutPresetMode.KeepSize, 20);
         panel.AddChild(container);
         container.Owner = panel;
 

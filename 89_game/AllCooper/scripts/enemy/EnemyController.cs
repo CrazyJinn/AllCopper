@@ -14,8 +14,7 @@ public partial class EnemyController : CharacterBody2D
     public HitboxComponent Hitbox { get; private set; }
     public HurtboxComponent Hurtbox { get; private set; }
     public EnemyAIComponent AI { get; private set; }
-    private Sprite2D _sprite;
-    private AnimationPlayer _anim;
+    public SpriteSheetComponent SpriteSheet { get; private set; }
 
     // ===== 导出属性 =====
 
@@ -55,6 +54,14 @@ public partial class EnemyController : CharacterBody2D
         // 眩晕中不执行AI
         if (CurrentState == EnemyState.Stunned) return;
 
+        // 攻击中由AI组件管理，不执行移动
+        if (AI.IsAttacking)
+        {
+            Velocity = Vector2.Zero;
+            UpdateAnimation();
+            return;
+        }
+
         // AI 计算移动速度
         if (Target != null && !Target.IsQueuedForDeletion())
         {
@@ -93,6 +100,9 @@ public partial class EnemyController : CharacterBody2D
         SpawnPosition = GlobalPosition;
         _attackPower = Data.AttackPower;
         _moveSpeed = Data.MoveSpeed;
+
+        if (!string.IsNullOrEmpty(Data.TpsheetPath) && SpriteSheet != null)
+            SpriteSheet.Initialize(Data.TpsheetPath);
 
         if (Health != null)
         {
@@ -175,23 +185,34 @@ public partial class EnemyController : CharacterBody2D
     /// </summary>
     private void UpdateAnimation()
     {
-        if (_anim == null) return;
+        if (SpriteSheet == null) return;
+
+        // 攻击中朝向目标，其他状态用移动方向
+        Vector2 facing = CurrentState == EnemyState.Attack && Target != null
+            ? (Target.GlobalPosition - GlobalPosition).Normalized()
+            : Velocity;
+        string direction = facing.Y >= 0 ? "front" : "back";
+
+        // 水平翻转：精灵默认朝左
+        if (facing.X != 0f)
+            SpriteSheet.SetFlipH(facing.X > 0);
 
         string animName = CurrentState switch
         {
-            EnemyState.Idle => "idle",
-            EnemyState.Patrol => "move",
-            EnemyState.Chase => "move",
-            EnemyState.Attack => "attack",
-            EnemyState.Stunned => "stunned",
+            EnemyState.Idle => $"idle_{direction}",
+            EnemyState.Patrol => $"move_{direction}",
+            EnemyState.Chase => $"move_{direction}",
+            EnemyState.Attack => $"attack_{direction}",
+            EnemyState.Stunned => $"stunned_{direction}",
             EnemyState.Dead => "death",
-            _ => "idle"
+            _ => $"idle_{direction}"
         };
 
-        if (_anim.HasAnimation(animName) && !_anim.IsPlaying())
-        {
-            _anim.Play(animName);
-        }
+        // 攻击动画不循环，播完所有帧
+        if (CurrentState == EnemyState.Attack)
+            SpriteSheet.PlayOnce(animName);
+        else
+            SpriteSheet.Play(animName);
     }
 
     /// <summary>
@@ -199,11 +220,11 @@ public partial class EnemyController : CharacterBody2D
     /// </summary>
     private void BuildScene()
     {
-        // Sprite
-        _sprite = new Sprite2D();
-        _sprite.Name = "Sprite";
-        AddChild(_sprite);
-        _sprite.Owner = this;
+        // SpriteSheetComponent
+        SpriteSheet = new SpriteSheetComponent();
+        SpriteSheet.Name = "SpriteSheet";
+        AddChild(SpriteSheet);
+        SpriteSheet.Owner = this;
 
         // CollisionShape
         var collision = new CollisionShape2D();
@@ -243,11 +264,5 @@ public partial class EnemyController : CharacterBody2D
         AI.Name = "EnemyAIComponent";
         AddChild(AI);
         AI.Owner = this;
-
-        // AnimationPlayer
-        _anim = new AnimationPlayer();
-        _anim.Name = "AnimationPlayer";
-        AddChild(_anim);
-        _anim.Owner = this;
     }
 }

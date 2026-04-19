@@ -49,6 +49,10 @@ public partial class EnemyData : Resource
     [Export]
     public Texture2D Sprite { get; set; }
 
+    /// <summary>精灵表数据文件路径（.tpsheet）</summary>
+    [Export]
+    public string TpsheetPath { get; set; }
+
     // ===== 特殊能力 =====
 
     /// <summary>是否有狂暴状态</summary>

@@ -1,4 +1,10 @@
 history:
+  - task_id: review-图生视频api（主角动画重做）
+    skill: 流程管理
+    status: completed
+    started_at: "2026-04-19T00:00:00"
+    completed_at: "2026-04-19T00:05:00"
+    summary: "用户对char_001+char_002之前生成的动画不满意，要求重新生成。char_001的Q版设计图已删除（用户将手动提供），char_002的Q版设计图仍在。范围：先只做待机+奔跑。backlog已更新：char_002 ready，char_001 blocked等Q版设计图。"
   - task_id: review-代码生成（全阶段完成）
     skill: 流程管理
     status: completed

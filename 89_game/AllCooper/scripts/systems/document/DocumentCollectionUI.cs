@@ -73,19 +73,16 @@ public partial class DocumentCollectionUI : Control
         SetAnchorsPreset(Control.LayoutPreset.FullRect);
 
         var container = new HBoxContainer();
-        container.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect, Control.LayoutPreset.KeepSize, 40);
+        container.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect, Control.LayoutPresetMode.KeepSize, 40);
         AddChild(container);
         container.Owner = this;
 
         _docList = new ItemList { Name = "DocList", CustomMinimumSize = new Vector2(250, 0) };
         _docList.ItemSelected += (idx) =>
         {
-            if (idx.Length > 0)
-            {
-                string docId = _docList.GetItemText(idx[0]);
-                ShowDocument(docId);
-                EmitSignal(SignalName.DocumentSelected, docId);
-            }
+            string docId = _docList.GetItemText((int)idx);
+            ShowDocument(docId);
+            EmitSignal(SignalName.DocumentSelected, docId);
         };
         container.AddChild(_docList);
         _docList.Owner = this;

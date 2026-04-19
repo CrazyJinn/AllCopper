@@ -372,8 +372,8 @@ def main():
         prompt = sys.argv[2]
         model = DEFAULT_MODEL
         size = "2048x2048"
-        image = None
-        image_url = None
+        image = []
+        image_url = []
         seed = -1
         guidance_scale = None
         response_format = "url"
@@ -392,10 +392,10 @@ def main():
                 size = parse_size(sys.argv[i + 1])
                 i += 2
             elif arg == "--image" and i + 1 < len(sys.argv):
-                image = sys.argv[i + 1]
+                image.append(sys.argv[i + 1])
                 i += 2
             elif arg == "--image-url" and i + 1 < len(sys.argv):
-                image_url = sys.argv[i + 1]
+                image_url.append(sys.argv[i + 1])
                 i += 2
             elif arg == "--seed" and i + 1 < len(sys.argv):
                 seed = int(sys.argv[i + 1])

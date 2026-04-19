@@ -100,4 +100,10 @@ public partial class CharacterData : Resource
     /// <summary>表情立绘列表</summary>
     [Export]
     public Texture2D[] PortraitExpressions { get; set; }
+
+    // ===== 精灵动画 =====
+
+    /// <summary>精灵表数据文件路径（.tpsheet）</summary>
+    [Export]
+    public string TpsheetPath { get; set; }
 }

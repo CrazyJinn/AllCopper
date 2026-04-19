@@ -91,7 +91,7 @@ public partial class InventoryUI : Control
 
         // 主容器
         var container = new HBoxContainer();
-        container.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect, Control.LayoutPreset.KeepSize, 40);
+        container.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect, Control.LayoutPresetMode.KeepSize, 40);
         AddChild(container);
         container.Owner = this;
 

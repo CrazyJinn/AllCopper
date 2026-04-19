@@ -5,14 +5,14 @@ settings.json
 # Dependencies
 node_modules/
 
-#//////////////////////////
-# Cocos Creator
-#//////////////////////////
-*.meta
-89_game/AllCooper/.creator/
-89_game/AllCooper/library/
-89_game/AllCooper/temp/
-89_game/AllCooper/profiles/
-89_game/AllCooper/settings/
-89_game/AllCooper/build/
-89_game/AllCooper/native/
+# Godot
+*.import
+.godot/
+.mono/
+*.csproj.user
+*.sln.user
+obj/
+bin/
+export_presets.cfg
+
+test/

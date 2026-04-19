@@ -75,8 +75,8 @@ public partial class HurtboxComponent : Area2D
 
         if (GetParent() is CharacterBody2D body)
         {
-            Vector2 hitboxPos = hitbox.GetParent() != null
-                ? hitbox.GetParent().GlobalPosition
+            Vector2 hitboxPos = hitbox.GetParent() is Node2D hitboxParent
+                ? hitboxParent.GlobalPosition
                 : hitbox.GlobalPosition;
             Vector2 direction = (body.GlobalPosition - hitboxPos).Normalized();
             if (direction == Vector2.Zero) direction = Vector2.Right;

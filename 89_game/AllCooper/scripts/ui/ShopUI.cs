@@ -49,7 +49,7 @@ public partial class ShopUI : Control
         }
     }
 
-    private void OnItemSelected(int index)
+    private void OnItemSelected(long index)
     {
         // 显示选中物品详情
     }
@@ -86,7 +86,7 @@ public partial class ShopUI : Control
         overlay.Owner = this;
 
         var container = new VBoxContainer();
-        container.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect, Control.LayoutPreset.KeepSize, 40);
+        container.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect, Control.LayoutPresetMode.KeepSize, 40);
         AddChild(container);
         container.Owner = this;
 
