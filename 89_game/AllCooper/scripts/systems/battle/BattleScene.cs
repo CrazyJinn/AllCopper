@@ -263,5 +263,11 @@ public partial class BattleScene : Node2D
         RoomManager.Name = "RoomManager";
         AddChild(RoomManager);
         RoomManager.Owner = this;
+
+        // 从 JSON 加载区域数据
+        string regionId = GameManager.Instance?.CurrentRegion ?? "region_01";
+        RegionData region = JsonDataLoader.GetRegion(regionId);
+        if (region?.Rooms != null)
+            RoomManager.Rooms = region.Rooms;
     }
 }

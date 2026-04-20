@@ -1,0 +1,15 @@
+{
+  "regionId": "region_01",
+  "displayName": "废墟矿区",
+  "mapImage": "",
+  "isUnlocked": true,
+  "unlockCondition": "",
+  "mapPosition": [200, 300],
+  "roomIds": [
+    "room_tutorial_01",
+    "room_region01_01",
+    "room_region01_02",
+    "room_region01_elite",
+    "room_region01_boss"
+  ]
+}

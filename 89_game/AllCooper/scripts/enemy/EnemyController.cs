@@ -54,10 +54,19 @@ public partial class EnemyController : CharacterBody2D
         // 眩晕中不执行AI
         if (CurrentState == EnemyState.Stunned) return;
 
-        // 攻击中由AI组件管理，不执行移动
+        // 攻击中由AI组件管理
         if (AI.IsAttacking)
         {
-            Velocity = Vector2.Zero;
+            if (AI.IsDashing)
+            {
+                // 冲刺中允许移动
+                Velocity = AI.CalculateVelocity();
+                MoveAndSlide();
+            }
+            else
+            {
+                Velocity = Vector2.Zero;
+            }
             UpdateAnimation();
             return;
         }
@@ -120,6 +129,9 @@ public partial class EnemyController : CharacterBody2D
             AI.DetectRange = Data.DetectRange;
             AI.AttackRange = Data.AttackRange;
             AI.ChaseSpeed = Data.MoveSpeed;
+            AI.HasChargeAttack = Data.HasChargeAttack;
+            AI.DashSpeed = Data.DashSpeed;
+            AI.DashDistance = Data.DashDistance;
             AI.Initialize(this);
         }
 
@@ -187,10 +199,15 @@ public partial class EnemyController : CharacterBody2D
     {
         if (SpriteSheet == null) return;
 
-        // 攻击中朝向目标，其他状态用移动方向
-        Vector2 facing = CurrentState == EnemyState.Attack && Target != null
-            ? (Target.GlobalPosition - GlobalPosition).Normalized()
-            : Velocity;
+        // 朝向：冲刺用冲刺方向，蓄力/攻击用目标方向，其他用移动方向
+        Vector2 facing;
+        if (AI.IsDashing)
+            facing = AI.DashDirection;
+        else if ((CurrentState == EnemyState.Attack || CurrentState == EnemyState.ChargeUp) && Target != null)
+            facing = (Target.GlobalPosition - GlobalPosition).Normalized();
+        else
+            facing = Velocity;
+
         string direction = facing.Y >= 0 ? "front" : "back";
 
         // 水平翻转：精灵默认朝左
@@ -202,17 +219,30 @@ public partial class EnemyController : CharacterBody2D
             EnemyState.Idle => $"idle_{direction}",
             EnemyState.Patrol => $"move_{direction}",
             EnemyState.Chase => $"move_{direction}",
+            EnemyState.ChargeUp => $"attack_{direction}",
             EnemyState.Attack => $"attack_{direction}",
             EnemyState.Stunned => $"stunned_{direction}",
             EnemyState.Dead => "death",
             _ => $"idle_{direction}"
         };
 
-        // 攻击动画不循环，播完所有帧
-        if (CurrentState == EnemyState.Attack)
+        // 蓄力：慢放，非循环
+        if (CurrentState == EnemyState.ChargeUp)
+        {
+            SpriteSheet.SetSpeedScale(0.2f);
             SpriteSheet.PlayOnce(animName);
+        }
+        // 攻击/冲刺：正常速度，非循环
+        else if (CurrentState == EnemyState.Attack)
+        {
+            SpriteSheet.SetSpeedScale(1f);
+            SpriteSheet.PlayOnce(animName);
+        }
         else
+        {
+            SpriteSheet.SetSpeedScale(1f);
             SpriteSheet.Play(animName);
+        }
     }
 
     /// <summary>

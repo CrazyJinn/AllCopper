@@ -55,6 +55,18 @@ public partial class EnemyData : Resource
 
     // ===== 特殊能力 =====
 
+    /// <summary>是否拥有蓄力冲刺攻击</summary>
+    [Export]
+    public bool HasChargeAttack { get; set; }
+
+    /// <summary>冲刺速度</summary>
+    [Export]
+    public float DashSpeed { get; set; } = 400f;
+
+    /// <summary>冲刺距离</summary>
+    [Export]
+    public float DashDistance { get; set; } = 200f;
+
     /// <summary>是否有狂暴状态</summary>
     [Export]
     public bool HasBerserk { get; set; }

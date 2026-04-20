@@ -1,0 +1,26 @@
+{
+  "enemyId": "enemy_005",
+  "displayName": "铜片怪",
+  "type": "Normal",
+  "maxHealth": 80,
+  "maxShield": 0,
+  "attackPower": 10,
+  "moveSpeed": 150,
+  "detectRange": 400,
+  "attackRange": 50,
+  "sprite": "",
+  "tpsheetPath": "res://assets/texture_enemy/texture.tpsheet",
+  "hasChargeAttack": true,
+  "dashSpeed": 400,
+  "dashDistance": 200,
+  "hasBerserk": false,
+  "berserkThreshold": 0.3,
+  "hasPoison": false,
+  "poisonDamage": 0,
+  "canSummon": false,
+  "summonTypeId": "",
+  "lootTable": [
+    { "itemId": "item_copper_scrap", "dropChance": 0.8, "minCount": 1, "maxCount": 3 },
+    { "itemId": "item_battery", "dropChance": 0.1, "minCount": 1, "maxCount": 1 }
+  ]
+}

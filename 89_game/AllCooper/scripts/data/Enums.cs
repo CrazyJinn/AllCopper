@@ -95,6 +95,7 @@ public enum EnemyState
     Patrol,
     Chase,
     Attack,
+    ChargeUp,
     Stunned,
     Dead
 }
@@ -123,4 +124,11 @@ public enum DialogLayout
 {
     SideBySide,
     Monologue
+}
+
+/// <summary>对话立绘位置</summary>
+public enum DialogPortraitSide
+{
+    Left,
+    Right
 }

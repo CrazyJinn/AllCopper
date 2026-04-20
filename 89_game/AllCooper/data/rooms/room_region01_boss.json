@@ -1,0 +1,25 @@
+{
+  "roomId": "room_region01_boss",
+  "type": "Boss",
+  "battleType": "Defense",
+  "roomSize": [2400, 1400],
+  "background": "res://assets/bg.png",
+  "spawnPoints": [
+    { "position": [0, -200], "enemyId": "enemy_iron_golem" }
+  ],
+  "doors": [],
+  "decorations": [
+    { "position": [-500, 300], "sprite": "", "hasCollision": true, "collisionSize": [100, 80] },
+    { "position": [500, 300], "sprite": "", "hasCollision": true, "collisionSize": [100, 80] },
+    { "position": [-500, -400], "sprite": "", "hasCollision": true, "collisionSize": [100, 80] },
+    { "position": [500, -400], "sprite": "", "hasCollision": true, "collisionSize": [100, 80] }
+  ],
+  "walls": [
+    { "position": [0, -720], "size": [2400, 40] },
+    { "position": [0, 720], "size": [2400, 40] },
+    { "position": [-1220, 0], "size": [40, 1400] },
+    { "position": [1220, 0], "size": [40, 1400] }
+  ],
+  "playerSpawn": [-400, 300],
+  "hiddenCondition": ""
+}

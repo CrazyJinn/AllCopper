@@ -1,0 +1,56 @@
+{
+  "items": [
+    {
+      "itemId": "item_copper_scrap",
+      "displayName": "铜碎片",
+      "description": "散落在废墟中的铜片，可以用来制作简单的工具",
+      "icon": "",
+      "spaceOccupied": [1, 1],
+      "category": "Material",
+      "rarity": "Common",
+      "maxStack": 99,
+      "buyPrice": 5,
+      "sellPrice": 2,
+      "useEffectId": ""
+    },
+    {
+      "itemId": "item_battery",
+      "displayName": "纽扣电池",
+      "description": "末世最珍贵的通用货币，也能为科技装备充能",
+      "icon": "",
+      "spaceOccupied": [1, 1],
+      "category": "Material",
+      "rarity": "Rare",
+      "maxStack": 99,
+      "buyPrice": 0,
+      "sellPrice": 0,
+      "useEffectId": ""
+    },
+    {
+      "itemId": "item_iron_core",
+      "displayName": "铁核心",
+      "description": "从大型机械体中拆解出的核心部件",
+      "icon": "",
+      "spaceOccupied": [2, 2],
+      "category": "Material",
+      "rarity": "EpicRare",
+      "maxStack": 10,
+      "buyPrice": 100,
+      "sellPrice": 40,
+      "useEffectId": ""
+    },
+    {
+      "itemId": "item_health_potion",
+      "displayName": "简易医疗包",
+      "description": "用废旧绷带和草药制成的简易医疗包，恢复30点生命值",
+      "icon": "",
+      "spaceOccupied": [1, 1],
+      "category": "Consumable",
+      "rarity": "Common",
+      "maxStack": 10,
+      "buyPrice": 20,
+      "sellPrice": 8,
+      "useEffectId": "effect_heal_30"
+    }
+  ]
+}

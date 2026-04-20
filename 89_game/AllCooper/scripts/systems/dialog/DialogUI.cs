@@ -10,6 +10,7 @@ public partial class DialogUI : Control
 {
     // ===== 子节点引用 =====
 
+    private TextureRect _background;
     private TextureRect _leftPortrait;
     private TextureRect _rightPortrait;
     private Panel _textBox;
@@ -57,7 +58,10 @@ public partial class DialogUI : Control
         // 说话者名称
         if (_speakerName != null)
         {
-            _speakerName.Text = entry.SpeakerId;
+            if (!string.IsNullOrEmpty(entry.SpeakerId))
+                _speakerName.Text = JsonDataLoader.GetCharacterDisplayName(entry.SpeakerId);
+            else
+                _speakerName.Text = "";
         }
 
         // 对话文本
@@ -66,8 +70,25 @@ public partial class DialogUI : Control
             _dialogText.Text = entry.Text;
         }
 
-        // 布局处理
-        if (entry.Layout == DialogLayout.Monologue)
+        // 立绘处理
+        if (!string.IsNullOrEmpty(entry.SpeakerId) && entry.Layout != DialogLayout.Monologue)
+        {
+            var portrait = JsonDataLoader.ResolvePortrait(entry.SpeakerId, entry.PortraitExpression);
+            bool isLeft = entry.PortraitSide == DialogPortraitSide.Left;
+
+            // 隐藏对侧立绘
+            if (isLeft)
+            {
+                if (_rightPortrait != null) _rightPortrait.Visible = false;
+            }
+            else
+            {
+                if (_leftPortrait != null) _leftPortrait.Visible = false;
+            }
+
+            SetPortrait(entry.SpeakerId, portrait, isLeft);
+        }
+        else
         {
             if (_leftPortrait != null) _leftPortrait.Visible = false;
             if (_rightPortrait != null) _rightPortrait.Visible = false;
@@ -125,6 +146,13 @@ public partial class DialogUI : Control
         Visible = false;
     }
 
+    public void SetBackground(Texture2D bg)
+    {
+        if (_background == null) return;
+        _background.Texture = bg;
+        _background.Visible = bg != null;
+    }
+
     private void OnDialogStarted(string dialogId)
     {
         Visible = true;
@@ -154,6 +182,15 @@ public partial class DialogUI : Control
     private void BuildScene()
     {
         SetAnchorsPreset(Control.LayoutPreset.FullRect);
+
+        // 背景
+        _background = new TextureRect();
+        _background.Name = "Background";
+        _background.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        _background.StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered;
+        _background.Visible = false;
+        AddChild(_background);
+        _background.Owner = this;
 
         // 左侧立绘（400x800）
         _leftPortrait = new TextureRect();

@@ -1,0 +1,23 @@
+{
+  "characterId": "char_002",
+  "displayName": "薇",
+  "maxHealth": 100,
+  "maxShield": 50,
+  "shieldAbsorbRate": 0.5,
+  "shieldRegenSpeed": 2.0,
+  "shieldRegenDelay": 3.0,
+  "moveSpeed": 200,
+  "rollSpeed": 400,
+  "rollDuration": 0.3,
+  "rollCooldown": 0.5,
+  "faction": "Tech",
+  "maxAmmo": 30,
+  "reloadTime": 1.5,
+  "chargeTime": 2.0,
+  "cdAcceleration": 1.0,
+  "inventoryBonus": 0,
+  "skillIds": ["skill_magic_bolt", "skill_magic_shield"],
+  "portraitDefault": "",
+  "portraitExpressions": [],
+  "tpsheetPath": "res://assets/texture/texture.tpsheet"
+}

@@ -1,0 +1,51 @@
+{
+  "dialogId": "dialog_ch01_intro",
+  "background": "",
+  "entries": [
+    {
+      "speakerId": "char_001",
+      "text": "这里就是废墟矿区的入口。空气中弥漫着铁锈和硫磺的味道。",
+      "expression": "default",
+      "layout": "SideBySide",
+      "portraitSide": "Left",
+      "cutsceneId": "",
+      "cutsceneDelay": 0.0
+    },
+    {
+      "speakerId": "char_002",
+      "text": "我能感受到古老的魔力残留......这里曾经发生过什么。",
+      "expression": "default",
+      "layout": "SideBySide",
+      "portraitSide": "Right",
+      "cutsceneId": "",
+      "cutsceneDelay": 0.0
+    },
+    {
+      "speakerId": "char_001",
+      "text": "别掉以轻心。骑士团的报告说，矿区深处还有活跃的机械守卫。",
+      "expression": "default",
+      "layout": "SideBySide",
+      "portraitSide": "Left",
+      "cutsceneId": "",
+      "cutsceneDelay": 0.0
+    },
+    {
+      "speakerId": "char_002",
+      "text": "放心，我会掩护你的。",
+      "expression": "default",
+      "layout": "SideBySide",
+      "portraitSide": "Right",
+      "cutsceneId": "",
+      "cutsceneDelay": 0.0
+    },
+    {
+      "speakerId": "",
+      "text": "两人对视一眼，缓缓走进了黑暗的矿道之中......",
+      "expression": "",
+      "layout": "Monologue",
+      "portraitSide": "Left",
+      "cutsceneId": "",
+      "cutsceneDelay": 1.5
+    }
+  ]
+}

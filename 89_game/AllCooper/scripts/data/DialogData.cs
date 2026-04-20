@@ -11,6 +11,10 @@ public partial class DialogData : Resource
     [Export]
     public string DialogId { get; set; }
 
+    /// <summary>对话背景图</summary>
+    [Export]
+    public Texture2D Background { get; set; }
+
     /// <summary>对话条目列表</summary>
     [Export]
     public DialogEntry[] Entries { get; set; }
@@ -37,6 +41,10 @@ public partial class DialogEntry : Resource
     /// <summary>对话布局</summary>
     [Export]
     public DialogLayout Layout { get; set; } = DialogLayout.SideBySide;
+
+    /// <summary>立绘位置</summary>
+    [Export]
+    public DialogPortraitSide PortraitSide { get; set; } = DialogPortraitSide.Left;
 
     /// <summary>过场动画ID（非空则触发过场）</summary>
     [Export]

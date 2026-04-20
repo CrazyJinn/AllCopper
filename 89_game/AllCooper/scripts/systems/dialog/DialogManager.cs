@@ -132,8 +132,7 @@ public partial class DialogManager : Node
     /// </summary>
     private void OnDialogRequested(string dialogId)
     {
-        // 从资源加载对话数据
-        var dialogData = GD.Load<DialogData>($"res://data/dialogs/{dialogId}.tres");
+        var dialogData = JsonDataLoader.GetDialog(dialogId);
         if (dialogData != null)
         {
             StartDialog(dialogData);

@@ -2,7 +2,7 @@ using Godot;
 
 /// <summary>
 /// 敌人AI组件
-/// 管理巡逻、追击、攻击行为的决策和速度计算
+/// 管理巡逻、追击、攻击（含蓄力冲刺）行为的决策和速度计算
 /// 挂载于 EnemyController
 /// </summary>
 [GlobalClass]
@@ -30,16 +30,39 @@ public partial class EnemyAIComponent : Node
     [Export]
     public float AttackCooldown { get; set; } = 1f;
 
+    /// <summary>是否拥有蓄力冲刺攻击</summary>
+    [Export]
+    public bool HasChargeAttack { get; set; }
+
+    /// <summary>冲刺速度</summary>
+    [Export]
+    public float DashSpeed { get; set; } = 400f;
+
+    /// <summary>冲刺距离（像素）</summary>
+    [Export]
+    public float DashDistance { get; set; } = 200f;
+
     // ===== 公共属性 =====
 
-    /// <summary>是否正在攻击中</summary>
-    public bool IsAttacking => _isAttacking;
+    /// <summary>是否正在攻击中（普通攻击或冲刺）</summary>
+    public bool IsAttacking => _attackPhase != AttackPhase.None;
+
+    /// <summary>是否正在冲刺</summary>
+    public bool IsDashing => _attackPhase == AttackPhase.Dash;
+
+    /// <summary>冲刺方向（归一化）</summary>
+    public Vector2 DashDirection { get; private set; }
+
+    // ===== 攻击阶段 =====
+
+    private enum AttackPhase { None, NormalAttack, ChargeUp, Dash }
+    private AttackPhase _attackPhase;
 
     // ===== 私有字段 =====
 
     private EnemyController _owner;
     private float _attackCooldownTimer;
-    private bool _isAttacking;
+    private Vector2 _dashStartPosition;
     private Vector2 _patrolTarget;
     private float _patrolWaitTimer;
     private bool _waiting;
@@ -65,11 +88,20 @@ public partial class EnemyAIComponent : Node
 
         float dt = (float)delta;
 
-        // 攻击中：帧级 hitbox 控制 + 等待动画播完
-        if (_isAttacking)
+        switch (_attackPhase)
         {
-            UpdateHitboxByFrame();
-            return;
+            case AttackPhase.NormalAttack:
+                UpdateHitboxByFrame();
+                return;
+
+            case AttackPhase.ChargeUp:
+                // 蓄力阶段：等待动画播完，由 AnimationFinished 回调推进
+                return;
+
+            case AttackPhase.Dash:
+                UpdateHitboxByFrame();
+                UpdateDashProgress();
+                return;
         }
 
         // 攻击CD递减
@@ -97,8 +129,13 @@ public partial class EnemyAIComponent : Node
     {
         if (_owner == null || _owner.Target == null) return Vector2.Zero;
 
-        // 攻击中不移动
-        if (_isAttacking) return Vector2.Zero;
+        // 普通攻击/蓄力中不移动
+        if (_attackPhase == AttackPhase.NormalAttack || _attackPhase == AttackPhase.ChargeUp)
+            return Vector2.Zero;
+
+        // 冲刺中返回冲刺速度
+        if (_attackPhase == AttackPhase.Dash)
+            return DashDirection * DashSpeed;
 
         float distance = _owner.GlobalPosition.DistanceTo(_owner.Target.GlobalPosition);
 
@@ -112,7 +149,10 @@ public partial class EnemyAIComponent : Node
         // 在攻击范围内且CD好了 → 发起攻击
         if (distance <= AttackRange && CanAttack())
         {
-            StartAttack();
+            if (HasChargeAttack)
+                StartChargeAttack();
+            else
+                StartAttack();
             return Vector2.Zero;
         }
 
@@ -144,27 +184,80 @@ public partial class EnemyAIComponent : Node
     }
 
     /// <summary>是否可以攻击（CD结束且不在攻击中）</summary>
-    public bool CanAttack() => _attackCooldownTimer <= 0f && !_isAttacking;
+    public bool CanAttack() => _attackCooldownTimer <= 0f && _attackPhase == AttackPhase.None;
 
-    // ===== 攻击管理 =====
+    // ===== 普通攻击 =====
 
     private void StartAttack()
     {
-        _isAttacking = true;
+        _attackPhase = AttackPhase.NormalAttack;
         _attackCooldownTimer = AttackCooldown;
         _owner.ChangeState(EnemyState.Attack);
-
-        // 订阅动画播完信号
         _owner.SpriteSheet.AnimatedSprite.AnimationFinished += OnAttackAnimationFinished;
     }
 
     private void OnAttackAnimationFinished()
     {
         _owner.SpriteSheet.AnimatedSprite.AnimationFinished -= OnAttackAnimationFinished;
-        _isAttacking = false;
+        EndAttackPhase();
+    }
+
+    // ===== 蓄力冲刺 =====
+
+    private void StartChargeAttack()
+    {
+        _attackPhase = AttackPhase.ChargeUp;
+        _attackCooldownTimer = AttackCooldown;
+
+        // 记录冲刺方向（朝向目标当前位置）
+        DashDirection = (_owner.Target.GlobalPosition - _owner.GlobalPosition).Normalized();
+
+        _owner.ChangeState(EnemyState.ChargeUp);
+        _owner.SpriteSheet.AnimatedSprite.AnimationFinished += OnChargeAnimationFinished;
+    }
+
+    private void OnChargeAnimationFinished()
+    {
+        _owner.SpriteSheet.AnimatedSprite.AnimationFinished -= OnChargeAnimationFinished;
+        StartDash();
+    }
+
+    private void StartDash()
+    {
+        _attackPhase = AttackPhase.Dash;
+        _dashStartPosition = _owner.GlobalPosition;
+        _owner.ChangeState(EnemyState.Attack);
+        _owner.SpriteSheet.AnimatedSprite.AnimationFinished += OnDashAnimationFinished;
+    }
+
+    private void OnDashAnimationFinished()
+    {
+        _owner.SpriteSheet.AnimatedSprite.AnimationFinished -= OnDashAnimationFinished;
+        EndAttackPhase();
+    }
+
+    /// <summary>追踪冲刺距离，达标则提前结束</summary>
+    private void UpdateDashProgress()
+    {
+        float traveled = _owner.GlobalPosition.DistanceTo(_dashStartPosition);
+        if (traveled >= DashDistance)
+        {
+            _owner.SpriteSheet.AnimatedSprite.AnimationFinished -= OnDashAnimationFinished;
+            EndAttackPhase();
+        }
+    }
+
+    // ===== 通用结束 =====
+
+    private void EndAttackPhase()
+    {
+        _attackPhase = AttackPhase.None;
         _owner.Hitbox.SetActive(false);
+        _owner.SpriteSheet.SetSpeedScale(1f);
         _owner.ChangeState(EnemyState.Chase);
     }
+
+    // ===== Hitbox 帧控制 =====
 
     /// <summary>根据当前帧控制 hitbox 开关</summary>
     private void UpdateHitboxByFrame()

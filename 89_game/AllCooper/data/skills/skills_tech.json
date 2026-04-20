@@ -1,0 +1,24 @@
+{
+  "skills": [
+    {
+      "skillId": "skill_tech_grenade",
+      "displayName": "电磁手雷",
+      "icon": "",
+      "cooldown": 5.0,
+      "damage": 40,
+      "range": 150,
+      "duration": 0.5,
+      "requiresAim": true
+    },
+    {
+      "skillId": "skill_tech_shield",
+      "displayName": "能量护盾",
+      "icon": "",
+      "cooldown": 12.0,
+      "damage": 0,
+      "range": 0,
+      "duration": 4.0,
+      "requiresAim": false
+    }
+  ]
+}

@@ -21,9 +21,16 @@ public partial class GameManager : Node
     /// <summary>当前阵营</summary>
     public FactionType ActiveFaction { get; private set; }
 
+    /// <summary>待启动的对话ID（场景切换时暂存）</summary>
+    public string PendingDialogId { get; private set; }
+
+    /// <summary>对话结束后返回的场景路径</summary>
+    public string PendingReturnScene { get; private set; }
+
     public override void _Ready()
     {
         Instance = this;
+        JsonDataLoader.LoadAll();
     }
 
     /// <summary>
@@ -78,6 +85,19 @@ public partial class GameManager : Node
     {
         ChangeState(GameState.Dialog);
         EventBus.EmitDialogRequested(dialogId);
+    }
+
+    /// <summary>
+    /// 切换到对话场景
+    /// </summary>
+    /// <param name="dialogId">对话ID</param>
+    /// <param name="returnScenePath">对话结束后返回的场景路径</param>
+    public void TransitionToDialog(string dialogId, string returnScenePath = null)
+    {
+        PendingDialogId = dialogId;
+        PendingReturnScene = returnScenePath ?? "res://scenes/BattleScene.tscn";
+        ChangeState(GameState.Dialog);
+        EventBus.EmitSceneTransition("res://scenes/DialogScene.tscn");
     }
 
     /// <summary>

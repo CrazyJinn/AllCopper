@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dialog_scene_001"]
+
+[ext_resource type="Script" path="res://scripts/systems/dialog/DialogScene.cs" id="1"]
+
+[node name="DialogScene" type="Control"]
+script = ExtResource("1")

@@ -1,0 +1,23 @@
+{
+  "characterId": "char_001",
+  "displayName": "罗兰",
+  "maxHealth": 120,
+  "maxShield": 30,
+  "shieldAbsorbRate": 0.3,
+  "shieldRegenSpeed": 1.0,
+  "shieldRegenDelay": 5.0,
+  "moveSpeed": 180,
+  "rollSpeed": 400,
+  "rollDuration": 0.3,
+  "rollCooldown": 0.5,
+  "faction": "Tech",
+  "maxAmmo": 30,
+  "reloadTime": 1.5,
+  "chargeTime": 2.0,
+  "cdAcceleration": 1.0,
+  "inventoryBonus": 4,
+  "skillIds": ["skill_tech_grenade", "skill_tech_shield"],
+  "portraitDefault": "",
+  "portraitExpressions": [],
+  "tpsheetPath": "res://assets/texture/texture.tpsheet"
+}

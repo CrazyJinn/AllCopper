@@ -39,6 +39,14 @@ public partial class RoomData : Resource
     [Export]
     public Decoration[] Decorations { get; set; }
 
+    /// <summary>墙壁</summary>
+    [Export]
+    public WallData[] Walls { get; set; }
+
+    /// <summary>玩家出生位置</summary>
+    [Export]
+    public Vector2 PlayerSpawn { get; set; } = new(-200, 0);
+
     /// <summary>隐藏房间条件</summary>
     [Export]
     public string HiddenCondition { get; set; } = "";
@@ -95,4 +103,19 @@ public partial class Decoration : Resource
     /// <summary>碰撞体大小</summary>
     [Export]
     public Vector2 CollisionSize { get; set; }
+}
+
+/// <summary>
+/// 墙壁数据
+/// </summary>
+[GlobalClass]
+public partial class WallData : Resource
+{
+    /// <summary>位置</summary>
+    [Export]
+    public Vector2 Position { get; set; }
+
+    /// <summary>大小</summary>
+    [Export]
+    public Vector2 Size { get; set; } = new(1600, 40);
 }

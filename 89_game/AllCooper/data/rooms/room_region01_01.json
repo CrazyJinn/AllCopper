@@ -1,0 +1,27 @@
+{
+  "roomId": "room_region01_01",
+  "type": "Normal",
+  "battleType": "Defense",
+  "roomSize": [1920, 1080],
+  "background": "res://assets/bg.png",
+  "spawnPoints": [
+    { "position": [400, 200], "enemyId": "enemy_005" },
+    { "position": [-300, -100], "enemyId": "enemy_005" },
+    { "position": [200, 300], "enemyId": "enemy_mechanical_hound" }
+  ],
+  "doors": [
+    { "position": [0, -530], "targetRoomIndex": 1 }
+  ],
+  "decorations": [
+    { "position": [-300, 200], "sprite": "", "hasCollision": true, "collisionSize": [60, 40] },
+    { "position": [500, -250], "sprite": "", "hasCollision": false, "collisionSize": [0, 0] }
+  ],
+  "walls": [
+    { "position": [0, -550], "size": [1920, 40] },
+    { "position": [0, 550], "size": [1920, 40] },
+    { "position": [-980, 0], "size": [40, 1080] },
+    { "position": [980, 0], "size": [40, 1080] }
+  ],
+  "playerSpawn": [-400, 0],
+  "hiddenCondition": ""
+}

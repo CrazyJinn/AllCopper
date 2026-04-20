@@ -1,0 +1,25 @@
+{
+  "roomId": "room_region01_elite",
+  "type": "Elite",
+  "battleType": "Defense",
+  "roomSize": [1920, 1080],
+  "background": "res://assets/bg.png",
+  "spawnPoints": [
+    { "position": [0, -100], "enemyId": "enemy_corrupted_knight" }
+  ],
+  "doors": [
+    { "position": [-920, 0], "targetRoomIndex": 3 }
+  ],
+  "decorations": [
+    { "position": [-200, 300], "sprite": "", "hasCollision": true, "collisionSize": [80, 60] },
+    { "position": [300, -200], "sprite": "", "hasCollision": true, "collisionSize": [80, 60] }
+  ],
+  "walls": [
+    { "position": [0, -550], "size": [1920, 40] },
+    { "position": [0, 550], "size": [1920, 40] },
+    { "position": [-980, 0], "size": [40, 1080] },
+    { "position": [980, 0], "size": [40, 1080] }
+  ],
+  "playerSpawn": [-400, 0],
+  "hiddenCondition": ""
+}

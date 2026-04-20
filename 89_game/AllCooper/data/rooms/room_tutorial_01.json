@@ -1,0 +1,20 @@
+{
+  "roomId": "room_tutorial_01",
+  "type": "Normal",
+  "battleType": "Tutorial",
+  "roomSize": [1600, 900],
+  "background": "res://assets/bg.png",
+  "spawnPoints": [
+    { "position": [200, 0], "enemyId": "enemy_005" }
+  ],
+  "doors": [],
+  "decorations": [],
+  "walls": [
+    { "position": [0, -470], "size": [1600, 40] },
+    { "position": [0, 470], "size": [1600, 40] },
+    { "position": [-820, 0], "size": [40, 900] },
+    { "position": [820, 0], "size": [40, 900] }
+  ],
+  "playerSpawn": [-200, 0],
+  "hiddenCondition": ""
+}
