@@ -1,0 +1,26 @@
+{
+  "layer": "装饰层（Decoration）",
+  "scene": "城市废墟",
+  "room": "隐藏房",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  "elements": {
+    "count": 9,
+    "items": [
+      { "label": "1", "description": "灰蓝色的精致碎瓷片" },
+      { "label": "2", "description": "褪金色的破碎钟表零件" },
+      { "label": "3", "description": "灰白色的化石状碎片" },
+      { "label": "4", "description": "褐色的旧书页残片" },
+      { "label": "5", "description": "暗蓝色的静水镜面" },
+      { "label": "6", "description": "灰褐色的风化相框残片" },
+      { "label": "7", "description": "银灰色的断裂镜片" },
+      { "label": "8", "description": "黄褐色的枯叶碎片" },
+      { "label": "9", "description": "灰色的细小混凝土碎粒" }
+    ]
+  }
+}

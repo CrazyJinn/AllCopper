@@ -1,0 +1,26 @@
+{
+  "layer": "装饰层（Decoration）",
+  "scene": "灰雪地",
+  "room": "隐藏房",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1","2","3","4","5","6","7","8","9"],
+  "elements": {
+    "count": 9,
+    "items": [
+      { "label": "1", "description": "灰白色的尘封积雪地面" },
+      { "label": "2", "description": "淡灰蓝色的冰封旧文件残片" },
+      { "label": "3", "description": "灰白色的碎冰晶碎片" },
+      { "label": "4", "description": "暗灰蓝色的冰霜堆积" },
+      { "label": "5", "description": "灰褐色的旧木板碎片" },
+      { "label": "6", "description": "淡灰紫色的辐射变色冰面" },
+      { "label": "7", "description": "灰白色的冰封碎片" },
+      { "label": "8", "description": "暗灰色的冻裂石块碎渣" },
+      { "label": "9", "description": "深灰蓝色的冻硬地面" }
+    ]
+  }
+}

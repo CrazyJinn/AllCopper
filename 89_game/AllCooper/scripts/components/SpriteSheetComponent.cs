@@ -1,124 +1,118 @@
 using Godot;
+using System.Collections.Generic;
 
 /// <summary>
 /// 精灵表动画组件
-/// 加载 .tpsheet 文件，通过内部 AnimatedSprite2D 播放帧动画
-/// 支持在 _Ready 时自动加载，也支持通过 Initialize() 延迟加载
+/// 管理静态默认图（front/back）和帧动画的切换
 /// </summary>
 [GlobalClass]
 public partial class SpriteSheetComponent : Node2D
 {
-	/// <summary>.tpsheet 文件的 res:// 路径</summary>
+	[Signal]
+	public delegate void AnimationFinishedEventHandler(string animName);
+
 	[Export]
 	public string TpsheetPath { get; set; }
 
-	/// <summary>默认帧率</summary>
 	[Export]
-	public float DefaultFps { get; set; } = 4f;
+	public float DefaultFps { get; set; } = 8f;
 
-	/// <summary>默认播放的动画名（可选）</summary>
-	[Export]
-	public string DefaultAnimation { get; set; } = "";
-
+	private Sprite2D _defaultSprite;
 	private AnimatedSprite2D _animatedSprite;
 	private bool _framesLoaded;
+	private string _missingAnimWarning;
+	private string _currentDirection = "front";
+
+	private Texture2D _defaultFront;
+	private Texture2D _defaultBack;
+
+	private static readonly Dictionary<string, float> AnimFpsMap = new()
+	{
+		{ "dodge", 8f },
+		{ "move", 8f },
+		{ "idle", 4f },
+		{ "attack", 10f },
+		{ "cast", 8f },
+		{ "death", 6f },
+	};
 
 	public override void _Ready()
 	{
-		EnsureAnimatedSprite();
-
-		GD.Print($"[SpriteSheet] _Ready, TpsheetPath={TpsheetPath}, framesLoaded={_framesLoaded}");
+		EnsureNodes();
 
 		if (!_framesLoaded && !string.IsNullOrEmpty(TpsheetPath))
 			LoadSpriteSheet();
 	}
 
-	/// <summary>
-	/// 延迟初始化：设置路径并加载精灵表
-	/// </summary>
-	public void Initialize(string tpsheetPath, float fps = 4f)
+	public void Initialize(string tpsheetPath, float fps = 0f)
 	{
-		GD.Print($"[SpriteSheet] Initialize: {tpsheetPath}, fps={fps}");
 		TpsheetPath = tpsheetPath;
-		DefaultFps = fps;
-		EnsureAnimatedSprite();
+		if (fps > 0f) DefaultFps = fps;
+		EnsureNodes();
 		LoadSpriteSheet();
+		LoadDefaultTextures();
 	}
 
-	/// <summary>播放指定动画（循环）</summary>
 	public void Play(string animName)
 	{
 		if (_animatedSprite == null) return;
-		if (_animatedSprite.Animation == animName && _animatedSprite.IsPlaying()) return;
-
-		if (_animatedSprite.SpriteFrames == null)
-		{
-			GD.PrintErr($"[SpriteSheet] Play(\"{animName}\") 失败: SpriteFrames 为空");
-			return;
-		}
-
+		if (_animatedSprite.SpriteFrames == null) return;
 		if (!_animatedSprite.SpriteFrames.HasAnimation(animName))
 		{
-			GD.PrintErr($"[SpriteSheet] Play(\"{animName}\") 失败: 动画不存在, 可用: [{string.Join(", ", _animatedSprite.SpriteFrames.GetAnimationNames())}]");
+			WarnMissing(animName);
 			return;
 		}
 
+		HideDefault();
 		_animatedSprite.SpriteFrames.SetAnimationLoop(animName, true);
 		_animatedSprite.Play(animName);
 	}
 
-	/// <summary>播放指定动画（不循环），播完自动停止</summary>
 	public void PlayOnce(string animName)
 	{
 		if (_animatedSprite == null) return;
-		if (_animatedSprite.Animation == animName && _animatedSprite.IsPlaying()) return;
-
-		if (_animatedSprite.SpriteFrames == null)
-		{
-			GD.PrintErr($"[SpriteSheet] PlayOnce(\"{animName}\") 失败: SpriteFrames 为空");
-			return;
-		}
-
+		if (_animatedSprite.SpriteFrames == null) return;
 		if (!_animatedSprite.SpriteFrames.HasAnimation(animName))
 		{
-			GD.PrintErr($"[SpriteSheet] PlayOnce(\"{animName}\") 失败: 动画不存在, 可用: [{string.Join(", ", _animatedSprite.SpriteFrames.GetAnimationNames())}]");
+			WarnMissing(animName);
 			return;
 		}
 
+		HideDefault();
 		_animatedSprite.SpriteFrames.SetAnimationLoop(animName, false);
 		_animatedSprite.Play(animName);
 	}
 
-	/// <summary>停止播放</summary>
 	public void Stop()
 	{
 		_animatedSprite?.Stop();
+		ShowDefault();
 	}
 
-	/// <summary>设置水平翻转</summary>
 	public void SetFlipH(bool flip)
 	{
+		if (_defaultSprite != null)
+			_defaultSprite.FlipH = flip;
 		if (_animatedSprite != null)
 			_animatedSprite.FlipH = flip;
 	}
 
-	/// <summary>设置播放速度倍率</summary>
+	public void SetDirection(string direction)
+	{
+		_currentDirection = direction;
+		UpdateDefaultTexture();
+	}
+
 	public void SetSpeedScale(float scale)
 	{
 		if (_animatedSprite != null)
 			_animatedSprite.SpeedScale = scale;
 	}
 
-	/// <summary>当前播放的动画名</summary>
 	public string CurrentAnimation => _animatedSprite?.Animation ?? "";
-
-	/// <summary>是否正在播放</summary>
 	public bool IsPlaying => _animatedSprite?.IsPlaying() ?? false;
-
-	/// <summary>当前帧索引</summary>
 	public int CurrentFrame => _animatedSprite?.Frame ?? 0;
 
-	/// <summary>当前动画总帧数</summary>
 	public int FrameCount
 	{
 		get
@@ -128,39 +122,115 @@ public partial class SpriteSheetComponent : Node2D
 		}
 	}
 
-	/// <summary>暴露内部 AnimatedSprite2D 以供高级使用</summary>
 	public AnimatedSprite2D AnimatedSprite => _animatedSprite;
 
-	private void EnsureAnimatedSprite()
+	// ===== 内部方法 =====
+
+	private void EnsureNodes()
 	{
-		if (_animatedSprite != null) return;
+		if (_defaultSprite != null) return;
+
+		_defaultSprite = new Sprite2D();
+		_defaultSprite.Name = "DefaultSprite";
+		AddChild(_defaultSprite);
+		_defaultSprite.Owner = this;
 
 		_animatedSprite = new AnimatedSprite2D();
 		_animatedSprite.Name = "AnimatedSprite";
+		_animatedSprite.Visible = false;
+		_animatedSprite.AnimationFinished += OnAnimationFinished;
 		AddChild(_animatedSprite);
 		_animatedSprite.Owner = this;
+	}
+
+	private void LoadDefaultTextures()
+	{
+		if (string.IsNullOrEmpty(TpsheetPath)) return;
+
+		string charDir = TpsheetPath.GetBaseDir();
+		string frontPath = charDir + "/default_front.png";
+		string backPath = charDir + "/default_back.png";
+
+		if (ResourceLoader.Exists(frontPath))
+			_defaultFront = GD.Load<Texture2D>(frontPath);
+		if (ResourceLoader.Exists(backPath))
+			_defaultBack = GD.Load<Texture2D>(backPath);
+
+		UpdateDefaultTexture();
+		ShowDefault();
+	}
+
+	private void UpdateDefaultTexture()
+	{
+		if (_defaultSprite == null) return;
+
+		_defaultSprite.Texture = _currentDirection == "back" && _defaultBack != null
+			? _defaultBack
+			: _defaultFront;
+	}
+
+	private void OnAnimationFinished()
+	{
+		string finishedAnim = _animatedSprite?.Animation ?? "";
+		ShowDefault();
+		EmitSignal(SignalName.AnimationFinished, finishedAnim);
+	}
+
+	private void ShowDefault()
+	{
+		UpdateDefaultTexture();
+		_defaultSprite.Visible = true;
+		_animatedSprite.Visible = false;
+	}
+
+	private void HideDefault()
+	{
+		_defaultSprite.Visible = false;
+		_animatedSprite.Visible = true;
 	}
 
 	private void LoadSpriteSheet()
 	{
 		if (string.IsNullOrEmpty(TpsheetPath)) return;
 
-		var spriteFrames = TpsheetLoader.Load(TpsheetPath, DefaultFps);
+		SpriteFrames spriteFrames = TpsheetPath.EndsWith(".tpsheet")
+			? TpsheetLoader.Load(TpsheetPath, DefaultFps)
+			: TpsheetLoader.LoadDirectory(TpsheetPath, DefaultFps);
+
 		if (spriteFrames != null)
 		{
+			ApplyFpsOverrides(spriteFrames);
 			_animatedSprite.SpriteFrames = spriteFrames;
 			_framesLoaded = true;
-			GD.Print($"[SpriteSheet] SpriteFrames 加载成功");
-
-			if (!string.IsNullOrEmpty(DefaultAnimation) &&
-				spriteFrames.HasAnimation(DefaultAnimation))
-			{
-				_animatedSprite.Play(DefaultAnimation);
-			}
 		}
 		else
 		{
-			GD.PrintErr($"[SpriteSheet] SpriteFrames 加载失败");
+			GD.PrintErr($"[SpriteSheet] 加载失败: {TpsheetPath}");
+		}
+	}
+
+	private void ApplyFpsOverrides(SpriteFrames spriteFrames)
+	{
+		foreach (string animName in spriteFrames.GetAnimationNames())
+		{
+			float fps = ResolveFps(animName);
+			spriteFrames.SetAnimationSpeed(animName, fps);
+		}
+	}
+
+	private float ResolveFps(string animName)
+	{
+		string prefix = animName.Contains('_') ? animName.Split('_')[0] : animName;
+		return AnimFpsMap.TryGetValue(prefix, out float fps) ? fps : DefaultFps;
+	}
+
+	private void WarnMissing(string animName)
+	{
+		string msg = $"[SpriteSheet] 动画不存在: {animName}";
+		if (_missingAnimWarning != msg)
+		{
+			_missingAnimWarning = msg;
+			GD.PrintErr($"{msg}, 可用: [{string.Join(", ", _animatedSprite.SpriteFrames.GetAnimationNames())}]");
 		}
 	}
 }

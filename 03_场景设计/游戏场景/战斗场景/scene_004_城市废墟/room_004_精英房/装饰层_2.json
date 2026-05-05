@@ -1,0 +1,21 @@
+{
+  "layer": "装饰层-大（Decoration-Large）",
+  "scene": "城市废墟",
+  "room": "精英房",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1", "2", "3", "4"],
+  "elements": {
+    "count": 4,
+    "items": [
+      { "label": "1", "description": "灰褐色的倒塌写字楼外墙" },
+      { "label": "2", "description": "铁锈色的废弃装甲车残骸" },
+      { "label": "3", "description": "灰色的断裂高架桥段" },
+      { "label": "4", "description": "赭褐色的沙袋工事残迹" }
+    ]
+  }
+}

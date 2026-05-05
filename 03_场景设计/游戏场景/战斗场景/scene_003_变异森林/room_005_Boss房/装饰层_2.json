@@ -1,0 +1,21 @@
+{
+  "layer": "装饰层-大（Decoration-Large）",
+  "scene": "变异森林",
+  "room": "Boss房",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1", "2", "3", "4"],
+  "elements": {
+    "count": 4,
+    "items": [
+      { "label": "1", "description": "荧光紫色和暗绿色脉动发光的变异巨树桩" },
+      { "label": "2", "description": "深褐色和暗紫色交织的巨大骸骨堆" },
+      { "label": "3", "description": "荧光绿色和深紫色交替的活体菌毯" },
+      { "label": "4", "description": "暗红色的肉质藤蔓缠绕石柱" }
+    ]
+  }
+}

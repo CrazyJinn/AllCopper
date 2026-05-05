@@ -1,0 +1,26 @@
+{
+  "layer": "装饰层（Decoration）",
+  "scene": "城市废墟",
+  "room": "普通战斗房1",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  "elements": {
+    "count": 9,
+    "items": [
+      { "label": "1", "description": "灰褐色的碎裂混凝土板" },
+      { "label": "2", "description": "铁锈色的扭曲钢筋" },
+      { "label": "3", "description": "灰绿色的碎玻璃碎片" },
+      { "label": "4", "description": "赭黄色的废弃砖块" },
+      { "label": "5", "description": "深灰色的积水坑" },
+      { "label": "6", "description": "黄褐色的散落弹壳" },
+      { "label": "7", "description": "灰色的断裂管道截面" },
+      { "label": "8", "description": "褐色的风化木板碎片" },
+      { "label": "9", "description": "暗灰色的碎石堆" }
+    ]
+  }
+}

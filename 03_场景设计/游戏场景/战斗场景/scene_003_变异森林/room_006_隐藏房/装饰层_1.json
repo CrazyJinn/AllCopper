@@ -1,0 +1,26 @@
+{
+  "layer": "装饰层（Decoration）",
+  "scene": "变异森林",
+  "room": "隐藏房",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  "elements": {
+    "count": 9,
+    "items": [
+      { "label": "1", "description": "淡绿色的发光苔藓" },
+      { "label": "2", "description": "浅紫色的水晶状菌体" },
+      { "label": "3", "description": "暗绿色的细密藤蔓" },
+      { "label": "4", "description": "灰白色的石化种子" },
+      { "label": "5", "description": "荧光绿色的微光孢子" },
+      { "label": "6", "description": "暗紫色的古老苔痕" },
+      { "label": "7", "description": "深褐色的琥珀色树脂块" },
+      { "label": "8", "description": "灰绿色的变异花蕾残片" },
+      { "label": "9", "description": "淡紫色的荧光地衣" }
+    ]
+  }
+}

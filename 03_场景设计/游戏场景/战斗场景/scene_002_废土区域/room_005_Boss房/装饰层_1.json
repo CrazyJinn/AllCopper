@@ -1,0 +1,26 @@
+{
+  "layer": "装饰层（Decoration）",
+  "scene": "废土区域",
+  "room": "Boss房",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  "elements": {
+    "count": 9,
+    "items": [
+      { "label": "1", "description": "深暗橙红色调的焦土裂隙" },
+      { "label": "2", "description": "灰黑色调的熔化金属残渣" },
+      { "label": "3", "description": "暗红棕色调的巨大弹坑碎石" },
+      { "label": "4", "description": "深灰黄色调的碎裂混凝土板" },
+      { "label": "5", "description": "暗橙黑色调的烧毁电缆线圈" },
+      { "label": "6", "description": "灰褐黑色调的扭曲钢筋" },
+      { "label": "7", "description": "深土红色调的干涸血迹地面" },
+      { "label": "8", "description": "暗黄灰色调的坍塌通风管道" },
+      { "label": "9", "description": "深灰橙色调的腐蚀金属碎片堆" }
+    ]
+  }
+}

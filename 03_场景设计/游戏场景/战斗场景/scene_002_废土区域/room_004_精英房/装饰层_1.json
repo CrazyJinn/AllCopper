@@ -1,0 +1,26 @@
+{
+  "layer": "装饰层（Decoration）",
+  "scene": "废土区域",
+  "room": "精英房",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  "elements": {
+    "count": 9,
+    "items": [
+      { "label": "1", "description": "暗橙红色调的燃烧弹坑痕迹" },
+      { "label": "2", "description": "深灰褐色调的弹痕地面" },
+      { "label": "3", "description": "暗黄灰色调的焦黑残木" },
+      { "label": "4", "description": "土红色调的铁丝网卷" },
+      { "label": "5", "description": "深橙色调的废弃弹药箱残片" },
+      { "label": "6", "description": "灰黑色调的烧焦金属架" },
+      { "label": "7", "description": "暗土黄色调的战壕塌陷碎石" },
+      { "label": "8", "description": "深褐色调的断裂铁链" },
+      { "label": "9", "description": "灰橙色调的破损防御工事碎片" }
+    ]
+  }
+}

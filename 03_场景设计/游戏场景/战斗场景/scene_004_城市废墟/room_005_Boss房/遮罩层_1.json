@@ -1,0 +1,18 @@
+{
+  "layer": "前景/遮罩层（Foreground/Mask）",
+  "scene": "城市废墟",
+  "room": "Boss房",
+  "mask_id": 1,
+  "requirement": "无任何文字,元素独立完整",
+  "style": {
+    "background": "纯白背景",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "elements": {
+    "count": 1,
+    "items": [
+      { "label": "1", "description": "顶部前景遮挡，灰黑色的巨幅坍塌天花板与裸露钢筋丛林，橙红余烬光效映照" }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "layer": "装饰层（Decoration）",
+  "scene": "变异森林",
+  "room": "普通战斗房2",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  "elements": {
+    "count": 9,
+    "items": [
+      { "label": "1", "description": "暗绿色的水洼倒影" },
+      { "label": "2", "description": "深紫色的菌菇丛" },
+      { "label": "3", "description": "褐绿色的腐木碎块" },
+      { "label": "4", "description": "荧光绿色的苔藓覆盖石子" },
+      { "label": "5", "description": "灰紫色的毒雾痕迹" },
+      { "label": "6", "description": "墨绿色的蕨类残叶" },
+      { "label": "7", "description": "暗棕色的泥浆飞溅痕迹" },
+      { "label": "8", "description": "淡紫色的孢子粉尘痕迹" },
+      { "label": "9", "description": "深绿色的藻类覆盖物" }
+    ]
+  }
+}

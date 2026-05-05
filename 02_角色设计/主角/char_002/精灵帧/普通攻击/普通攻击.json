@@ -1,0 +1,56 @@
+{
+  "animation": "普通攻击（站定蓄力施法）",
+  "direction": "正面 | 背面",
+  "requirement": "无任何文字,不改变参考图片中角色的头身比.角色在各格中保持同一形象,全身构图,每格内角色占格子的80%,居中.",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "3/4 front left view | 3/4 back left view",
+    "rendering": "chibi,3头身"
+  },
+  "order": [
+    "1", "2", "3",
+    "4", "5", "6",
+    "7", "8", "9"
+  ],
+  "poses": {
+    "count": 9,
+    "items": [
+      {
+        "label": "1",
+        "description": "准备站立（待机姿态）"
+      },
+      {
+        "label": "2",
+        "description": "双手|双臂微微抬起，开始蓄力"
+      },
+      {
+        "label": "3",
+        "description": "双手|双臂抬起蓄力，身体后仰"
+      },
+      {
+        "label": "4",
+        "description": "蓄力加深，身体进一步后仰"
+      },
+      {
+        "label": "5",
+        "description": "蓄力顶峰，力量凝聚"
+      },
+      {
+        "label": "6",
+        "description": "双手|双臂猛然前推，释放魔法"
+      },
+      {
+        "label": "7",
+        "description": "魔法释放，双手|双臂前推到位"
+      },
+      {
+        "label": "8",
+        "description": "双手|双臂缓缓收回"
+      },
+      {
+        "label": "9",
+        "description": "恢复站姿（与帧1一致）"
+      }
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "layer": "前景/遮罩层（Foreground/Mask）",
+  "scene": "城市废墟",
+  "room": "普通战斗房2",
+  "mask_id": 2,
+  "requirement": "无任何文字,元素独立完整",
+  "style": {
+    "background": "纯白背景",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "elements": {
+    "count": 1,
+    "items": [
+      { "label": "1", "description": "画面右侧前景遮挡，灰褐色的断裂立柱，暗影遮蔽" }
+    ]
+  }
+}

@@ -261,7 +261,7 @@ public static class JsonDataLoader
 			Skills = ResolveSkills(dto.SkillIds),
 			PortraitDefault = LoadTexture(dto.PortraitDefault),
 			PortraitExpressions = dto.PortraitExpressions?.Select(LoadTexture).ToArray() ?? [],
-			TpsheetPath = dto.TpsheetPath ?? "",
+			TpsheetPath = $"res://assets/characters/{dto.CharacterId}/sprites",
 		};
 
 		_characters[data.CharacterId] = data;

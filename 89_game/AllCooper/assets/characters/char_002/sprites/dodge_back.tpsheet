@@ -1,0 +1,152 @@
+{
+  "textures": [
+    {
+      "image": "texture.png",
+      "size": {
+        "w": 893,
+        "h": 852
+      },
+      "sprites": [
+        {
+          "filename": "char_002_dodge_back_05",
+          "region": {
+            "x": 0,
+            "y": 0,
+            "w": 341,
+            "h": 341
+          },
+          "margin": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        },
+        {
+          "filename": "char_002_dodge_back_07",
+          "region": {
+            "x": 342,
+            "y": 0,
+            "w": 261,
+            "h": 318
+          },
+          "margin": {
+            "x": 0,
+            "y": 23,
+            "w": 80,
+            "h": 23
+          }
+        },
+        {
+          "filename": "char_002_dodge_back_04",
+          "region": {
+            "x": 604,
+            "y": 0,
+            "w": 289,
+            "h": 300
+          },
+          "margin": {
+            "x": 0,
+            "y": 41,
+            "w": 52,
+            "h": 41
+          }
+        },
+        {
+          "filename": "char_002_dodge_back_09",
+          "region": {
+            "x": 604,
+            "y": 301,
+            "w": 166,
+            "h": 299
+          },
+          "margin": {
+            "x": 73,
+            "y": 21,
+            "w": 175,
+            "h": 42
+          }
+        },
+        {
+          "filename": "char_002_dodge_back_03",
+          "region": {
+            "x": 342,
+            "y": 319,
+            "w": 213,
+            "h": 293
+          },
+          "margin": {
+            "x": 69,
+            "y": 31,
+            "w": 128,
+            "h": 48
+          }
+        },
+        {
+          "filename": "char_002_dodge_back_01",
+          "region": {
+            "x": 0,
+            "y": 342,
+            "w": 170,
+            "h": 293
+          },
+          "margin": {
+            "x": 86,
+            "y": 31,
+            "w": 171,
+            "h": 48
+          }
+        },
+        {
+          "filename": "char_002_dodge_back_06",
+          "region": {
+            "x": 171,
+            "y": 342,
+            "w": 151,
+            "h": 256
+          },
+          "margin": {
+            "x": 87,
+            "y": 36,
+            "w": 190,
+            "h": 85
+          }
+        },
+        {
+          "filename": "char_002_dodge_back_02",
+          "region": {
+            "x": 556,
+            "y": 601,
+            "w": 208,
+            "h": 251
+          },
+          "margin": {
+            "x": 86,
+            "y": 73,
+            "w": 133,
+            "h": 90
+          }
+        },
+        {
+          "filename": "char_002_dodge_back_08",
+          "region": {
+            "x": 171,
+            "y": 613,
+            "w": 229,
+            "h": 219
+          },
+          "margin": {
+            "x": 64,
+            "y": 88,
+            "w": 112,
+            "h": 122
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "version": "1.0.0",
+    "format": "RGBA8888"
+  }
+}

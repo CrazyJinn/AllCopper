@@ -1,0 +1,56 @@
+{
+  "animation": "待机循环",
+  "direction": "正面 | 背面",
+  "requirement": "无任何文字,不改变参考图片中角色的头身比.角色在各格中保持同一形象,全身构图,每格内角色占格子的80%,居中.",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "3/4 front left view | 3/4 back left view",
+    "rendering": "chibi,3头身"
+  },
+  "order": [
+    "1", "2", "3",
+    "4", "5", "6",
+    "7", "8", "9"
+  ],
+  "poses": {
+    "count": 9,
+    "items": [
+      {
+        "label": "1",
+        "description": "自然站立，双手交叠|双臂垂于身侧"
+      },
+      {
+        "label": "2",
+        "description": "微微吸气，放松呼吸"
+      },
+      {
+        "label": "3",
+        "description": "缓缓呼气，身体微放松"
+      },
+      {
+        "label": "4",
+        "description": "头部微转，环顾左方"
+      },
+      {
+        "label": "5",
+        "description": "头部转向，环顾右方"
+      },
+      {
+        "label": "6",
+        "description": "头部回正，环顾结束"
+      },
+      {
+        "label": "7",
+        "description": "吸气挺直，调整姿态"
+      },
+      {
+        "label": "8",
+        "description": "调整完成，姿态舒展"
+      },
+      {
+        "label": "9",
+        "description": "恢复自然站立（与帧1一致）"
+      }
+    ]
+  }
+}

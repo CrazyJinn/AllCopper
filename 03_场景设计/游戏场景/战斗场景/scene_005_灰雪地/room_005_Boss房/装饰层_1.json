@@ -1,0 +1,26 @@
+{
+  "layer": "装饰层（Decoration）",
+  "scene": "灰雪地",
+  "room": "Boss房",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1","2","3","4","5","6","7","8","9"],
+  "elements": {
+    "count": 9,
+    "items": [
+      { "label": "1", "description": "灰白色调的深厚积雪" },
+      { "label": "2", "description": "暗灰蓝色的巨型冰面裂缝" },
+      { "label": "3", "description": "灰紫色辐射痕迹的变色积雪" },
+      { "label": "4", "description": "灰白色的冰封残骸碎片" },
+      { "label": "5", "description": "暗灰蓝紫色的辐射冰晶" },
+      { "label": "6", "description": "灰褐色调的积雪掩埋机械残骸" },
+      { "label": "7", "description": "灰白色的冻结扭曲金属条" },
+      { "label": "8", "description": "淡灰紫色的辐射发光冰面" },
+      { "label": "9", "description": "暗灰蓝色的深层冻土碎石" }
+    ]
+  }
+}

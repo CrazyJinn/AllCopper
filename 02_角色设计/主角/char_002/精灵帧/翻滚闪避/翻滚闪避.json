@@ -1,0 +1,56 @@
+{
+  "animation": "翻滚闪避",
+  "direction": "正面 | 背面",
+  "requirement": "无任何文字,不改变参考图片中角色的头身比.角色在各格中保持同一形象,全身构图,每格内角色居中并占格子的80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "3/4 front left view | 3/4 back left view",
+    "rendering": "chibi,3头身"
+  },
+  "order": [
+    "1", "2", "3",
+    "4", "5", "6",
+    "7", "8", "9"
+  ],
+  "poses": {
+    "count": 9,
+    "items": [
+      {
+        "label": "1",
+        "description": "准备站立（待机姿态）"
+      },
+      {
+        "label": "2",
+        "description": "身体微沉，蓄力准备闪现"
+      },
+      {
+        "label": "3",
+        "description": "身体开始虚化，轮廓模糊"
+      },
+      {
+        "label": "4",
+        "description": "身体进一步虚化，只剩残影轮廓"
+      },
+      {
+        "label": "5",
+        "description": "完全消失，原地仅留一团光雾"
+      },
+      {
+        "label": "6",
+        "description": "远处光雾出现，身体开始凝聚"
+      },
+      {
+        "label": "7",
+        "description": "身体轮廓逐渐清晰，从虚化中显现"
+      },
+      {
+        "label": "8",
+        "description": "身体完全实体化，落地微蹲稳住"
+      },
+      {
+        "label": "9",
+        "description": "恢复站姿（与帧1一致）"
+      }
+    ]
+  }
+}

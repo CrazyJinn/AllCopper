@@ -1,0 +1,26 @@
+{
+  "layer": "装饰层（Decoration）",
+  "scene": "变异森林",
+  "room": "入口房",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  "elements": {
+    "count": 9,
+    "items": [
+      { "label": "1", "description": "暗绿色的苔藓地皮" },
+      { "label": "2", "description": "灰褐色的腐烂落叶堆" },
+      { "label": "3", "description": "暗紫色的毒菌簇" },
+      { "label": "4", "description": "深绿色的蕨类植物" },
+      { "label": "5", "description": "灰白色的枯枝碎片" },
+      { "label": "6", "description": "墨绿色的藤蔓残段" },
+      { "label": "7", "description": "暗棕色的树皮碎屑" },
+      { "label": "8", "description": "淡绿色的孢子粉尘痕迹" },
+      { "label": "9", "description": "灰紫色的地衣斑片" }
+    ]
+  }
+}

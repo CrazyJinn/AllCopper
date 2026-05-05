@@ -1,0 +1,56 @@
+{
+  "animation": "技能2",
+  "direction": "正面 | 背面",
+  "requirement": "无任何文字,不改变参考图片中角色的头身比.角色在各格中保持同一形象,全身构图,每格内角色占格子的80%,居中.",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "3/4 front left view | 3/4 back left view",
+    "rendering": "chibi,3头身"
+  },
+  "order": [
+    "1", "2", "3",
+    "4", "5", "6",
+    "7", "8", "9"
+  ],
+  "poses": {
+    "count": 9,
+    "items": [
+      {
+        "label": "1",
+        "description": "准备站立（待机姿态）"
+      },
+      {
+        "label": "2",
+        "description": "开始下蹲，双手|双臂胸前交叉"
+      },
+      {
+        "label": "3",
+        "description": "下蹲蓄力，双手|双臂交叉紧握"
+      },
+      {
+        "label": "4",
+        "description": "蓄力加深，身体继续下压"
+      },
+      {
+        "label": "5",
+        "description": "蓄力顶峰"
+      },
+      {
+        "label": "6",
+        "description": "双手|双臂猛然向两侧展开"
+      },
+      {
+        "label": "7",
+        "description": "双手|双臂展开到位"
+      },
+      {
+        "label": "8",
+        "description": "双手|双臂缓缓回落"
+      },
+      {
+        "label": "9",
+        "description": "恢复站姿（与帧1一致）"
+      }
+    ]
+  }
+}

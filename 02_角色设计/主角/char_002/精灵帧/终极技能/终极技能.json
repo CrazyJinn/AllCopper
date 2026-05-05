@@ -1,0 +1,56 @@
+{
+  "animation": "终极技能",
+  "direction": "正面 | 背面",
+  "requirement": "无任何文字,不改变参考图片中角色的头身比.角色在各格中保持同一形象,全身构图,每格内角色占格子的80%,居中.",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "3/4 front left view | 3/4 back left view",
+    "rendering": "chibi,3头身"
+  },
+  "order": [
+    "1", "2", "3",
+    "4", "5", "6",
+    "7", "8", "9"
+  ],
+  "poses": {
+    "count": 9,
+    "items": [
+      {
+        "label": "1",
+        "description": "准备站立（待机姿态）"
+      },
+      {
+        "label": "2",
+        "description": "身体微震，开始蓄力"
+      },
+      {
+        "label": "3",
+        "description": "双手|双臂展开，身体后仰"
+      },
+      {
+        "label": "4",
+        "description": "双手|双臂继续展开后仰至极限"
+      },
+      {
+        "label": "5",
+        "description": "双手|双臂向头顶合拢聚能"
+      },
+      {
+        "label": "6",
+        "description": "聚能持续，能量汇聚"
+      },
+      {
+        "label": "7",
+        "description": "能量顶峰，猛然砸下"
+      },
+      {
+        "label": "8",
+        "description": "下沉，单膝跪地"
+      },
+      {
+        "label": "9",
+        "description": "跪地静止（与帧8一致）"
+      }
+    ]
+  }
+}

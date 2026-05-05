@@ -1,0 +1,21 @@
+{
+  "layer": "装饰层-大（Decoration-Large）",
+  "scene": "废土区域",
+  "room": "精英房",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1", "2", "3", "4"],
+  "elements": {
+    "count": 4,
+    "items": [
+      { "label": "1", "description": "暗红橙色调的焚毁装甲车残骸" },
+      { "label": "2", "description": "深灰棕色调的半塌碉堡废墟" },
+      { "label": "3", "description": "暗黄黑色调的焦黑建筑骨架" },
+      { "label": "4", "description": "灰红棕色调的断裂瞭望塔" }
+    ]
+  }
+}

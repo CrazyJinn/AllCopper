@@ -1,17 +1,18 @@
 version: 1.0
-generated_at: "2026-04-11T00:00:00"
-source: ReadMe.md
+generated_at: "2026-05-04T00:00:00"
+source: README.md
 
 nodes:
   前期准备:
     name: 前期准备
     skill: null
-    description: "准备游戏基础设定文档：游戏概览、世界设定、剧本大纲"
+    description: "游戏世界观、设定集、剧本大纲（人工完成）"
     execution_type: manual
     inputs: []
     predecessors: []
     successors: [需求分析, 剧本拆解]
-    check_condition: "00_init/游戏概览.md 和 00_init/世界设定.md 和 00_init/剧本大纲.md 存在"
+    outputs: [00_init/游戏概览.md, 00_init/世界设定.md, 00_init/剧本大纲.md]
+    check_condition: "00_init/游戏概览.md, 00_init/世界设定.md, 00_init/剧本大纲.md 存在"
     status: completed
     retry_count: 0
     started_at: null
@@ -20,141 +21,152 @@ nodes:
   需求分析:
     name: 需求分析
     skill: 需求分析
-    description: "将世界观和设定集转化为结构化的开发需求文档，更新CLAUDE.md"
+    description: "将世界观和设定集转化为结构化的开发需求文档（角色需求、场景需求、音频需求、代码需求），并更新 CLAUDE.md"
     execution_type: skill
     inputs: [00_init/游戏概览.md, 00_init/世界设定.md]
     predecessors: [前期准备]
     successors: [角色设计, 场景设计, 解决方案设计, 音频实现]
-    check_condition: "CLAUDE.md 和 01_需求文档/角色需求.md 和 01_需求文档/场景需求.md 和 01_需求文档/音频需求.md 和 01_需求文档/代码需求.md 存在"
+    outputs: [CLAUDE.md, 01_需求文档/角色需求.md, 01_需求文档/场景需求.md, 01_需求文档/音频需求.md, 01_需求文档/代码需求.md]
+    check_condition: "01_需求文档/角色需求.md, 01_需求文档/场景需求.md, 01_需求文档/音频需求.md, 01_需求文档/代码需求.md 存在"
     status: completed
     retry_count: 0
-    started_at: "2026-04-11T00:00:00"
-    completed_at: "2026-04-11T00:30:00"
+    started_at: null
+    completed_at: null
 
   剧本拆解:
     name: 剧本拆解
     skill: 剧本拆解
-    description: "将剧本大纲转化为详细的分场剧本，生成立绘表情提示词和过场提示词"
+    description: "将剧本大纲转化为详细的分场剧本，包含对话、动作、场景描述，并生成立绘表情提示词和过场提示词"
     execution_type: skill
     inputs: [00_init/剧本大纲.md]
     predecessors: [前期准备]
     successors: [图生图api, 剧本组装]
-    check_condition: "04_剧本/章节/ 目录非空 且 02_角色设计/*/立绘/提示词.md 存在"
+    outputs: [04_剧本/章节/*.md, 02_角色设计/*/立绘/提示词.md, 04_剧本/分镜/*]
+    check_condition: "04_剧本/章节/ 目录下有剧本文件"
     status: completed
     retry_count: 0
-    started_at: "2026-04-12T21:00:00"
-    completed_at: "2026-04-12T22:30:00"
-    completion_note: "分场剧本完成（五幕）。立绘表情提示词和过场动画提示词未生成"
+    started_at: null
+    completed_at: null
 
   角色设计:
     name: 角色设计
     skill: 角色设计
-    description: "根据角色需求生成用于AI绘图的角色设计图提示词"
+    description: "根据角色需求，生成用于 AI 绘图的角色设计图提示词（手绘动漫风格，纯白背景）"
     execution_type: skill
     inputs: [01_需求文档/角色需求.md]
     predecessors: [需求分析]
     successors: [文生图api]
+    outputs: [02_角色设计/角色设计总览.md, 02_角色设计/*/设计图提示词.md, 02_角色设计/*/Q版设计图提示词.md]
     check_condition: "02_角色设计/角色设计总览.md 存在"
     status: completed
-    retry_count: 1
-    started_at: "2026-04-11T23:05:00"
-    completed_at: "2026-04-11T23:30:00"
+    retry_count: 0
+    started_at: null
+    completed_at: null
 
   场景设计:
     name: 场景设计
     skill: 场景设计
-    description: "根据场景需求生成游戏场景、对话背景、UI背景的AI绘图提示词"
+    description: "根据场景需求，生成游戏场景、对话背景、UI 背景三类场景的 AI 绘图提示词（油画风格）"
     execution_type: skill
     inputs: [01_需求文档/场景需求.md]
     predecessors: [需求分析]
     successors: [文生图api]
+    outputs: [03_场景设计/场景设计总览.md, 03_场景设计/游戏场景/**/概览.md, 03_场景设计/对话背景/*/提示词.md, 03_场景设计/UI背景/*/提示词.md]
     check_condition: "03_场景设计/场景设计总览.md 存在"
     status: completed
     retry_count: 0
-    started_at: "2026-04-11T10:00:00"
-    completed_at: "2026-04-11T10:30:00"
+    started_at: null
+    completed_at: null
 
   解决方案设计:
     name: 解决方案设计
     skill: 解决方案设计
-    description: "基于代码需求进行技术方案分析，输出需求分析文档和测试用例设计"
+    description: "基于代码需求进行技术方案分析，输出需求分析文档和测试用例设计，为代码生成提供输入"
     execution_type: skill
     inputs: [01_需求文档/代码需求.md]
     predecessors: [需求分析]
     successors: [代码生成]
-    check_condition: "10_解决方案设计/需求分析文档.md 和 10_解决方案设计/测试用例设计.md 存在"
+    outputs: [10_解决方案设计/需求分析文档.md, 10_解决方案设计/测试用例设计.md]
+    check_condition: "10_解决方案设计/需求分析文档.md, 10_解决方案设计/测试用例设计.md 存在"
     status: completed
-    retry_count: 1
-    started_at: "2026-04-13T00:05:00"
-    completed_at: "2026-04-13T00:10:00"
+    retry_count: 0
+    started_at: null
+    completed_at: null
 
   文生图api:
-    name: 文生图
+    name: "文生图 (api)"
     skill: image-gen-api
-    description: "调用API根据文本提示词生成角色设计图和场景图片"
+    description: "调用 seedream API，根据文本提示词生成角色设计图和场景图片"
     execution_type: api
     inputs: [02_角色设计/角色设计总览.md, 03_场景设计/场景设计总览.md]
     predecessors: [角色设计, 场景设计]
     successors: [图生图api, 图生图人工, 资源搬运]
-    check_condition: "02_角色设计/*/设计图.png 和 03_场景设计/*/图片.png 存在"
+    outputs: [02_角色设计/*/设计图*.png, 03_场景设计/**/*.png]
+    check_condition: "02_角色设计/ 和 03_场景设计/ 下有生成的 .png 图片"
     status: completed
-    retry_count: 1
-    started_at: "2026-04-11T23:45:00"
-    completed_at: "2026-04-12T18:35:00"
-    progress_note: null
+    retry_count: 0
+    started_at: "2026-05-04T00:00:00"
+    completed_at: "2026-05-05T13:43:00"
+    note: "全部战斗场景已完成：scene_002废土区域(20张)+scene_003变异森林(20张)+scene_004城市废墟(20张)+scene_005灰雪地(20张)=80张，均2048x2048，doubao-seedream-5.0-lite"
 
   图生图api:
-    name: 图生图
+    name: "图生图 (api)"
     skill: image-gen-api
-    description: "基于设计图+提示词生成角色立绘和过场图片"
+    description: "调用 seedream API，基于设计图 + 提示词生成角色立绘和过场图片"
     execution_type: api
-    inputs: [02_角色设计/*/立绘/提示词.md, 04_剧本/分镜/*/提示词.md, 02_角色设计/*/设计图.png]
+    inputs: [02_角色设计/*/立绘/提示词.md, 04_剧本/分镜/*, 02_角色设计/*/设计图*.png]
     predecessors: [剧本拆解, 文生图api]
     successors: [资源搬运]
-    check_condition: "02_角色设计/*/立绘/*.png 和 04_剧本/分镜/*.png 存在"
-    status: pending
+    outputs: [02_角色设计/*/立绘/*.png, 04_剧本/分镜/*.png]
+    check_condition: "02_角色设计/*/立绘/*.png 及过场图片存在"
+    status: ready
+    note: "前置节点已全部completed，等待执行"
     retry_count: 0
     started_at: null
     completed_at: null
 
   图生图人工:
-    name: 图生图(人工)
+    name: "图生图 (人工)"
     skill: null
-    description: "人工基于角色设计图生成手绘Q版风格设计图"
+    description: "基于文生图的角色设计图，人工绘制 Q 版风格设计图（3头身）"
     execution_type: manual
-    inputs: [02_角色设计/*/设计图.png]
+    inputs: [02_角色设计/*/设计图*.png]
     predecessors: [文生图api]
-    successors: [图生视频api]
-    check_condition: "02_角色设计/*/手绘Q版风格设计图.png 存在"
+    successors: [精灵帧生成api]
+    outputs: [02_角色设计/*/Q版设计图*.png]
+    check_condition: "02_角色设计/*/Q版设计图*.png 存在"
     status: completed
     retry_count: 0
     started_at: null
-    completed_at: "2026-04-12T19:00:00"
-
-  图生视频api:
-    name: 图生视频
-    skill: image-to-video
-    description: "基于手绘Q版风格设计图生成角色动画视频"
-    execution_type: api
-    inputs: [02_角色设计/*/手绘Q版风格设计图.png]
-    predecessors: [图生图人工]
-    successors: [精灵帧提取]
-    check_condition: "02_角色设计/*/动画/*.mp4 存在"
-    status: in_progress
-    retry_count: 0
-    started_at: "2026-04-12T20:00:00"
     completed_at: null
-    progress_note: "主角动画重做中：char_002待重新生成待机+奔跑(4段)；char_001等用户提供Q版设计图；剩余NPC+怪物动画待生成"
+    note: "char_001(罗兰) 缺少 Q版设计图"
 
-  精灵帧提取:
-    name: 精灵帧提取
+  精灵帧生成api:
+    name: "精灵帧生成 (ofoxai)"
+    skill: ofoxai-image-gen
+    description: "调用 OfoxAI gpt-image-2 API，基于 Q 版设计图 + 精灵帧提示词生成 8 宫格精灵帧整图"
+    execution_type: api
+    inputs: [02_角色设计/*/Q版设计图*.png, 02_角色设计/*/精灵帧/提示词.md]
+    predecessors: [图生图人工]
+    successors: [精灵帧处理]
+    outputs: [02_角色设计/*/精灵帧/*/*.png]
+    check_condition: "02_角色设计/*/精灵帧/*/*.png 存在"
+    status: ready
+    retry_count: 0
+    started_at: null
+    completed_at: null
+    note: "char_002 已有部分精灵帧（移动、翻滚闪避），其余角色待生成"
+
+  精灵帧处理:
+    name: "精灵帧处理 (脚本)"
     skill: null
-    description: "使用ffmpeg从动画视频中提取精灵帧序列并拼接为精灵图集"
+    description: "切割 8 宫格精灵帧为独立帧，白色背景转透明，拼接为 Godot 可用的精灵图集格式"
     execution_type: auto
-    inputs: [02_角色设计/*/动画/*.mp4]
-    predecessors: [图生视频api]
+    inputs: [02_角色设计/*/精灵帧/*/*.png]
+    predecessors: [精灵帧生成api]
     successors: [资源搬运]
-    check_condition: "02_角色设计/*/动画/精灵图集.png 存在"
+    outputs: [02_角色设计/*/精灵帧/*/精灵帧序列.png, 02_角色设计/*/精灵帧/*/精灵图集.png]
+    check_condition: "精灵帧序列和精灵图集存在"
     status: pending
     retry_count: 0
     started_at: null
@@ -163,12 +175,13 @@ nodes:
   音频实现:
     name: 音频实现
     skill: null
-    description: "根据音频需求生成BGM和音效"
-    execution_type: manual
+    description: "根据音频需求生成 BGM 和音效"
+    execution_type: skill
     inputs: [01_需求文档/音频需求.md]
     predecessors: [需求分析]
     successors: [资源搬运]
-    check_condition: "05_音频/BGM/*.mp3 和 05_音频/音效/*.mp3 存在"
+    outputs: [05_音频/BGM/*.mp3, 05_音频/音效/*.mp3]
+    check_condition: "05_音频/BGM/ 和 05_音频/音效/ 下有音频文件"
     status: ready
     retry_count: 0
     started_at: null
@@ -177,27 +190,14 @@ nodes:
   代码生成:
     name: 代码生成
     skill: 代码生成
-    description: "根据需求分析文档和测试用例生成游戏源代码"
+    description: "根据需求分析文档和测试用例，生成游戏源代码"
     execution_type: skill
     inputs: [10_解决方案设计/需求分析文档.md, 10_解决方案设计/测试用例设计.md]
     predecessors: [解决方案设计]
     successors: [游戏组装]
-    check_condition: "89_game/AllCooper/scripts/ 目录非空"
+    outputs: [89_game/AllCooper/scripts/**/*.cs]
+    check_condition: "89_game/AllCooper/scripts/ 下有 .cs 文件"
     status: completed
-    retry_count: 0
-    started_at: "2026-04-13T00:15:00"
-    completed_at: "2026-04-13T00:25:00"
-
-  剧本组装:
-    name: 剧本组装
-    skill: null
-    description: "将分场剧本组装为游戏引擎可用的JSON数据格式"
-    execution_type: skill
-    inputs: [04_剧本/章节/*.md]
-    predecessors: [剧本拆解]
-    successors: [游戏组装]
-    check_condition: "89_game/AllCooper/data/剧本.json 存在"
-    status: pending
     retry_count: 0
     started_at: null
     completed_at: null
@@ -205,36 +205,44 @@ nodes:
   资源搬运:
     name: 资源搬运
     skill: resource-transfer
-    description: "将成品资源从开发目录同步到游戏项目assets目录"
-    execution_type: skill
-    inputs:
-      - 03_场景设计/*/图片.png
-      - 02_角色设计/*/立绘/*.png
-      - 04_剧本/分镜/*.png
-      - 02_角色设计/*/动画/精灵图集.png
-      - 05_音频/BGM/*.mp3
-      - 05_音频/音效/*.mp3
-    predecessors: [文生图api, 图生图api, 精灵帧提取, 音频实现]
+    description: "将各设计总览中状态为终稿的成品资源同步到游戏项目目录，并生成搬运记录"
+    execution_type: auto
+    inputs: [03_场景设计/**/*.png, 02_角色设计/*/立绘/*.png, 02_角色设计/*/精灵帧/*/精灵图集.png, 05_音频/**/*.mp3]
+    predecessors: [文生图api, 图生图api, 精灵帧处理, 音频实现]
     successors: [游戏组装]
-    check_condition: "89_game/AllCooper/assets/ 目录非空"
+    outputs: [89_game/AllCooper/assets/]
+    check_condition: "89_game/AllCooper/assets/ 下有搬运的资源"
     status: pending
     retry_count: 0
     started_at: null
     completed_at: null
 
   游戏组装:
-    name: 游戏组装
+    name: "游戏组装 (人工)"
     skill: null
-    description: "人工将所有资源、代码和剧本数据组装为可运行的游戏成品"
+    description: "将所有资源和代码组装为可运行的游戏（人工完成）"
     execution_type: manual
-    inputs:
-      - 89_game/AllCooper/assets/
-      - 89_game/AllCooper/scripts/
-      - 89_game/AllCooper/data/剧本.json
+    inputs: [89_game/AllCooper/]
     predecessors: [资源搬运, 代码生成, 剧本组装]
     successors: []
-    check_condition: "游戏成品可运行"
+    outputs: [游戏成品]
+    check_condition: "游戏可运行"
     status: pending
+    retry_count: 0
+    started_at: null
+    completed_at: null
+
+  剧本组装:
+    name: 剧本组装
+    skill: null
+    description: "将分场剧本组装为游戏引擎可用的 JSON 数据格式"
+    execution_type: skill
+    inputs: [04_剧本/章节/*.md]
+    predecessors: [剧本拆解]
+    successors: [游戏组装]
+    outputs: [89_game/AllCooper/dialogs/*.json]
+    check_condition: "游戏引擎可用的 JSON 剧本文件存在"
+    status: ready
     retry_count: 0
     started_at: null
     completed_at: null

@@ -1,0 +1,26 @@
+{
+  "layer": "装饰层（Decoration）",
+  "scene": "废土区域",
+  "room": "普通战斗房2",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  "elements": {
+    "count": 9,
+    "items": [
+      { "label": "1", "description": "暗橙色调的锈蚀金属齿轮" },
+      { "label": "2", "description": "灰黄色调的散落弹壳" },
+      { "label": "3", "description": "土褐色调的破裂管道" },
+      { "label": "4", "description": "深黄灰色调的沙土堆积" },
+      { "label": "5", "description": "暗红棕色调的废弃工具碎片" },
+      { "label": "6", "description": "灰土色调的碎玻璃残渣" },
+      { "label": "7", "description": "黄褐色调的破旧布料残片" },
+      { "label": "8", "description": "暗灰色调的螺栓螺母散件" },
+      { "label": "9", "description": "土橙黄色调的腐蚀地面" }
+    ]
+  }
+}

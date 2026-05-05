@@ -1,0 +1,152 @@
+{
+  "textures": [
+    {
+      "image": "texture.png",
+      "size": {
+        "w": 685,
+        "h": 920
+      },
+      "sprites": [
+        {
+          "filename": "char_002_move_back_01",
+          "region": {
+            "x": 0,
+            "y": 0,
+            "w": 299,
+            "h": 323
+          },
+          "margin": {
+            "x": 0,
+            "y": 18,
+            "w": 42,
+            "h": 18
+          }
+        },
+        {
+          "filename": "char_002_move_back_03",
+          "region": {
+            "x": 300,
+            "y": 0,
+            "w": 192,
+            "h": 311
+          },
+          "margin": {
+            "x": 75,
+            "y": 21,
+            "w": 149,
+            "h": 30
+          }
+        },
+        {
+          "filename": "char_002_move_back_04",
+          "region": {
+            "x": 493,
+            "y": 0,
+            "w": 190,
+            "h": 310
+          },
+          "margin": {
+            "x": 93,
+            "y": 15,
+            "w": 151,
+            "h": 31
+          }
+        },
+        {
+          "filename": "char_002_move_back_09",
+          "region": {
+            "x": 300,
+            "y": 312,
+            "w": 196,
+            "h": 309
+          },
+          "margin": {
+            "x": 82,
+            "y": 13,
+            "w": 145,
+            "h": 32
+          }
+        },
+        {
+          "filename": "char_002_move_back_08",
+          "region": {
+            "x": 497,
+            "y": 311,
+            "w": 188,
+            "h": 307
+          },
+          "margin": {
+            "x": 88,
+            "y": 15,
+            "w": 153,
+            "h": 34
+          }
+        },
+        {
+          "filename": "char_002_move_back_02",
+          "region": {
+            "x": 0,
+            "y": 324,
+            "w": 208,
+            "h": 301
+          },
+          "margin": {
+            "x": 71,
+            "y": 21,
+            "w": 133,
+            "h": 40
+          }
+        },
+        {
+          "filename": "char_002_move_back_06",
+          "region": {
+            "x": 209,
+            "y": 622,
+            "w": 211,
+            "h": 298
+          },
+          "margin": {
+            "x": 58,
+            "y": 16,
+            "w": 130,
+            "h": 43
+          }
+        },
+        {
+          "filename": "char_002_move_back_07",
+          "region": {
+            "x": 0,
+            "y": 626,
+            "w": 201,
+            "h": 294
+          },
+          "margin": {
+            "x": 75,
+            "y": 14,
+            "w": 140,
+            "h": 47
+          }
+        },
+        {
+          "filename": "char_002_move_back_05",
+          "region": {
+            "x": 421,
+            "y": 622,
+            "w": 201,
+            "h": 282
+          },
+          "margin": {
+            "x": 75,
+            "y": 6,
+            "w": 140,
+            "h": 59
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "version": "1.0.0",
+    "format": "RGBA8888"
+  }
+}

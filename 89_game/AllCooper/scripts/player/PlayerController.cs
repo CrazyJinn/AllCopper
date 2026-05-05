@@ -2,13 +2,11 @@ using Godot;
 
 /// <summary>
 /// 玩家控制器
-/// 处理玩家移动、翻滚闪避、阵营切换、交互和战斗模式分发
-/// 子节点通过 BuildScene() 动态创建，.tscn 只保留空壳
 /// </summary>
 [GlobalClass]
 public partial class PlayerController : CharacterBody2D
 {
-    // ===== 子节点引用（BuildScene 创建） =====
+    // ===== 子节点引用 =====
 
     private CollisionShape2D _collision;
     public HealthComponent Health { get; private set; }
@@ -20,41 +18,34 @@ public partial class PlayerController : CharacterBody2D
 
     // ===== 导出属性 =====
 
-    /// <summary>角色数据配置</summary>
     [Export]
     public CharacterData Data { get; set; }
 
-    /// <summary>翻滚速度</summary>
     [Export]
-    public float RollSpeed { get; set; } = 400f;
+    public float RollSpeed { get; set; } = 800f;
 
-    /// <summary>翻滚持续时间</summary>
-    [Export]
-    public float RollDuration { get; set; } = 0.3f;
-
-    /// <summary>翻滚冷却时间</summary>
     [Export]
     public float RollCooldown { get; set; } = 0.5f;
 
+    /// <summary>静止多久后播放 idle 动画（秒）</summary>
+    [Export]
+    public float IdleTimeout { get; set; } = 5f;
+
     // ===== 公共属性 =====
 
-    /// <summary>当前玩家状态</summary>
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
-
-    /// <summary>当前战斗模式（阵营差异）</summary>
     public ICombatMode CombatMode { get; private set; }
-
-    /// <summary>面朝方向</summary>
     public Vector2 FacingDirection { get; private set; } = Vector2.Right;
 
     // ===== 私有字段 =====
 
     private float _moveSpeed = 200f;
-    private float _rollTimer;
     private float _rollCooldownTimer;
     private Vector2 _rollDirection;
     private Vector2 _inputDirection;
     private Vector2 _lastMoveDirection = Vector2.Right;
+    private float _idleTimer;
+    private bool _rollAnimPlayed;
 
     // ===== 生命周期 =====
 
@@ -70,25 +61,26 @@ public partial class PlayerController : CharacterBody2D
 
         float dt = (float)delta;
 
-        // 翻滚冷却计时
         if (_rollCooldownTimer > 0f)
-        {
             _rollCooldownTimer -= dt;
-        }
 
         HandleMovement(dt);
-        HandleRoll(dt);
 
-        // 战斗模式更新（魔法系蓄力逻辑等）
+        // 闪避期间持续移动
+        if (CurrentState == PlayerState.Rolling)
+            Velocity = _rollDirection * RollSpeed;
+
         CombatMode?.Update(this, delta);
 
         MoveAndSlide();
         UpdateAnimation();
+        UpdateIdle(dt);
     }
 
     public override void _UnhandledInput(InputEvent ev)
     {
         if (CurrentState == PlayerState.Dead) return;
+        if (CurrentState == PlayerState.Rolling) return;
 
         if (ev.IsActionPressed("attack"))
         {
@@ -138,32 +130,21 @@ public partial class PlayerController : CharacterBody2D
 
     // ===== 状态管理 =====
 
-    /// <summary>
-    /// 切换玩家状态
-    /// </summary>
-    /// <param name="newState">目标状态</param>
     public void ChangeState(PlayerState newState)
     {
         if (CurrentState == newState) return;
         PlayerState previous = CurrentState;
         CurrentState = newState;
 
-        // 翻滚开始时启用无敌
         if (newState == PlayerState.Rolling)
-        {
             Health?.SetInvincible(true);
-        }
-        // 翻滚结束时关闭无敌
         if (previous == PlayerState.Rolling && newState != PlayerState.Rolling)
-        {
             Health?.SetInvincible(false);
-        }
+
+        if (previous == PlayerState.Idle || newState == PlayerState.Idle)
+            _idleTimer = 0f;
     }
 
-    /// <summary>
-    /// 切换阵营（同时切换战斗模式）
-    /// </summary>
-    /// <param name="faction">目标阵营</param>
     public void SetFaction(FactionType faction)
     {
         CombatMode = faction switch
@@ -174,43 +155,28 @@ public partial class PlayerController : CharacterBody2D
         };
 
         if (CombatResource != null)
-        {
             CombatResource.Faction = faction;
-        }
     }
 
-    /// <summary>
-    /// 玩家受击入口
-    /// </summary>
-    /// <param name="amount">伤害量</param>
     public void TakeDamage(float amount)
     {
         if (CurrentState == PlayerState.Dead || CurrentState == PlayerState.Rolling) return;
         Health?.ApplyDamage(amount);
     }
 
-    /// <summary>
-    /// 交互（拾取物品等）
-    /// </summary>
     public void Interact()
     {
-        // 检测交互范围内的可交互对象
-        // 具体实现在内容系统阶段完成
         ChangeState(PlayerState.Interacting);
     }
 
     // ===== 私有方法 =====
 
-    /// <summary>
-    /// 从 CharacterData 初始化属性
-    /// </summary>
     private void Initialize()
     {
         if (Data != null)
         {
             _moveSpeed = Data.MoveSpeed;
             RollSpeed = Data.RollSpeed;
-            RollDuration = Data.RollDuration;
             RollCooldown = Data.RollCooldown;
 
             if (!string.IsNullOrEmpty(Data.TpsheetPath) && SpriteSheet != null)
@@ -229,9 +195,6 @@ public partial class PlayerController : CharacterBody2D
         SetFaction(Data?.Faction ?? FactionType.Tech);
     }
 
-    /// <summary>
-    /// 处理移动输入
-    /// </summary>
     private void HandleMovement(float delta)
     {
         if (CurrentState == PlayerState.Rolling ||
@@ -258,36 +221,13 @@ public partial class PlayerController : CharacterBody2D
         {
             Velocity = Vector2.Zero;
             if (CurrentState == PlayerState.Moving)
-            {
                 ChangeState(PlayerState.Idle);
-            }
         }
 
-        // 更新面朝方向（跟随鼠标）
         Vector2 mousePos = GetGlobalMousePosition();
         FacingDirection = (mousePos - GlobalPosition).Normalized();
     }
 
-    /// <summary>
-    /// 处理翻滚逻辑
-    /// </summary>
-    private void HandleRoll(float delta)
-    {
-        if (CurrentState != PlayerState.Rolling) return;
-
-        _rollTimer -= delta;
-        Velocity = _rollDirection * RollSpeed;
-
-        if (_rollTimer <= 0f)
-        {
-            ChangeState(PlayerState.Idle);
-            Velocity = Vector2.Zero;
-        }
-    }
-
-    /// <summary>
-    /// 尝试开始翻滚
-    /// </summary>
     private void TryStartRoll()
     {
         if (CurrentState == PlayerState.Rolling ||
@@ -299,31 +239,58 @@ public partial class PlayerController : CharacterBody2D
 
         _rollDirection = _inputDirection != Vector2.Zero
             ? _inputDirection.Normalized()
-            : FacingDirection;
+            : _lastMoveDirection;
 
-        _rollTimer = RollDuration;
         _rollCooldownTimer = RollCooldown;
+        _rollAnimPlayed = false;
         ChangeState(PlayerState.Rolling);
     }
 
-    /// <summary>
-    /// 更新动画状态
-    /// </summary>
+    /// <summary>dodge 动画播完时由信号触发，结束闪避状态</summary>
+    private void OnRollAnimFinished(string animName)
+    {
+        if (CurrentState != PlayerState.Rolling) return;
+        if (!animName.StartsWith("dodge")) return;
+
+        Velocity = Vector2.Zero;
+        ChangeState(PlayerState.Idle);
+    }
+
     private void UpdateAnimation()
     {
         if (SpriteSheet == null) return;
 
-        // 攻击时朝向鼠标，其他状态朝向最后的移动方向
+        if (CurrentState == PlayerState.Rolling)
+        {
+            if (!_rollAnimPlayed)
+            {
+                _rollAnimPlayed = true;
+                string dir = _rollDirection.Y >= 0 ? "front" : "back";
+                SpriteSheet.SetDirection(dir);
+                SpriteSheet.SetFlipH(_rollDirection.X > 0);
+                SpriteSheet.PlayOnce($"dodge_{dir}");
+            }
+            return;
+        }
+
+        if (CurrentState == PlayerState.Idle)
+        {
+            if (SpriteSheet.IsPlaying)
+                SpriteSheet.Stop();
+            string idleDir = _lastMoveDirection.Y >= 0 ? "front" : "back";
+            SpriteSheet.SetDirection(idleDir);
+            SpriteSheet.SetFlipH(_lastMoveDirection.X > 0);
+            return;
+        }
+
         Vector2 facing = CurrentState == PlayerState.Attacking ? FacingDirection : _lastMoveDirection;
         string direction = facing.Y >= 0 ? "front" : "back";
         SpriteSheet.SetFlipH(facing.X > 0);
 
         string animName = CurrentState switch
         {
-            PlayerState.Idle => $"idle_{direction}",
             PlayerState.Moving => $"move_{direction}",
             PlayerState.Attacking => $"attack_{direction}",
-            PlayerState.Rolling => $"roll_{direction}",
             PlayerState.Casting => $"cast_{direction}",
             PlayerState.Interacting => $"interact_{direction}",
             PlayerState.Dead => "dead",
@@ -333,9 +300,21 @@ public partial class PlayerController : CharacterBody2D
         SpriteSheet.Play(animName);
     }
 
-    /// <summary>
-    /// 死亡处理（由 HealthComponent.Died 信号触发）
-    /// </summary>
+    private void UpdateIdle(float dt)
+    {
+        if (CurrentState != PlayerState.Idle) return;
+        if (SpriteSheet == null) return;
+        if (SpriteSheet.IsPlaying) return;
+
+        _idleTimer += dt;
+        if (_idleTimer >= IdleTimeout)
+        {
+            string direction = _lastMoveDirection.Y >= 0 ? "front" : "back";
+            SpriteSheet.PlayOnce($"idle_{direction}");
+            _idleTimer = 0f;
+        }
+    }
+
     private void OnDeath()
     {
         ChangeState(PlayerState.Dead);
@@ -343,58 +322,48 @@ public partial class PlayerController : CharacterBody2D
         EventBus.EmitPlayerDied();
     }
 
-    /// <summary>
-    /// 代码构建所有子节点
-    /// </summary>
     private void BuildScene()
     {
-        // SpriteSheetComponent
         SpriteSheet = new SpriteSheetComponent();
         SpriteSheet.Name = "SpriteSheet";
+        SpriteSheet.AnimationFinished += OnRollAnimFinished;
         AddChild(SpriteSheet);
         SpriteSheet.Owner = this;
 
-        // CollisionShape（CircleShape2D R=16）
         _collision = new CollisionShape2D();
         _collision.Name = "CollisionShape";
         _collision.Shape = new CircleShape2D { Radius = 16f };
         AddChild(_collision);
         _collision.Owner = this;
 
-        // 设置物理层：玩家在 Layer 1
-        CollisionLayer = 1u;  // Layer 1: Player Body
-        CollisionMask = 5u;   // Layer 1 + 3: Player Body + Enemy Body
+        CollisionLayer = 1u;
+        CollisionMask = 5u;
 
-        // HealthComponent
         Health = new HealthComponent();
         Health.Name = "HealthComponent";
         AddChild(Health);
         Health.Owner = this;
         Health.Died += OnDeath;
 
-        // HitboxComponent（Layer 2，检测 Layer 3 敌人）
         Hitbox = new HitboxComponent();
         Hitbox.Name = "HitboxComponent";
-        Hitbox.CollisionLayer = 2u;  // Layer 2: Player Hitbox
-        Hitbox.CollisionMask = 4u;   // Layer 3: Enemy Body
+        Hitbox.CollisionLayer = 2u;
+        Hitbox.CollisionMask = 4u;
         AddChild(Hitbox);
         Hitbox.Owner = this;
 
-        // HurtboxComponent（Layer 1，监测 Layer 4 敌人攻击）
         Hurtbox = new HurtboxComponent();
         Hurtbox.Name = "HurtboxComponent";
-        Hurtbox.CollisionLayer = 1u;  // Layer 1: Player Body
-        Hurtbox.CollisionMask = 8u;   // Layer 4: Enemy Hitbox
+        Hurtbox.CollisionLayer = 1u;
+        Hurtbox.CollisionMask = 8u;
         AddChild(Hurtbox);
         Hurtbox.Owner = this;
 
-        // CombatResourceComponent
         CombatResource = new CombatResourceComponent();
         CombatResource.Name = "CombatResourceComponent";
         AddChild(CombatResource);
         CombatResource.Owner = this;
 
-        // StatusEffectComponent
         StatusEffect = new StatusEffectComponent();
         StatusEffect.Name = "StatusEffectComponent";
         AddChild(StatusEffect);

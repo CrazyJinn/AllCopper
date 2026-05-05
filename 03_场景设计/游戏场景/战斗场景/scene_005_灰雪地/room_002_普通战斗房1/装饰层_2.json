@@ -1,0 +1,21 @@
+{
+  "layer": "装饰层-大（Decoration-Large）",
+  "scene": "灰雪地",
+  "room": "普通战斗房1",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1","2","3","4"],
+  "elements": {
+    "count": 4,
+    "items": [
+      { "label": "1", "description": "灰白色调的积雪覆盖废弃车辆残骸" },
+      { "label": "2", "description": "灰蓝色的巨型冻岩堆" },
+      { "label": "3", "description": "暗灰白色的倒塌木栅栏段" },
+      { "label": "4", "description": "灰褐色调的被雪掩埋物资箱堆" }
+    ]
+  }
+}

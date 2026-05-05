@@ -25,21 +25,41 @@ allowed-tools: Read, Bash, Write, Edit
 基于一张图片生成视频动画。适合角色动画、场景动态效果。
 
 1. 定位输入图片（角色设计图终稿/场景图终稿）
-2. 准备提示词（描述期望的运动/动画效果）
-3. 提交任务：
+2. **比例检查与阔图**：检测图片实际比例是否与 `--ratio` 一致，不一致则用 ffmpeg 阔图后**直接覆盖原图**。ffmpeg 路径从 `settings.json` 的 `ffmpeg_path` 读取。
+   ```bash
+   # 1. 读取 ffmpeg_path 配置（如 D:/ffmpeg），拼接为 D:/ffmpeg/bin/ffmpeg.exe
+   # 2. 解析 --ratio 为 target_w:target_h（如 16:9）
+   # 3. 用 PowerShell 获取图片实际尺寸，计算宽高比 w/h：
+   #    powershell -Command "& {$img=[System.Drawing.Image]::FromFile((Resolve-Path '<图片路径>').Path); Write-Host $img.Width $img.Height; $img.Dispose()}"
+   # 4. 比较 |w/h - target_w/target_h| < 阈值(0.05)，若接近则跳过阔图
+   # 5. 不一致时阔图，白色填充，直接覆盖原图。
+   #    注意：ffmpeg 无法直接覆盖输入文件，需用临时文件中转后 mv 回去：
+
+   # 图片更宽（如 1:1 → 16:9）：保持高度，水平两侧补白
+   <ffmpeg_path>/bin/ffmpeg.exe -y -i <图片路径> \
+     -vf "pad=ceil(ih*<target_w>/<target_h>/2)*2:ih:(ow-iw)/2:(oh-ih)/2:white" \
+     <图片路径>.pad_tmp.png && mv <图片路径>.pad_tmp.png <图片路径>
+
+   # 图片更高（如 1:1 → 9:16）：保持宽度，上下补白
+   <ffmpeg_path>/bin/ffmpeg.exe -y -i <图片路径> \
+     -vf "pad=iw:ceil(iw*<target_h>/<target_w>/2)*2:(ow-iw)/2:(oh-ih)/2:white" \
+     <图片路径>.pad_tmp.png && mv <图片路径>.pad_tmp.png <图片路径>
+   ```
+3. 准备提示词（描述期望的运动/动画效果）
+4. 提交任务（`--prompt`、`--ratio`、`--duration` 从输入中提取）：
    ```bash
    python scripts/seedance_api.py submit \
      --first-frame <图片路径> \
-     --prompt "提示词" \
-     --ratio 16:9 --duration 5 --resolution 720p
+     --prompt "<输入中的提示词>" \
+     --ratio <输入中的比例> --duration <输入中的时长>
    ```
-4. 从返回 JSON 中获取 `id`（task_id）
-5. 等待并下载：
+5. 从返回 JSON 中获取 `id`（task_id）
+6. 等待并下载：
    ```bash
    python scripts/seedance_api.py wait <task_id> <输出路径> \
      --interval 15 --max-wait 1800
    ```
-6. 下载成功后更新状态为"初稿"
+7. 下载成功后更新状态为"初稿"
 
 #### 图生视频 - 首尾帧模式
 
@@ -49,8 +69,8 @@ allowed-tools: Read, Bash, Write, Edit
 python scripts/seedance_api.py submit \
   --first-frame <首帧图片> \
   --last-frame <尾帧图片> \
-  --prompt "提示词（可选）" \
-  --ratio 16:9 --duration 5
+  --prompt "<输入中的提示词>" \
+  --ratio <输入中的比例> --duration <输入中的时长>
 ```
 
 #### 连续视频生成（尾帧接力）
@@ -85,7 +105,7 @@ entries:
     skill: image-to-video
     executed_at: "<ISO时间>"
     processed:
-      - "char_001_idle动画 5s"
+      - "char_002_idle_front_01.mp4"
     unprocessed:
       - []
     unable_to_process:
@@ -94,7 +114,7 @@ entries:
 
 ## 脚本用法
 
-> 脚本位于 `scripts/seedance_api.py`
+> 脚本位于 `scripts/seedance_api.py`（相对于 skill 目录）
 
 ```bash
 # 提交任务
@@ -112,16 +132,16 @@ python scripts/seedance_api.py wait <task_id> <output.mp4>
 
 ## 模型与参数
 
-使用 `doubao-seedance-1-0-pro-fast-251015` 模型（可在 settings.json 中通过 `seedance_model` 配置）。
+可在 settings.json 中通过 `seedance_model` 配置
 
 ### 通用参数
 
 | 参数 | CLI 参数 | 类型 | 默认值 | 说明 |
 |-----|---------|------|-------|------|
 | model | --model | string | doubao-seedance-1-0-pro-fast-251015 | 模型ID |
-| resolution | --resolution | string | 720p | 480p/720p/1080p |
-| ratio | --ratio | string | adaptive | 16:9/4:3/1:1/3:4/9:16/21:9/adaptive |
-| duration | --duration | int | 5 | 视频时长秒数，2.0: [4,15] |
+| resolution | --resolution | string | 480p | 480p/720p/1080p |
+| ratio | --ratio | string | 1:1 | 16:9/4:3/1:1/3:4/9:16/21:9/adaptive |
+| duration | --duration | int | 4 | 视频时长秒数，2.0: [4,15] |
 | seed | --seed | int | -1 | 随机种子 |
 | camera_fixed | --camera-fixed | flag | false | 固定摄像头 |
 | watermark | --watermark | flag | false | 含水印 |
@@ -161,13 +181,39 @@ python scripts/seedance_api.py wait <task_id> <output.mp4>
 
 ## 输出文件命名
 
-格式：`{type}_{YYYY-MM-DD}_{序号}.mp4`
+格式：`{id}_{动作类型}_{朝向}_{序号}.mp4`
 
-| 类型 | type 前缀 |
-|-----|----------|
-| 角色动画 | char / npc / enemy |
-| 场景过场 | scene |
-| 过场动画 | cutscene |
+| 组成 | 说明 | 示例 |
+|-----|------|------|
+| id | 类型前缀 + 3位编号 | char_002, npc_001, enemy_003 |
+| 动作类型 | 见下方动作类型表 | idle, move, attack |
+| 朝向 | 方向标识 | front, back |
+| 序号 | 2位序号 | 01, 02 |
+
+示例：`char_002_move_back_01.mp4`
+
+### 动作类型映射
+
+| 动画名称 | 动作类型标识 |
+|---------|------------|
+| 待机动画 | idle |
+| 移动动画 | move |
+| 普通攻击动画 | attack |
+| 终极技能动画 | ultimate |
+| 技能1动画 | skill1 |
+| 技能2动画 | skill2 |
+| 翻滚闪避动画 | dodge |
+| 受击动画 | hit |
+| 死亡动画 | death |
+| 加快技能CD动画 | skill_cd |
+
+### 类型前缀
+
+| 类型 | id 前缀 |
+|-----|--------|
+| 主角 | char |
+| NPC | npc |
+| 怪物 | enemy |
 
 ## 配置
 
@@ -175,8 +221,7 @@ python scripts/seedance_api.py wait <task_id> <output.mp4>
 
 ```json
 {
-  "doubao_api_key": "your-api-key-here",
-  "seedance_model": "doubao-seedance-2-0-260128"
+  "doubao_api_key": "your-api-key-here"
 }
 ```
 

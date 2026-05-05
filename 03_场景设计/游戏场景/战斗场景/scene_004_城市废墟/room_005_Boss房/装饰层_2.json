@@ -1,0 +1,21 @@
+{
+  "layer": "装饰层-大（Decoration-Large）",
+  "scene": "城市废墟",
+  "room": "Boss房",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1", "2", "3", "4"],
+  "elements": {
+    "count": 4,
+    "items": [
+      { "label": "1", "description": "灰褐色的半倒塌高楼废墟" },
+      { "label": "2", "description": "铁锈色的废弃坦克残骸" },
+      { "label": "3", "description": "灰黑色的断裂天桥梁体" },
+      { "label": "4", "description": "赭黄色的巨大弹坑边缘" }
+    ]
+  }
+}

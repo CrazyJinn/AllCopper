@@ -1,0 +1,56 @@
+{
+  "animation": "受击",
+  "direction": "正面 | 背面",
+  "requirement": "无任何文字,不改变参考图片中角色的头身比.角色在各格中保持同一形象,全身构图,每格内角色占格子的80%,居中.",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "3/4 front left view | 3/4 back left view",
+    "rendering": "chibi,3头身"
+  },
+  "order": [
+    "1", "2", "3",
+    "4", "5", "6",
+    "7", "8", "9"
+  ],
+  "poses": {
+    "count": 9,
+    "items": [
+      {
+        "label": "1",
+        "description": "被击中，身体猛然一震"
+      },
+      {
+        "label": "2",
+        "description": "向后踉跄，护住胸前|向后踉跄"
+      },
+      {
+        "label": "3",
+        "description": "继续后退，身体摇晃"
+      },
+      {
+        "label": "4",
+        "description": "后退中努力稳住身体"
+      },
+      {
+        "label": "5",
+        "description": "斗篷飘起|短暂停顿"
+      },
+      {
+        "label": "6",
+        "description": "身体开始稳住"
+      },
+      {
+        "label": "7",
+        "description": "调整重心"
+      },
+      {
+        "label": "8",
+        "description": "姿态恢复中"
+      },
+      {
+        "label": "9",
+        "description": "恢复站姿（与帧1起始姿态一致）"
+      }
+    ]
+  }
+}

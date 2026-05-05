@@ -1,0 +1,152 @@
+{
+  "textures": [
+    {
+      "image": "texture.png",
+      "size": {
+        "w": 916,
+        "h": 916
+      },
+      "sprites": [
+        {
+          "filename": "char_002_dodge_front_05",
+          "region": {
+            "x": 0,
+            "y": 0,
+            "w": 341,
+            "h": 341
+          },
+          "margin": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        },
+        {
+          "filename": "char_002_dodge_front_04",
+          "region": {
+            "x": 342,
+            "y": 0,
+            "w": 274,
+            "h": 321
+          },
+          "margin": {
+            "x": 0,
+            "y": 20,
+            "w": 67,
+            "h": 20
+          }
+        },
+        {
+          "filename": "char_002_dodge_front_03",
+          "region": {
+            "x": 617,
+            "y": 0,
+            "w": 276,
+            "h": 320
+          },
+          "margin": {
+            "x": 65,
+            "y": 21,
+            "w": 65,
+            "h": 21
+          }
+        },
+        {
+          "filename": "char_002_dodge_front_07",
+          "region": {
+            "x": 617,
+            "y": 321,
+            "w": 258,
+            "h": 320
+          },
+          "margin": {
+            "x": 0,
+            "y": 21,
+            "w": 83,
+            "h": 21
+          }
+        },
+        {
+          "filename": "char_002_dodge_front_01",
+          "region": {
+            "x": 342,
+            "y": 322,
+            "w": 258,
+            "h": 316
+          },
+          "margin": {
+            "x": 0,
+            "y": 15,
+            "w": 83,
+            "h": 25
+          }
+        },
+        {
+          "filename": "char_002_dodge_front_09",
+          "region": {
+            "x": 0,
+            "y": 342,
+            "w": 168,
+            "h": 315
+          },
+          "margin": {
+            "x": 83,
+            "y": 9,
+            "w": 173,
+            "h": 26
+          }
+        },
+        {
+          "filename": "char_002_dodge_front_02",
+          "region": {
+            "x": 169,
+            "y": 639,
+            "w": 272,
+            "h": 277
+          },
+          "margin": {
+            "x": 69,
+            "y": 64,
+            "w": 69,
+            "h": 64
+          }
+        },
+        {
+          "filename": "char_002_dodge_front_06",
+          "region": {
+            "x": 442,
+            "y": 642,
+            "w": 262,
+            "h": 252
+          },
+          "margin": {
+            "x": 0,
+            "y": 89,
+            "w": 79,
+            "h": 89
+          }
+        },
+        {
+          "filename": "char_002_dodge_front_08",
+          "region": {
+            "x": 705,
+            "y": 642,
+            "w": 211,
+            "h": 226
+          },
+          "margin": {
+            "x": 73,
+            "y": 81,
+            "w": 130,
+            "h": 115
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "version": "1.0.0",
+    "format": "RGBA8888"
+  }
+}

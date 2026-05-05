@@ -1,12 +1,11 @@
 using Godot;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 /// <summary>
 /// .tpsheet 精灵表加载器
-/// 解析自定义 tpsheet JSON 格式，构建 SpriteFrames 资源供 AnimatedSprite2D 使用
+/// 支持单文件加载和目录批量加载
 /// </summary>
 public static class TpsheetLoader
 {
@@ -81,24 +80,59 @@ public static class TpsheetLoader
 	// ===== 公共接口 =====
 
 	/// <summary>
-	/// 从 .tpsheet 文件加载 SpriteFrames
+	/// 从目录加载所有 .tpsheet 文件，合并为一个 SpriteFrames
 	/// </summary>
-	/// <param name="tpsheetPath">res:// 路径</param>
-	/// <param name="fps">默认帧率</param>
+	public static SpriteFrames LoadDirectory(string dirPath, float fps = 8f)
+	{
+		using var dir = DirAccess.Open(dirPath);
+		if (dir == null)
+		{
+			GD.PrintErr($"[TpsheetLoader] 无法打开目录: {dirPath}");
+			return null;
+		}
+
+		var tpsheetFiles = new List<string>();
+		dir.ListDirBegin();
+		string fileName = dir.GetNext();
+		while (fileName != "")
+		{
+			if (fileName.EndsWith(".tpsheet"))
+				tpsheetFiles.Add(fileName);
+			fileName = dir.GetNext();
+		}
+		dir.ListDirEnd();
+
+		if (tpsheetFiles.Count == 0)
+		{
+			GD.PrintErr($"[TpsheetLoader] 目录中未找到 .tpsheet 文件: {dirPath}");
+			return null;
+		}
+
+		tpsheetFiles.Sort();
+
+		var spriteFrames = new SpriteFrames();
+		foreach (var tpsheetFile in tpsheetFiles)
+		{
+			string tpsheetPath = dirPath.TrimEnd('/') + "/" + tpsheetFile;
+			LoadSingleInto(spriteFrames, tpsheetPath, fps);
+		}
+
+		return spriteFrames;
+	}
+
+	/// <summary>
+	/// 从单个 .tpsheet 文件加载 SpriteFrames
+	/// </summary>
 	public static SpriteFrames Load(string tpsheetPath, float fps = 8f)
 	{
-		GD.Print($"[TpsheetLoader] 开始加载: {tpsheetPath}");
-
 		using var file = FileAccess.Open(tpsheetPath, FileAccess.ModeFlags.Read);
 		if (file == null)
 		{
-			GD.PrintErr($"[TpsheetLoader] 无法打开: {tpsheetPath}, Error: {FileAccess.GetOpenError()}");
+			GD.PrintErr($"[TpsheetLoader] 无法打开: {tpsheetPath}");
 			return null;
 		}
 
 		string json = file.GetAsText();
-		GD.Print($"[TpsheetLoader] JSON 长度: {json.Length}");
-
 		var data = JsonSerializer.Deserialize<TpsheetData>(json);
 		if (data?.Textures == null || data.Textures.Count == 0)
 		{
@@ -106,32 +140,14 @@ public static class TpsheetLoader
 			return null;
 		}
 
-		string baseDir = tpsheetPath.GetBaseDir();
 		var spriteFrames = new SpriteFrames();
+		string baseDir = tpsheetPath.GetBaseDir();
 
 		foreach (var texEntry in data.Textures)
 		{
-			string imagePath = baseDir + "/" + texEntry.Image;
-			GD.Print($"[TpsheetLoader] 加载纹理: {imagePath}");
-
-			var atlas = GD.Load<Texture2D>(imagePath);
-			if (atlas == null)
-			{
-				GD.PrintErr($"[TpsheetLoader] 无法加载纹理: {imagePath}");
-				continue;
-			}
-
-			GD.Print($"[TpsheetLoader] 纹理尺寸: {atlas.GetWidth()}x{atlas.GetHeight()}, Sprites数量: {texEntry.Sprites.Count}");
-
+			var atlas = ResolveAtlas(baseDir, tpsheetPath, texEntry.Image);
+			if (atlas == null) continue;
 			BuildAnimations(spriteFrames, atlas, texEntry.Sprites, fps);
-		}
-
-		// 输出所有构建的动画
-		string[] animNames = spriteFrames.GetAnimationNames();
-		GD.Print($"[TpsheetLoader] 完成, 共 {animNames.Length} 个动画:");
-		foreach (string name in animNames)
-		{
-			GD.Print($"  {name}: {spriteFrames.GetFrameCount(name)} 帧, {spriteFrames.GetAnimationSpeed(name)} fps");
 		}
 
 		return spriteFrames;
@@ -139,13 +155,48 @@ public static class TpsheetLoader
 
 	// ===== 内部方法 =====
 
+	private static void LoadSingleInto(SpriteFrames spriteFrames, string tpsheetPath, float fps)
+	{
+		using var file = FileAccess.Open(tpsheetPath, FileAccess.ModeFlags.Read);
+		if (file == null) return;
+
+		var data = JsonSerializer.Deserialize<TpsheetData>(file.GetAsText());
+		if (data?.Textures == null) return;
+
+		string baseDir = tpsheetPath.GetBaseDir();
+
+		foreach (var texEntry in data.Textures)
+		{
+			var atlas = ResolveAtlas(baseDir, tpsheetPath, texEntry.Image);
+			if (atlas == null) continue;
+			BuildAnimations(spriteFrames, atlas, texEntry.Sprites, fps);
+		}
+	}
+
+	/// <summary>
+	/// 解析图集纹理：先尝试 JSON 中的 image 字段，若不存在则用 .tpsheet 同名 .png
+	/// </summary>
+	private static Texture2D ResolveAtlas(string baseDir, string tpsheetPath, string imageRef)
+	{
+		string imagePath = baseDir + "/" + imageRef;
+		if (ResourceLoader.Exists(imagePath))
+			return GD.Load<Texture2D>(imagePath);
+
+		string tpsheetStem = tpsheetPath.GetFile().Replace(".tpsheet", ".png");
+		string fallbackPath = baseDir + "/" + tpsheetStem;
+		if (ResourceLoader.Exists(fallbackPath))
+			return GD.Load<Texture2D>(fallbackPath);
+
+		GD.PrintErr($"[TpsheetLoader] 无法加载图集: {imagePath}");
+		return null;
+	}
+
 	private static void BuildAnimations(
 		SpriteFrames spriteFrames,
 		Texture2D atlas,
 		List<SpriteEntry> sprites,
 		float fps)
 	{
-		// 按 filename 分组：去掉 _NNN 后缀得到动画名
 		var groups = new Dictionary<string, List<(int index, SpriteEntry sprite)>>();
 
 		foreach (var sprite in sprites)
@@ -181,6 +232,7 @@ public static class TpsheetLoader
 
 	/// <summary>
 	/// 解析帧名 → (动画名, 帧序号)
+	/// char_002_move_front_04 → ("move_front", 4)
 	/// idle_back_001 → ("idle_back", 1)
 	/// </summary>
 	private static (string animName, int frameIndex) ParseFilename(string filename)
@@ -192,8 +244,19 @@ public static class TpsheetLoader
 		string animPart = filename.Substring(0, last);
 		string numPart = filename.Substring(last + 1);
 
-		return int.TryParse(numPart, out int idx)
-			? (animPart, idx)
-			: (filename, 0);
+		if (!int.TryParse(numPart, out int idx))
+			return (filename, 0);
+
+		// 去掉 {type}_{NNN}_ 前缀（如 char_002_）
+		int firstUnderscore = animPart.IndexOf('_');
+		if (firstUnderscore > 0)
+		{
+			string afterFirst = animPart.Substring(firstUnderscore + 1);
+			int secondUnderscore = afterFirst.IndexOf('_');
+			if (secondUnderscore > 0 && int.TryParse(afterFirst.Substring(0, secondUnderscore), out _))
+				animPart = afterFirst.Substring(secondUnderscore + 1);
+		}
+
+		return (animPart, idx);
 	}
 }

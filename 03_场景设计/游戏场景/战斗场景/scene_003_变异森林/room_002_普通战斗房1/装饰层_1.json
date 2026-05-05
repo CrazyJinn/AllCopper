@@ -1,0 +1,26 @@
+{
+  "layer": "装饰层（Decoration）",
+  "scene": "变异森林",
+  "room": "普通战斗房1",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  "elements": {
+    "count": 9,
+    "items": [
+      { "label": "1", "description": "荧光绿色的发光苔藓斑块" },
+      { "label": "2", "description": "暗紫色的巨型菌褶" },
+      { "label": "3", "description": "深褐色的扭曲树根" },
+      { "label": "4", "description": "暗绿色的腐殖土堆" },
+      { "label": "5", "description": "灰紫色的孢子囊残骸" },
+      { "label": "6", "description": "墨绿色的攀援藤蔓" },
+      { "label": "7", "description": "荧光紫色的发光菌丝网络" },
+      { "label": "8", "description": "暗棕色的木质瘤节" },
+      { "label": "9", "description": "灰绿色的落叶腐层" }
+    ]
+  }
+}

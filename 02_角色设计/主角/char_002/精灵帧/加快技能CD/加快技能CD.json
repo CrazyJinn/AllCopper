@@ -1,0 +1,56 @@
+{
+  "animation": "加快技能CD（冥想加速）",
+  "direction": "正面 | 背面",
+  "requirement": "无任何文字,不改变参考图片中角色的头身比.角色在各格中保持同一形象,全身构图,每格内角色占格子的80%,居中.",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "3/4 front left view | 3/4 back left view",
+    "rendering": "chibi,3头身"
+  },
+  "order": [
+    "1", "2", "3",
+    "4", "5", "6",
+    "7", "8", "9"
+  ],
+  "poses": {
+    "count": 9,
+    "items": [
+      {
+        "label": "1",
+        "description": "准备站立（待机姿态）"
+      },
+      {
+        "label": "2",
+        "description": "双手|双臂缓缓合十|收拢"
+      },
+      {
+        "label": "3",
+        "description": "双手|双臂合十冥想，开始发光"
+      },
+      {
+        "label": "4",
+        "description": "闭目调息，能量汇聚"
+      },
+      {
+        "label": "5",
+        "description": "调息持续，光芒增强"
+      },
+      {
+        "label": "6",
+        "description": "调息接近完成"
+      },
+      {
+        "label": "7",
+        "description": "睁开双眼，双手|双臂开始分开"
+      },
+      {
+        "label": "8",
+        "description": "双手|双臂缓缓放下"
+      },
+      {
+        "label": "9",
+        "description": "从容恢复站姿（与帧1一致）"
+      }
+    ]
+  }
+}

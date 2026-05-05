@@ -1,0 +1,26 @@
+{
+  "layer": "装饰层（Decoration）",
+  "scene": "灰雪地",
+  "room": "普通战斗房2",
+  "requirement": "无任何文字,每个元素独立完整,格子之间用1px细线隔开,元素居中占格子80%",
+  "style": {
+    "background": "纯白背景,格子之间用1px细线隔开",
+    "camera": "俯视角",
+    "rendering": "油画风格,手绘质感"
+  },
+  "order": ["1","2","3","4","5","6","7","8","9"],
+  "elements": {
+    "count": 9,
+    "items": [
+      { "label": "1", "description": "灰白色的积雪与冻土混合" },
+      { "label": "2", "description": "淡紫灰色的辐射变色积雪" },
+      { "label": "3", "description": "灰蓝色的坚硬冰面碎块" },
+      { "label": "4", "description": "灰白色的干枯灌木残根" },
+      { "label": "5", "description": "暗灰蓝色的冻裂地面裂缝" },
+      { "label": "6", "description": "浅灰褐色的旧布料残片" },
+      { "label": "7", "description": "灰白色的积雪覆盖金属碎片" },
+      { "label": "8", "description": "淡灰紫色的辐射痕迹积雪" },
+      { "label": "9", "description": "灰蓝色的结冰水洼边缘" }
+    ]
+  }
+}
